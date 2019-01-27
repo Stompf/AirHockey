@@ -11,6 +11,18 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "target": "es5",
+        "moduleResolution": "node",
+        "lib": ["dom", "es2017"],
+        "module": "commonjs",
+        "outDir": "./dist",
+        "baseUrl": "."
+    },
+    "include": ["src/**/*"],
+    "paths": {
+        "client/*": ["src/client/*"],
+        "server/*": ["src/server/*"],
+        "shared/*": ["src/shared/*"]
     }
 }

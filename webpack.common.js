@@ -1,9 +1,9 @@
 const webpack = require('webpack');
 const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: ['reflect-metadata', './src/index.tsx'],
+    entry: ['./src/client/index.ts'],
     module: {
         rules: [
             {
@@ -23,15 +23,19 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
+        extensions: ['.ts', '.js'],
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
     },
     output: {
-        path: path.resolve(__dirname, 'dist'),
-        publicPath: '/',
+        path: path.resolve(__dirname, 'public'),
         filename: 'bundle.js',
+        chunkFilename: 'vendor.js',
     },
     plugins: [
-        new CopyWebpackPlugin([{ from: 'public' }]),
         new webpack.DefinePlugin({
             CANVAS_RENDERER: JSON.stringify(true),
             WEBGL_RENDERER: JSON.stringify(true),

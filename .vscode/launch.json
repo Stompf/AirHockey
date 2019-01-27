@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "preLaunchTask": "npm: start",
+            "name": "Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}/dist",
+            "sourceMapPathOverrides": {
+                "webpack:///./*": "${workspaceFolder}/*"
+            },
+            "sourceMaps": true,
+            "smartStep": true,
+            "userDataDir": "${workspaceFolder}/.vscode/chrome"
+        }
+    ]
+}
