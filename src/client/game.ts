@@ -15,7 +15,7 @@ export class AirHockeyGame extends Phaser.Game {
             },
             scene: [GameScene],
             disableContextMenu: true,
-            backgroundColor: '0xffffff',
+            backgroundColor: '0xFFFFFF',
         };
 
         super(config);

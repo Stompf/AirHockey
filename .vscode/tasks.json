@@ -16,30 +16,10 @@
                 },
                 "background": {
                     "activeOnStart": true,
-                    "beginsPattern": "^.*Project is running at.*$",
-                    "endsPattern": "^.*: Compiled successfully..*$"
+                    "beginsPattern": "webpack is watching the files",
+                    "endsPattern": "Built at:"
                 }
             }
-        },
-        {
-            "group": "build",
-            "type": "npm",
-            "script": "build",
-            "problemMatcher": []
-        },
-        {
-            "label": "npm: precommit",
-            "group": "build",
-            "type": "shell",
-            "command": "npm run precommit",
-            "problemMatcher": []
-        },
-        {
-            "label": "npm: install",
-            "group": "build",
-            "type": "shell",
-            "command": "npm install",
-            "problemMatcher": []
         }
     ]
 }
