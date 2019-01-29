@@ -4,6 +4,13 @@ const path = require('path');
 
 module.exports = {
     entry: ['./src/client/index.ts'],
+    stats: {
+        all: false,
+        modules: false,
+        errors: true,
+        warnings: true,
+        builtAt: true,
+    },
     module: {
         rules: [
             {

@@ -1,6 +1,7 @@
 import express from 'express';
 import 'module-alias/register';
 import path from 'path';
+import logger from './logger';
 
 const port = 3000;
 
@@ -15,6 +16,5 @@ app.get('/', (_req, res) => {
 app.listen(port, listening);
 
 function listening() {
-    // tslint:disable-next-line:no-console
-    console.log(`Demo server available on http://localhost:${port}`);
+    logger.info(`Demo server available on http://localhost:${port}`);
 }
