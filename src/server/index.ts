@@ -16,5 +16,5 @@ app.get('/', (_req, res) => {
 app.listen(port, listening);
 
 function listening() {
-    logger.info(`Demo server available on http://localhost:${port}`);
+    logger.info(`Server available on http://localhost:${port}`);
 }
