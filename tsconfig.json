@@ -14,7 +14,7 @@
         "emitDecoratorMetadata": true,
         "target": "es5",
         "moduleResolution": "node",
-        "lib": ["dom", "es2017"],
+        "lib": ["dom", "es2017", "scripthost"],
         "module": "commonjs",
         "outDir": "./dist",
         "baseUrl": "."
