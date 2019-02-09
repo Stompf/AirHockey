@@ -20,6 +20,42 @@
                     "endsPattern": "Built at:"
                 }
             }
+        },
+        {
+            "group": "build",
+            "label": "npm: start-server",
+            "type": "npm",
+            "script": "start-server",
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "_____"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "nodemon",
+                    "endsPattern": "Debugger listening on ws://"
+                }
+            }
+        },
+        {
+            "group": "build",
+            "label": "npm: start-client-dev",
+            "type": "npm",
+            "script": "start-client-dev",
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "_____"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "webpack is watching the files",
+                    "endsPattern": "Built at:"
+                }
+            }
         }
     ]
 }

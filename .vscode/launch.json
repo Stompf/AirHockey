@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "preLaunchTask": "npm: start",
+            "preLaunchTask": "npm: start-client-dev",
             "name": "Chrome",
             "type": "chrome",
             "request": "launch",
@@ -14,6 +14,21 @@
             "sourceMaps": true,
             "smartStep": true,
             "userDataDir": "${workspaceFolder}/.vscode/chrome"
+        },
+        {
+            "preLaunchTask": "npm: start-server",
+            "type": "node",
+            "request": "attach",
+            "name": "Attach server",
+            "port": 5858,
+            "restart": true,
+            "protocol": "inspector"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch Server & Client",
+            "configurations": ["Attach server", "Chrome"]
         }
     ]
 }
