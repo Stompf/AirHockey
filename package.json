@@ -20,8 +20,8 @@
     "homepage": "https://github.com/Stompf/AirHockey#readme",
     "dependencies": {
         "express": "^4.16.4",
-        "module-alias": "^2.1.0",
-        "phaser": "^3.16.1",
+        "module-alias": "^2.2.0",
+        "phaser": "^3.16.2",
         "socket.io": "^2.2.0",
         "socket.io-client": "^2.2.0",
         "winston": "^3.2.1"
@@ -46,7 +46,7 @@
         "tslint-config-prettier": "^1.18.0",
         "typescript": "^3.3.3",
         "uglifyjs-webpack-plugin": "^2.1.1",
-        "webpack": "^4.29.3",
+        "webpack": "^4.29.4",
         "webpack-cli": "^3.2.3",
         "webpack-merge": "^4.2.1"
     }
