@@ -36,7 +36,13 @@ export class GameScene extends Phaser.Scene {
     }
 
     protected create() {
-        this.cursors = this.input.keyboard.createCursorKeys();
+        this.cameras.main.setBackgroundColor('#FFFFFF');
+        this.cursors = this.input.keyboard.addKeys({
+            up: Phaser.Input.Keyboard.KeyCodes.W,
+            down: Phaser.Input.Keyboard.KeyCodes.S,
+            left: Phaser.Input.Keyboard.KeyCodes.A,
+            right: Phaser.Input.Keyboard.KeyCodes.D,
+        });
 
         const player = this.physics.add.image(400, 300, 'player');
         player.setDisplaySize(50, 50);

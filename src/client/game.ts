@@ -1,21 +1,25 @@
-import { GameScene } from './scenes';
+import { GameScene, MenuScene } from './scenes';
 
 export class AirHockeyGame extends Phaser.Game {
     constructor() {
         const config: GameConfig = {
             type: Phaser.AUTO,
-            width: 800,
-            height: 600,
-            parent: 'AirHockeyCanvas',
+            scale: {
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH,
+                width: 800,
+                height: 600,
+                parent: 'game-canvas',
+            },
             physics: {
                 default: 'arcade',
                 arcade: {
                     debug: true,
                 },
             },
-            scene: [GameScene],
+            scene: [MenuScene, GameScene],
             disableContextMenu: true,
-            backgroundColor: '0xFFFFFF',
+            backgroundColor: '0x000000',
         };
 
         super(config);
