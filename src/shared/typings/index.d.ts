@@ -1,3 +1,3 @@
-export namespace Shared {
-    export type Game = 'AirHockey';
-}
+export * from './air-hockey';
+export * from './shared';
+export * from './types';

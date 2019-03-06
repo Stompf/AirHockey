@@ -25,5 +25,8 @@
     "debug.toolBarLocation": "docked",
     "terminal.integrated.copyOnSelection": true,
     "typescript.tsdk": "./node_modules/typescript/lib",
-    "emmet.showExpandedAbbreviation": "never"
+    "emmet.showExpandedAbbreviation": "never",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.tslint": true
+    }
 }

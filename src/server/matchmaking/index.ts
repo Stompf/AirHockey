@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io';
 import { Shared, UnreachableCaseError } from 'src/shared';
+import { Worker } from 'worker_threads';
 
 export class Matchmaking {
     private games: Shared.Game[] = ['AirHockey'];
@@ -39,6 +40,9 @@ export class Matchmaking {
         if (this.currentQueue.AirHockey.length >= 2) {
             const player1 = this.currentQueue.AirHockey.shift();
             const player2 = this.currentQueue.AirHockey.shift();
+
+            const worker = new Worker('');
+            worker.
         }
     }
 }
