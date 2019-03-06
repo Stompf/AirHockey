@@ -22,22 +22,18 @@
             }
         },
         {
+            "type": "shell",
             "group": "build",
-            "label": "npm: start-server",
-            "type": "npm",
-            "script": "start-server",
-            "isBackground": true,
-            "problemMatcher": {
-                "owner": "custom",
-                "pattern": {
-                    "regexp": "_____"
-                },
-                "background": {
-                    "activeOnStart": true,
-                    "beginsPattern": "nodemon",
-                    "endsPattern": "Debugger listening on ws://"
-                }
-            }
+            "dependsOn": ["npm: start-client-dev", "npm: server"],
+            "label": "Run and watch all",
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "group": "build",
+            "dependsOn": ["npm: server-watch", "npm: start-server"],
+            "label": "npm: server",
+            "problemMatcher": []
         },
         {
             "group": "build",
@@ -54,6 +50,32 @@
                     "activeOnStart": true,
                     "beginsPattern": "webpack is watching the files",
                     "endsPattern": "Built at:"
+                }
+            }
+        },
+        {
+            "group": "build",
+            "label": "npm: server-watch",
+            "type": "npm",
+            "script": "server-watch",
+            "isBackground": true,
+            "problemMatcher": ["$tsc-watch"]
+        },
+        {
+            "group": "build",
+            "label": "npm: start-server",
+            "type": "npm",
+            "script": "start-server",
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "_____"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "nodemon",
+                    "endsPattern": "Debugger listening on ws://"
                 }
             }
         }

@@ -16,7 +16,7 @@
             "userDataDir": "${workspaceFolder}/.vscode/chrome"
         },
         {
-            "preLaunchTask": "npm: start-server",
+            "preLaunchTask": "npm: server",
             "type": "node",
             "request": "attach",
             "name": "Attach server",

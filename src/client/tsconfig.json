@@ -1,0 +1,5 @@
+{
+    "extends": "../../tsconfig.json",
+    "lib": ["dom", "es2017", "scripthost"],
+    "include": ["./"]
+}

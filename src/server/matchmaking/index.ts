@@ -38,11 +38,11 @@ export class Matchmaking {
 
     private handleAirHockeyQueue() {
         if (this.currentQueue.AirHockey.length >= 2) {
-            const player1 = this.currentQueue.AirHockey.shift();
-            const player2 = this.currentQueue.AirHockey.shift();
+            // const player1 = this.currentQueue.AirHockey.shift();
+            // const player2 = this.currentQueue.AirHockey.shift();
 
             const worker = new Worker('');
-            worker.
+            console.log(worker);
         }
     }
 }
