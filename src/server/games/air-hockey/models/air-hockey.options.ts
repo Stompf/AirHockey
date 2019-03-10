@@ -1,5 +1,3 @@
-import { Socket } from 'socket.io';
-
-export interface IAirHockeyOptions {
-    players: Socket[];
+export interface IAirHockeyGameOptions {
+    playerIds: string[];
 }

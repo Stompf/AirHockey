@@ -1,9 +1,11 @@
 import { Socket } from 'socket.io';
+import logger from 'src/server/logger';
 import { Shared, UnreachableCaseError } from 'src/shared';
-import { Worker } from 'worker_threads';
+import { IAirHockeyGameOptions } from '../games/air-hockey/models';
+import { startWorker } from '../worker';
 
 export class Matchmaking {
-    private games: Shared.Game[] = ['AirHockey'];
+    private supportedGames: Shared.Game[] = ['AirHockey'];
 
     private currentQueue: Record<Shared.Game, Socket[]>;
 
@@ -14,6 +16,13 @@ export class Matchmaking {
     }
 
     public addToQueue(socket: Socket, game: Shared.Game) {
+        if (!this.supportedGames.includes(game)) {
+            logger.info(`Tried to queue to game: ${game} but it is not supported`);
+            return;
+        }
+
+        logger.info(`New socket added to queue`, socket.id);
+
         this.removeFromQueue(socket.id);
 
         this.currentQueue[game].push(socket);
@@ -22,7 +31,7 @@ export class Matchmaking {
     }
 
     private removeFromQueue(socketId: string) {
-        this.games.forEach(game => {
+        this.supportedGames.forEach(game => {
             this.currentQueue[game] = this.currentQueue[game].filter(s => s.id !== socketId);
         });
     }
@@ -38,11 +47,17 @@ export class Matchmaking {
 
     private handleAirHockeyQueue() {
         if (this.currentQueue.AirHockey.length >= 2) {
-            // const player1 = this.currentQueue.AirHockey.shift();
-            // const player2 = this.currentQueue.AirHockey.shift();
+            const player1 = this.currentQueue.AirHockey.shift()!;
+            const player2 = this.currentQueue.AirHockey.shift()!;
 
-            const worker = new Worker('');
-            console.log(worker);
+            const airHockeyOptions: IAirHockeyGameOptions = {
+                playerIds: [player1.id, player2.id],
+            };
+
+            const worker = startWorker('AirHockey', [player1, player2], airHockeyOptions);
+            if (!worker) {
+                this.currentQueue.AirHockey.unshift(player1, player2);
+            }
         }
     }
 }

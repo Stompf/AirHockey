@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { connect } from 'socket.io-client';
 
 export class GameScene extends Phaser.Scene {
     private cursors!: Phaser.Input.Keyboard.CursorKeys;
@@ -61,6 +62,17 @@ export class GameScene extends Phaser.Scene {
         ball.setCircle(25);
 
         this.physics.add.collider(player, ball);
+
+        this.queue();
+    }
+
+    private queue() {
+        const socket = connect(
+            window.location.href,
+            { port: '3000' }
+        );
+
+        socket.on('connect', () => alert('hej'));
     }
 
     // private initPlayers() {

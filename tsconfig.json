@@ -9,6 +9,7 @@
         "forceConsistentCasingInFileNames": true,
         "suppressImplicitAnyIndexErrors": true,
         "noFallthroughCasesInSwitch": true,
+        "noImplicitThis": true,
         "noImplicitReturns": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
@@ -18,10 +19,5 @@
         "outDir": "./dist",
         "baseUrl": "."
     },
-    "include": ["./src/shared"],
-    "paths": {
-        "client/*": ["src/client/*"],
-        "server/*": ["src/server/*"],
-        "shared/*": ["src/shared/*"]
-    }
+    "include": ["./src/shared"]
 }
