@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import logger from 'src/server/logger';
 import { Shared, UnreachableCaseError } from 'src/shared';
 import { IAirHockeyGameOptions } from '../games/air-hockey/models';
-import { startWorker } from '../worker';
+import * as workerHandler from '../worker';
 
 export class Matchmaking {
     private supportedGames: Shared.Game[] = ['AirHockey'];
@@ -54,7 +54,12 @@ export class Matchmaking {
                 playerIds: [player1.id, player2.id],
             };
 
-            const worker = startWorker('AirHockey', [player1, player2], airHockeyOptions);
+            const worker = workerHandler.startWorker(
+                'AirHockey',
+                [player1, player2],
+                airHockeyOptions
+            );
+
             if (!worker) {
                 this.currentQueue.AirHockey.unshift(player1, player2);
             }

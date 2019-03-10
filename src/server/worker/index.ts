@@ -3,7 +3,11 @@ import logger from 'src/server/logger';
 import { Shared, UnreachableCaseError } from 'src/shared';
 import { Worker } from 'worker_threads';
 
+const maxThreadLifeTimeMs = 60 * 60 * 1000;
+const maxCurrentThreads = 5;
+
 const currentThreads: Record<number, Worker | undefined> = {};
+const currentThreadTimeouts: Record<number, NodeJS.Timeout | undefined> = {};
 
 export function startWorker(game: Shared.Game, sockets: Socket[], workerData: any): boolean {
     try {
@@ -32,9 +36,12 @@ export function startWorker(game: Shared.Game, sockets: Socket[], workerData: an
         worker.on('error', error => onWorkerError(id, error));
         worker.on('exit', () => onWorkerExited(id));
 
-        setTimeout(() => {
-            worker.terminate();
-        }, 5000);
+        currentThreadTimeouts[id] = setTimeout(() => {
+            logger.info(
+                `Force quitting worker with id: ${id} after: ${maxThreadLifeTimeMs} milliseconds`
+            );
+            terminateWorker(id);
+        }, maxThreadLifeTimeMs);
 
         sockets.forEach(socket => bindSocketGameEvents(socket, worker));
 
@@ -43,6 +50,10 @@ export function startWorker(game: Shared.Game, sockets: Socket[], workerData: an
         logger.error(`Start worker error: ${e.message}`, e);
         return false;
     }
+}
+
+export function isThreadAvailable() {
+    return Object.keys(currentThreads).length <= maxCurrentThreads;
 }
 
 export function terminateWorker(id: number) {
@@ -61,6 +72,13 @@ function onWorkerError(id: number, error: Error) {
 
 function onWorkerExited(id: number) {
     delete currentThreads[id];
+
+    const timeout = currentThreadTimeouts[id];
+    if (timeout) {
+        clearTimeout(timeout);
+    }
+    delete currentThreadTimeouts[id];
+
     logger.info(`Worker with id: ${id} removed`);
 }
 

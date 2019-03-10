@@ -1,19 +1,22 @@
 import 'module-alias/register';
-import logger from 'src/server/logger';
+import { AirHockey } from 'src/shared';
 import { parentPort, workerData } from 'worker_threads';
 import { AirHockeyServer } from './air-hockey';
 import { IAirHockeyGameOptions } from './models';
 
-// import moduleAlias from 'module-alias';
-// moduleAlias(__dirname + '/../../../package.json');
+if (!parentPort) {
+    throw Error(`No parent port was found`);
+}
 
-// export * from './air-hockey';
+const server = new AirHockeyServer(workerData as IAirHockeyGameOptions, postEvent);
 
-setTimeout(() => {
-    parentPort!.postMessage({ a: 'b' });
-}, 500);
+// Listen on events
+parentPort.on('message', server.onEventReceived);
 
-parentPort!.on('message', obj => logger.info('worker', obj));
+function postEvent(event: AirHockey.IBaseGameEvent) {
+    if (!parentPort) {
+        throw Error(`No parent port was found`);
+    }
 
-// tslint:disable-next-line: no-unused-expression
-// new AirHockeyServer(workerData as IAirHockeyOptions);
+    parentPort.postMessage(event);
+}

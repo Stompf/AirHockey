@@ -3,7 +3,8 @@
     "compilerOptions": {
         "lib": ["es2017"],
         "module": "commonjs",
-        "outDir": "../../server-dist"
+        "outDir": "../../server-dist",
+        "skipLibCheck": true
     },
     "include": ["./"]
 }
