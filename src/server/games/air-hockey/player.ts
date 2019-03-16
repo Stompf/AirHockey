@@ -28,4 +28,18 @@ export class Player {
     public setPauseBody(pause: boolean) {
         this.body.isStatic = pause;
     }
+
+    public toNetworkPlayer(): AirHockey.IPlayer {
+        return {
+            color: this.team === 'left' ? 'red' : 'blue',
+            id: this.id,
+            position: this.getPosition(),
+            team: this.team,
+        };
+    }
+
+    private getPosition(): Shared.Vector2D {
+        const { position } = this.body;
+        return { x: position.x, y: position.y };
+    }
 }

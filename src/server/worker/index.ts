@@ -94,7 +94,7 @@ function getGamePath(game: Shared.Game) {
 function bindSocketGameEvents(socket: Socket, worker: Worker) {
     removeAllListeners(socket);
 
-    socket.on('gameEvent', gameEvent => worker.postMessage(gameEvent));
+    socket.on('gameEvent', gameEvent => worker.postMessage({ id: socket.id, data: gameEvent }));
 }
 
 function removeAllListeners(socket: Socket) {

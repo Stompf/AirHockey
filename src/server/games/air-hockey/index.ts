@@ -13,7 +13,7 @@ const server = new AirHockeyServer(workerData as IAirHockeyGameOptions, postEven
 // Listen on events
 parentPort.on('message', server.onEventReceived);
 
-function postEvent(event: AirHockey.IBaseGameEvent) {
+function postEvent(event: AirHockey.ServerToClientGameEvent) {
     if (!parentPort) {
         throw Error(`No parent port was found`);
     }
