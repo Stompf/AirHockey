@@ -1,10 +1,6 @@
 /** Essentials */
 export type Primitive = string | number | boolean | undefined | null;
 
-/** Dictionaries related */
-export type Dictionary<T, K extends string | number = string> = { [key in K]: T };
-export type DictionaryValues<T> = T extends Dictionary<infer U> ? U : never;
-
 /** Like Partial but recursive */
 export type DeepPartial<T> = {
     [P in keyof T]?: T[P] extends Array<infer U>
@@ -65,3 +61,7 @@ export type ValueOf<T> = T[keyof T];
 
 /** Type constrant for tuple inference */
 export type Tuple = [any] | any[];
+
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
