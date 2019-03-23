@@ -1,4 +1,4 @@
-import { Bodies } from 'matter-js';
+import { Bodies, Body } from 'matter-js';
 import { AirHockey, Shared } from 'src/shared';
 
 interface IPlayerOptions {
@@ -36,6 +36,27 @@ export class Player {
             position: this.getPosition(),
             team: this.team,
         };
+    }
+
+    public updateDirection(directionX: number, directionY: number) {
+        const direction: Matter.Vector = {
+            x: this.getDirection(directionX),
+            y: this.getDirection(directionY),
+        };
+
+        Body.applyForce(this.body, direction, direction);
+    }
+
+    private getDirection(direction: number) {
+        if (direction === 0) {
+            return 0;
+        }
+
+        if (direction > 0) {
+            return 10;
+        } else {
+            return -10;
+        }
     }
 
     private getPosition(): Shared.Vector2D {

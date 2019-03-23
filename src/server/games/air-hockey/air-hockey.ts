@@ -5,12 +5,11 @@ import { IAirHockeyGameOptions } from './models';
 import { Player } from './player';
 
 export class AirHockeyServer {
-    private players: Player[];
-    private engine: Engine;
-    private runner: Runner;
-
     private readonly delta = 1000 / 60;
     private readonly pauseTime = 5000;
+    private players: Record<Shared.Id, Player>;
+    private engine: Engine;
+    private runner: Runner;
 
     constructor(
         options: IAirHockeyGameOptions,
@@ -19,15 +18,15 @@ export class AirHockeyServer {
         if (options.playerIds.length !== 2) {
             throw Error(`Invalid number of players expected 2 got: ${options.playerIds.length}`);
         }
-        const player1 = this.createPlayer('left', options.playerIds[0]);
-        const player2 = this.createPlayer('right', options.playerIds[1]);
-        this.players = [player1, player2];
+        this.players = {};
+        this.addPlayer('left', options.playerIds[0]);
+        this.addPlayer('right', options.playerIds[1]);
         logger.info(this.players);
 
         this.runner = Runner.create({ isFixed: true, delta: this.delta });
         this.engine = Engine.create();
         this.engine.world.gravity.y = 0;
-        const allBodies = this.players.map(p => p.body);
+        const allBodies = Object.values(this.players).map(p => p.body);
         World.add(this.engine.world, allBodies);
     }
 
@@ -36,13 +35,16 @@ export class AirHockeyServer {
             case 'playerReady':
                 this.onPlayerReady(id);
                 break;
+            case 'directionUpdate':
+                this.onPlayerDirectionUpdate(id, data);
+                break;
             default:
-                throw new UnreachableCaseError(data.type);
+                throw new UnreachableCaseError(data);
         }
     };
 
-    private createPlayer(team: AirHockey.Team, id: Shared.Id) {
-        return new Player({
+    private addPlayer(team: AirHockey.Team, id: Shared.Id) {
+        this.players[id] = new Player({
             name: team === 'left' ? 'left' : 'right',
             position: { x: team === 'left' ? 10 : 50, y: 10 },
             id,
@@ -50,9 +52,16 @@ export class AirHockeyServer {
         });
     }
 
+    private onPlayerDirectionUpdate = (
+        id: Shared.Id,
+        eventData: AirHockey.IPlayerDirectionUpdate
+    ) => {
+        this.getPlayer(id).updateDirection(eventData.directionX, eventData.directionY);
+    };
+
     private onPlayerReady = (id: Shared.Id) => {
         this.getPlayer(id).isReady = true;
-        if (this.players.every(p => p.isReady)) {
+        if (Object.values(this.players).every(p => p.isReady)) {
             this.startGame();
         }
     };
@@ -68,12 +77,12 @@ export class AirHockeyServer {
         this.postEvent({
             type: 'gameStarting',
             startTime: startTime.toISOString(),
-            players: this.players.map(p => p.toNetworkPlayer()),
+            players: Object.values(this.players).map(p => p.toNetworkPlayer()),
         });
     }
 
     private getPlayer(id: Shared.Id) {
-        const player = this.players.find(p => id === p.id);
+        const player = this.players[id];
         if (!player) {
             throw Error(`Can not find player with id ${id}`);
         }

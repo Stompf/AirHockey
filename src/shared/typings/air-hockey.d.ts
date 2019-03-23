@@ -7,8 +7,10 @@ export namespace AirHockey {
         type: 'playerReady';
     }
 
-    export interface IPositionUpdate {
-        type: 'positionUpdate';
+    export interface IPlayerDirectionUpdate {
+        type: 'directionUpdate';
+        directionX: number;
+        directionY: number;
     }
 
     export interface IGameStartingEvent {
@@ -29,6 +31,6 @@ export namespace AirHockey {
         data: ClientToServerGameEvent;
     }
 
-    export type ClientToServerGameEvent = IPlayerReadyEvent;
+    export type ClientToServerGameEvent = IPlayerReadyEvent | IPlayerDirectionUpdate;
     export type ServerToClientGameEvent = IGameStartingEvent;
 }
