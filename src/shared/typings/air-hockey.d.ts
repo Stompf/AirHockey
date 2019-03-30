@@ -45,10 +45,18 @@ export namespace AirHockey {
         data: ClientToServerGameEvent;
     }
 
+    export interface IGameStoppedEvent {
+        type: 'gameStopped';
+        reason: 'player_disconnected';
+    }
+
     export type ClientToServerGameEvent =
         | IPlayerReadyEvent
         | IPlayerDirectionUpdate
         | IPlayerDisconnected;
 
-    export type ServerToClientGameEvent = IGameStartingEvent | INetworkUpdateEvent;
+    export type ServerToClientGameEvent =
+        | IGameStartingEvent
+        | INetworkUpdateEvent
+        | IGameStoppedEvent;
 }

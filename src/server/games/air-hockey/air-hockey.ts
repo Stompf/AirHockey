@@ -30,7 +30,7 @@ export class AirHockeyServer {
         this.runner = Runner.create({ isFixed: true, delta: this.delta });
         this.engine = Engine.create();
         this.engine.world.gravity.y = 0;
-        const allBodies = Object.values(this.players).map(p => p.body);
+        const allBodies = this.getPlayers().map(p => p.body);
         World.add(this.engine.world, allBodies);
     }
 
@@ -68,7 +68,7 @@ export class AirHockeyServer {
 
     private onPlayerReady = (id: Shared.Id) => {
         this.getPlayer(id).isReady = true;
-        if (Object.values(this.players).every(p => p.isReady)) {
+        if (this.getPlayers().every(p => p.isReady)) {
             this.startGame();
         }
     };
@@ -78,13 +78,14 @@ export class AirHockeyServer {
         startTime.setMilliseconds(startTime.getMilliseconds() + this.pauseTime);
 
         setTimeout(() => {
+            this.getPlayers().forEach(p => p.setPauseBody(false));
             Runner.start(this.runner, this.engine);
         }, this.pauseTime);
 
         this.postEvent({
             type: 'gameStarting',
             startTime: startTime.toISOString(),
-            players: Object.values(this.players).map(p => p.toNetworkPlayer()),
+            players: this.getPlayers().map(p => p.toNetworkPlayer()),
         });
 
         this.networkUpdateInterval = setInterval(this.onSendNetworkUpdate, this.networkUpdateDelta);
@@ -96,12 +97,17 @@ export class AirHockeyServer {
         if (this.networkUpdateInterval) {
             clearInterval(this.networkUpdateInterval);
         }
+
+        this.postEvent({
+            type: 'gameStopped',
+            reason: 'player_disconnected',
+        });
     };
 
     private onSendNetworkUpdate = () => {
         this.postEvent({
             type: 'networkUpdate',
-            players: Object.values(this.players).map(p => p.toNetworkUpdate()),
+            players: this.getPlayers().map(p => p.toNetworkUpdate()),
         });
     };
 
@@ -111,5 +117,9 @@ export class AirHockeyServer {
             throw Error(`Can not find player with id ${id}`);
         }
         return player;
+    }
+
+    private getPlayers() {
+        return Object.values(this.players);
     }
 }
