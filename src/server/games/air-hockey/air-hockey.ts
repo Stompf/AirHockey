@@ -6,10 +6,14 @@ import { Player } from './player';
 
 export class AirHockeyServer {
     private readonly delta = 1000 / 60;
+    private readonly networkUpdateDelta = 1000 / 20;
     private readonly pauseTime = 5000;
+
     private players: Record<Shared.Id, Player>;
     private engine: Engine;
     private runner: Runner;
+
+    private networkUpdateInterval: NodeJS.Timeout | undefined;
 
     constructor(
         options: IAirHockeyGameOptions,
@@ -37,6 +41,9 @@ export class AirHockeyServer {
                 break;
             case 'directionUpdate':
                 this.onPlayerDirectionUpdate(id, data);
+                break;
+            case 'disconnected':
+                this.stopGame();
                 break;
             default:
                 throw new UnreachableCaseError(data);
@@ -79,7 +86,24 @@ export class AirHockeyServer {
             startTime: startTime.toISOString(),
             players: Object.values(this.players).map(p => p.toNetworkPlayer()),
         });
+
+        this.networkUpdateInterval = setInterval(this.onSendNetworkUpdate, this.networkUpdateDelta);
     }
+
+    private stopGame = () => {
+        Runner.stop(this.runner);
+
+        if (this.networkUpdateInterval) {
+            clearInterval(this.networkUpdateInterval);
+        }
+    };
+
+    private onSendNetworkUpdate = () => {
+        this.postEvent({
+            type: 'networkUpdate',
+            players: Object.values(this.players).map(p => p.toNetworkUpdate()),
+        });
+    };
 
     private getPlayer(id: Shared.Id) {
         const player = this.players[id];

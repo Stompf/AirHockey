@@ -38,6 +38,13 @@ export class Player {
         };
     }
 
+    public toNetworkUpdate(): AirHockey.IPlayerUpdate {
+        return {
+            id: this.id,
+            position: this.getPosition(),
+        };
+    }
+
     public updateDirection(directionX: number, directionY: number) {
         const direction: Matter.Vector = {
             x: this.getDirection(directionX),

@@ -7,6 +7,10 @@ export namespace AirHockey {
         type: 'playerReady';
     }
 
+    export interface IPlayerDisconnected {
+        type: 'disconnected';
+    }
+
     export interface IPlayerDirectionUpdate {
         type: 'directionUpdate';
         directionX: number;
@@ -19,6 +23,11 @@ export namespace AirHockey {
         players: IPlayer[];
     }
 
+    export interface INetworkUpdateEvent {
+        type: 'networkUpdate';
+        players: IPlayerUpdate[];
+    }
+
     export interface IPlayer {
         id: Shared.Id;
         team: Team;
@@ -26,11 +35,20 @@ export namespace AirHockey {
         color: string;
     }
 
+    export interface IPlayerUpdate {
+        id: Shared.Id;
+        position: Shared.Vector2D;
+    }
+
     export interface IServerReceivedEvent {
         id: Shared.Id;
         data: ClientToServerGameEvent;
     }
 
-    export type ClientToServerGameEvent = IPlayerReadyEvent | IPlayerDirectionUpdate;
-    export type ServerToClientGameEvent = IGameStartingEvent;
+    export type ClientToServerGameEvent =
+        | IPlayerReadyEvent
+        | IPlayerDirectionUpdate
+        | IPlayerDisconnected;
+
+    export type ServerToClientGameEvent = IGameStartingEvent | INetworkUpdateEvent;
 }

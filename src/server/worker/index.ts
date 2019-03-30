@@ -95,6 +95,7 @@ function bindSocketGameEvents(socket: Socket, worker: Worker) {
     removeAllListeners(socket);
 
     socket.on('gameEvent', gameEvent => worker.postMessage({ id: socket.id, data: gameEvent }));
+    socket.on('disconnect', () => worker.postMessage({ id: socket.id, data: {type: 'disconnected'} })
 }
 
 function removeAllListeners(socket: Socket) {
