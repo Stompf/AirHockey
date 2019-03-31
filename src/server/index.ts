@@ -3,6 +3,7 @@ import http from 'http';
 import 'module-alias/register';
 import path from 'path';
 import socketIO from 'socket.io';
+import { Shared } from 'src/shared';
 import logger from './logger';
 import { Matchmaking } from './matchmaking';
 
@@ -27,7 +28,10 @@ io.attach(server);
 
 io.on('connection', socket => {
     logger.info('a user connected: ' + socket.id);
-    matchMaking.addToQueue(socket, 'AirHockey');
+
+    socket.on('matchmaker', (event: Shared.IMatchmakerEvent) => {
+        matchMaking.addToQueue(socket, event.game);
+    });
 });
 
 function listening() {

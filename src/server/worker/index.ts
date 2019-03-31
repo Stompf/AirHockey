@@ -32,7 +32,7 @@ export function startWorker(game: Shared.Game, sockets: Socket[], workerData: an
             }`
         );
 
-        worker.on('message', message => logger.info('message', message));
+        worker.on('message', event => onWorkerMessage(sockets, event));
         worker.on('error', error => onWorkerError(id, error));
         worker.on('exit', () => onWorkerExited(id));
 
@@ -66,6 +66,12 @@ export function terminateWorker(id: number) {
     worker.terminate();
 }
 
+function onWorkerMessage(sockets: Socket[], event: unknown) {
+    logger.debug('message', event);
+
+    sockets.forEach(socket => socket.emit('serverEvent', event));
+}
+
 function onWorkerError(id: number, error: Error) {
     logger.error(`Worker with id: ${id} error`, error);
 }
@@ -95,7 +101,9 @@ function bindSocketGameEvents(socket: Socket, worker: Worker) {
     removeAllListeners(socket);
 
     socket.on('gameEvent', gameEvent => worker.postMessage({ id: socket.id, data: gameEvent }));
-    socket.on('disconnect', () => worker.postMessage({ id: socket.id, data: {type: 'disconnected'} })
+    socket.on('disconnect', () =>
+        worker.postMessage({ id: socket.id, data: { type: 'disconnected' } })
+    );
 }
 
 function removeAllListeners(socket: Socket) {
