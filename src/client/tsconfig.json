@@ -1,5 +1,10 @@
 {
     "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "paths": {
+            "src/shared/*": ["../shared/*"]
+        }
+    },
     "lib": ["dom", "es2017", "scripthost"],
-    "include": ["./"]
+    "include": ["./", "../shared"]
 }

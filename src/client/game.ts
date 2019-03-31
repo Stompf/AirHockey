@@ -11,12 +11,12 @@ export class AirHockeyGame extends Phaser.Game {
                 height: 600,
                 parent: 'game-canvas',
             },
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    debug: true,
-                },
-            },
+            // physics: {
+            //     default: 'arcade',
+            //     arcade: {
+            //         debug: true,
+            //     },
+            // },
             scene: [MultiplayerScene], // MenuScene
             disableContextMenu: true,
             backgroundColor: '0x000000',

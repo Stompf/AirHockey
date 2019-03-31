@@ -1,18 +1,22 @@
-import { Engine, Runner, World } from 'matter-js';
+import { Bodies, Engine, World } from 'matter-js';
 import logger from 'src/server/logger';
 import { AirHockey, Shared, UnreachableCaseError } from 'src/shared';
 import { IAirHockeyGameOptions } from './models';
 import { Player } from './player';
 
 export class AirHockeyServer {
-    private readonly delta = 1000 / 60;
-    private readonly networkUpdateDelta = 1000 / 20;
-    private readonly pauseTime = 5000;
+    private readonly physicsDelta = 1000 / 60;
+    private readonly networkUpdateDelta = 1000 / 60;
+    private readonly pauseTime = 0;
+    private readonly worldBounds = {
+        width: 800,
+        height: 600,
+    };
 
+    private currentTick: number = 0;
     private players: Record<Shared.Id, Player>;
     private engine: Engine;
-    private runner: Runner;
-
+    private physicsInterval: NodeJS.Timer | undefined;
     private networkUpdateInterval: NodeJS.Timeout | undefined;
 
     constructor(
@@ -27,10 +31,11 @@ export class AirHockeyServer {
         this.addPlayer('right', options.playerIds[1]);
         logger.info(this.players);
 
-        this.runner = Runner.create({ isFixed: true, delta: this.delta });
         this.engine = Engine.create();
         this.engine.world.gravity.y = 0;
-        const allBodies = this.getPlayers().map(p => p.body);
+        const allBodies = this.getPlayers()
+            .map(p => p.body)
+            .concat(this.addBounds());
         World.add(this.engine.world, allBodies);
     }
 
@@ -50,20 +55,58 @@ export class AirHockeyServer {
         }
     };
 
+    public emitLoaded = () => {
+        this.postEvent({
+            type: 'gameLoading',
+            players: this.getPlayers().map(p => p.toNetworkPlayer()),
+        });
+    };
+
     private addPlayer(team: AirHockey.Team, id: Shared.Id) {
         this.players[id] = new Player({
             name: team === 'left' ? 'left' : 'right',
-            position: { x: team === 'left' ? 10 : 50, y: 10 },
+            position: { x: team === 'left' ? 50 : 150, y: 100 },
             id,
             team,
         });
+    }
+
+    private addBounds() {
+        const top = Bodies.rectangle(this.worldBounds.width / 2, 0, this.worldBounds.width, 10, {
+            isStatic: true,
+        });
+        const right = Bodies.rectangle(
+            this.worldBounds.width / 2,
+            this.worldBounds.height,
+            this.worldBounds.width,
+            10,
+            {
+                isStatic: true,
+            }
+        );
+        const bottom = Bodies.rectangle(
+            this.worldBounds.width,
+            this.worldBounds.height / 2,
+            10,
+            this.worldBounds.height,
+            {
+                isStatic: true,
+            }
+        );
+        const left = Bodies.rectangle(0, this.worldBounds.height / 2, 10, this.worldBounds.height, {
+            isStatic: true,
+        });
+        return [top, right, bottom, left];
     }
 
     private onPlayerDirectionUpdate = (
         id: Shared.Id,
         eventData: AirHockey.IPlayerDirectionUpdate
     ) => {
-        this.getPlayer(id).updateDirection(eventData.directionX, eventData.directionY);
+        this.getPlayer(id).updateDirection(
+            eventData.direction.directionX,
+            eventData.direction.directionY
+        );
     };
 
     private onPlayerReady = (id: Shared.Id) => {
@@ -73,26 +116,34 @@ export class AirHockeyServer {
         }
     };
 
+    private updatePhysics = () => {
+        Engine.update(this.engine, this.physicsDelta);
+    };
+
     private startGame() {
+        this.currentTick = 0;
         const startTime = new Date();
         startTime.setMilliseconds(startTime.getMilliseconds() + this.pauseTime);
 
         setTimeout(() => {
             this.getPlayers().forEach(p => p.setPauseBody(false));
-            Runner.start(this.runner, this.engine);
+            this.physicsInterval = setInterval(this.updatePhysics, this.physicsDelta);
         }, this.pauseTime);
 
         this.postEvent({
             type: 'gameStarting',
             startTime: startTime.toISOString(),
-            players: this.getPlayers().map(p => p.toNetworkPlayer()),
         });
 
         this.networkUpdateInterval = setInterval(this.onSendNetworkUpdate, this.networkUpdateDelta);
+
+        logger.info('Started air-hockey game');
     }
 
     private stopGame = () => {
-        Runner.stop(this.runner);
+        if (this.physicsInterval) {
+            clearInterval(this.physicsInterval);
+        }
 
         if (this.networkUpdateInterval) {
             clearInterval(this.networkUpdateInterval);
@@ -102,12 +153,19 @@ export class AirHockeyServer {
             type: 'gameStopped',
             reason: 'player_disconnected',
         });
+
+        // setTimeout(() => {
+        //     process.exit();
+        // }, 2000);
     };
 
     private onSendNetworkUpdate = () => {
+        this.currentTick++;
+
         this.postEvent({
             type: 'networkUpdate',
             players: this.getPlayers().map(p => p.toNetworkUpdate()),
+            tick: this.currentTick,
         });
     };
 

@@ -3,6 +3,11 @@ import { Shared } from './shared';
 export namespace AirHockey {
     export type Team = 'left' | 'right';
 
+    export interface IGameLoadingEvent {
+        type: 'gameLoading';
+        players: IPlayer[];
+    }
+
     export interface IPlayerReadyEvent {
         type: 'playerReady';
     }
@@ -13,18 +18,17 @@ export namespace AirHockey {
 
     export interface IPlayerDirectionUpdate {
         type: 'directionUpdate';
-        directionX: number;
-        directionY: number;
+        direction: IDirection;
     }
 
     export interface IGameStartingEvent {
         type: 'gameStarting';
         startTime: string;
-        players: IPlayer[];
     }
 
     export interface INetworkUpdateEvent {
         type: 'networkUpdate';
+        tick: number;
         players: IPlayerUpdate[];
     }
 
@@ -32,7 +36,8 @@ export namespace AirHockey {
         id: Shared.Id;
         team: Team;
         position: Shared.Vector2D;
-        color: string;
+        color: number;
+        radius: number;
     }
 
     export interface IPlayerUpdate {
@@ -50,6 +55,11 @@ export namespace AirHockey {
         reason: 'player_disconnected';
     }
 
+    export interface IDirection {
+        directionX: number;
+        directionY: number;
+    }
+
     export type ClientToServerGameEvent =
         | IPlayerReadyEvent
         | IPlayerDirectionUpdate
@@ -58,5 +68,6 @@ export namespace AirHockey {
     export type ServerToClientGameEvent =
         | IGameStartingEvent
         | INetworkUpdateEvent
-        | IGameStoppedEvent;
+        | IGameStoppedEvent
+        | IGameLoadingEvent;
 }

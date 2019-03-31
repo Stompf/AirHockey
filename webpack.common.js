@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 // const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
     entry: ['./src/client/index.ts'],
@@ -31,6 +32,7 @@ module.exports = {
     },
     resolve: {
         extensions: ['.ts', '.js'],
+        plugins: [new TsconfigPathsPlugin({ configFile: './src/client/tsconfig.json' })],
     },
     optimization: {
         splitChunks: {

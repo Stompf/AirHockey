@@ -14,7 +14,7 @@ export class Player {
     public readonly id: Shared.Id;
     public readonly body: Matter.Body;
     public isReady = false;
-    private readonly playerRadius = 10;
+    private readonly playerRadius = 25;
 
     constructor(options: IPlayerOptions) {
         this.name = options.name;
@@ -22,6 +22,10 @@ export class Player {
         this.id = options.id;
         this.body = Bodies.circle(options.position.x, options.position.y, this.playerRadius, {
             isStatic: true,
+            frictionAir: 0,
+            friction: 0,
+            restitution: 1,
+            mass: 10,
         });
     }
 
@@ -31,10 +35,11 @@ export class Player {
 
     public toNetworkPlayer(): AirHockey.IPlayer {
         return {
-            color: this.team === 'left' ? 'red' : 'blue',
+            color: this.team === 'left' ? 0xff0000 : 0x0000ff,
             id: this.id,
             position: this.getPosition(),
             team: this.team,
+            radius: this.playerRadius,
         };
     }
 
@@ -50,8 +55,7 @@ export class Player {
             x: this.getDirection(directionX),
             y: this.getDirection(directionY),
         };
-
-        Body.applyForce(this.body, direction, direction);
+        Body.setVelocity(this.body, direction);
     }
 
     private getDirection(direction: number) {
@@ -60,9 +64,9 @@ export class Player {
         }
 
         if (direction > 0) {
-            return 10;
+            return 5;
         } else {
-            return -10;
+            return -5;
         }
     }
 

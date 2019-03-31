@@ -100,10 +100,14 @@ function getGamePath(game: Shared.Game) {
 function bindSocketGameEvents(socket: Socket, worker: Worker) {
     removeAllListeners(socket);
 
-    socket.on('gameEvent', gameEvent => worker.postMessage({ id: socket.id, data: gameEvent }));
-    socket.on('disconnect', () =>
-        worker.postMessage({ id: socket.id, data: { type: 'disconnected' } })
-    );
+    socket.on('gameEvent', gameEvent => {
+        worker.postMessage({ id: socket.id, data: gameEvent });
+    });
+
+    socket.on('disconnect', () => {
+        logger.info(`Socket with id: ${socket.id} disconnected`);
+        worker.postMessage({ id: socket.id, data: { type: 'disconnected' } });
+    });
 }
 
 function removeAllListeners(socket: Socket) {

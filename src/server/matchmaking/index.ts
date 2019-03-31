@@ -30,7 +30,7 @@ export class Matchmaking {
         this.tryFindMatch(game);
     }
 
-    private removeFromQueue(socketId: string) {
+    public removeFromQueue(socketId: string) {
         this.supportedGames.forEach(game => {
             this.currentQueue[game] = this.currentQueue[game].filter(s => s.id !== socketId);
         });
