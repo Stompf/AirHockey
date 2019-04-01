@@ -22,20 +22,6 @@
             }
         },
         {
-            "type": "shell",
-            "group": "build",
-            "dependsOn": ["npm: start-client-dev", "npm: server"],
-            "label": "Run and watch all",
-            "problemMatcher": []
-        },
-        {
-            "type": "shell",
-            "group": "build",
-            "dependsOn": ["npm: server-watch", "npm: start-server"],
-            "label": "npm: server",
-            "problemMatcher": []
-        },
-        {
             "group": "build",
             "label": "npm: start-client-dev",
             "type": "npm",
@@ -59,7 +45,11 @@
             "type": "npm",
             "script": "server-watch",
             "isBackground": true,
-            "problemMatcher": ["$tsc-watch"]
+            "presentation": {
+                "reveal": "never",
+                "panel": "dedicated"
+            },
+            "problemMatcher": "$tsc-watch"
         },
         {
             "group": "build",
@@ -67,6 +57,10 @@
             "type": "npm",
             "script": "start-server",
             "isBackground": true,
+            "presentation": {
+                "reveal": "never",
+                "panel": "dedicated"
+            },
             "problemMatcher": {
                 "owner": "custom",
                 "pattern": {
