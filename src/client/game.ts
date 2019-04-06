@@ -20,6 +20,7 @@ export class AirHockeyGame extends Phaser.Game {
             scene: [MultiplayerScene], // MenuScene
             disableContextMenu: true,
             backgroundColor: '0x000000',
+            canvasStyle: 'border: 1px solid black',
         };
 
         super(config);
