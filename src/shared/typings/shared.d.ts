@@ -5,6 +5,8 @@ export namespace Shared {
 
     export type Id = string;
 
+    export type Color = number;
+
     export interface IMatchmakerEvent {
         game: Game;
     }

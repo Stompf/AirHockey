@@ -22,15 +22,22 @@ export class Player {
         this.id = options.id;
         this.body = Bodies.circle(options.position.x, options.position.y, this.playerRadius, {
             isStatic: true,
-            frictionAir: 0,
-            friction: 0,
-            restitution: 1,
             mass: 10,
         });
     }
 
     public setPauseBody(pause: boolean) {
         this.body.isStatic = pause;
+    }
+
+    public reset(position: Shared.Vector2D) {
+        Body.setAngularVelocity(this.body, 0);
+        Body.setVelocity(this.body, { x: 0, y: 0 });
+
+        this.body.position = {
+            x: position.x,
+            y: position.y,
+        };
     }
 
     public toNetworkPlayer(): AirHockey.IPlayer {

@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
 import { connect } from 'socket.io-client';
 import { AirHockey, Shared, UnreachableCaseError } from 'src/shared';
-import { NetworkPlayer } from '../scripts';
+import { NetworkBall, NetworkPlayer } from '../scripts';
 
 export class MultiplayerScene extends Phaser.Scene {
     private cursors!: Phaser.Input.Keyboard.CursorKeys;
     private players: Record<Shared.Id, NetworkPlayer>;
+    private ball!: NetworkBall;
 
     private socket: SocketIOClient.Socket | undefined;
     private currentTick: number = 0;
@@ -137,6 +138,8 @@ export class MultiplayerScene extends Phaser.Scene {
             this.players[p.id] = new NetworkPlayer(p, this);
         });
 
+        this.ball = new NetworkBall(event.ball, this);
+
         this.emitEvent({ type: 'playerReady' });
     };
 
@@ -159,6 +162,9 @@ export class MultiplayerScene extends Phaser.Scene {
         }
 
         Object.values(this.players).forEach(p => p.destroy());
+        if (this.ball) {
+            this.ball.destroy();
+        }
         this.queue();
     };
 
@@ -170,6 +176,10 @@ export class MultiplayerScene extends Phaser.Scene {
         event.players.forEach(p => {
             this.players[p.id].updatePlayer(p);
         });
+
+        if (this.ball) {
+            this.ball.update(event.ball);
+        }
 
         this.currentTick = event.tick;
     };

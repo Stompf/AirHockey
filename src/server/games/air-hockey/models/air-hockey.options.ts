@@ -1,3 +1,5 @@
+import { Shared } from 'src/shared';
+
 export interface IAirHockeyGameOptions {
-    playerIds: string[];
+    playerIds: Shared.Id[];
 }

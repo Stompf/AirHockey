@@ -2,7 +2,7 @@ import { Bodies, Engine, World } from 'matter-js';
 import logger from 'src/server/logger';
 import { AirHockey, Shared, UnreachableCaseError } from 'src/shared';
 import { IAirHockeyGameOptions } from './models';
-import { Player } from './player';
+import { Ball, Player } from './scripts';
 
 export class AirHockeyServer {
     private readonly physicsDelta = 1000 / 60;
@@ -15,6 +15,8 @@ export class AirHockeyServer {
 
     private currentTick: number = 0;
     private players: Record<Shared.Id, Player>;
+    private ball: Ball;
+
     private engine: Engine;
     private physicsInterval: NodeJS.Timer | undefined;
     private networkUpdateInterval: NodeJS.Timeout | undefined;
@@ -27,6 +29,12 @@ export class AirHockeyServer {
             throw Error(`Invalid number of players expected 2 got: ${options.playerIds.length}`);
         }
         this.players = {};
+        this.ball = new Ball({
+            position: {
+                x: this.worldBounds.width / 2,
+                y: this.worldBounds.height / 2,
+            },
+        });
         this.addPlayer('left', options.playerIds[0]);
         this.addPlayer('right', options.playerIds[1]);
         logger.info(this.players);
@@ -35,6 +43,7 @@ export class AirHockeyServer {
         this.engine.world.gravity.y = 0;
         const allBodies = this.getPlayers()
             .map(p => p.body)
+            .concat([this.ball.body])
             .concat(this.addBounds());
         World.add(this.engine.world, allBodies);
     }
@@ -59,6 +68,7 @@ export class AirHockeyServer {
         this.postEvent({
             type: 'gameLoading',
             players: this.getPlayers().map(p => p.toNetworkPlayer()),
+            ball: this.ball.toNetworkBall(),
         });
     };
 
@@ -72,30 +82,40 @@ export class AirHockeyServer {
     }
 
     private addBounds() {
-        const top = Bodies.rectangle(this.worldBounds.width / 2, 0, this.worldBounds.width, 10, {
+        const boundsOptions: Matter.IChamferableBodyDefinition = {
             isStatic: true,
-        });
+            mass: 1000,
+            restitution: 1,
+        };
+
+        const top = Bodies.rectangle(
+            this.worldBounds.width / 2,
+            0,
+            this.worldBounds.width,
+            10,
+            boundsOptions
+        );
         const right = Bodies.rectangle(
             this.worldBounds.width / 2,
             this.worldBounds.height,
             this.worldBounds.width,
             10,
-            {
-                isStatic: true,
-            }
+            boundsOptions
         );
         const bottom = Bodies.rectangle(
             this.worldBounds.width,
             this.worldBounds.height / 2,
             10,
             this.worldBounds.height,
-            {
-                isStatic: true,
-            }
+            boundsOptions
         );
-        const left = Bodies.rectangle(0, this.worldBounds.height / 2, 10, this.worldBounds.height, {
-            isStatic: true,
-        });
+        const left = Bodies.rectangle(
+            0,
+            this.worldBounds.height / 2,
+            10,
+            this.worldBounds.height,
+            boundsOptions
+        );
         return [top, right, bottom, left];
     }
 
@@ -127,6 +147,7 @@ export class AirHockeyServer {
 
         setTimeout(() => {
             this.getPlayers().forEach(p => p.setPauseBody(false));
+            this.ball.setPauseBody(false);
             this.physicsInterval = setInterval(this.updatePhysics, this.physicsDelta);
         }, this.pauseTime);
 
@@ -166,6 +187,7 @@ export class AirHockeyServer {
             type: 'networkUpdate',
             players: this.getPlayers().map(p => p.toNetworkUpdate()),
             tick: this.currentTick,
+            ball: this.ball.toNetworkUpdate(),
         });
     };
 

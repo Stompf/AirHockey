@@ -6,6 +6,7 @@ export namespace AirHockey {
     export interface IGameLoadingEvent {
         type: 'gameLoading';
         players: IPlayer[];
+        ball: INetworkBall;
     }
 
     export interface IPlayerReadyEvent {
@@ -30,18 +31,29 @@ export namespace AirHockey {
         type: 'networkUpdate';
         tick: number;
         players: IPlayerUpdate[];
+        ball: IBallUpdate;
     }
 
     export interface IPlayer {
         id: Shared.Id;
         team: Team;
         position: Shared.Vector2D;
-        color: number;
+        color: Shared.Color;
         radius: number;
     }
 
     export interface IPlayerUpdate {
         id: Shared.Id;
+        position: Shared.Vector2D;
+    }
+
+    export interface IBallUpdate {
+        position: Shared.Vector2D;
+    }
+
+    export interface INetworkBall {
+        color: Shared.Color;
+        radius: number;
         position: Shared.Vector2D;
     }
 
