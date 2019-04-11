@@ -1,5 +1,5 @@
 import * as p2 from 'p2';
-import { AirHockey } from 'shared/interfaces';
+import { AirHockey, Shared } from 'src/shared';
 
 export class Ball {
     public static readonly DIAMETER = 30;
@@ -22,12 +22,12 @@ export class Ball {
         this.constrainVelocity(this.body, Ball.MAX_VELOCITY);
     }
 
-    public setPosition(position: WebKitPoint) {
+    public setPosition(position: Shared.Vector2D) {
         this.body.position = [position.x, position.y];
         this.body.previousPosition = this.body.position;
     }
 
-    public toBallUpdate(): AirHockey.BallUpdate {
+    public toBallUpdate(): AirHockey.IBallUpdate {
         return {
             angularVelocity: this.body.angularVelocity,
             position: {

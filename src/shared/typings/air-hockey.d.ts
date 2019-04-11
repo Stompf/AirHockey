@@ -5,8 +5,23 @@ export namespace AirHockey {
 
     export interface IGameLoadingEvent {
         type: 'gameLoading';
+        gameSize: Shared.Size;
+        physicsOptions: PhysicOptions;
+        goals: GoalOptions[];
         players: IPlayer[];
-        ball: INetworkBall;
+        ball: BallOptions;
+    }
+
+    interface BallOptions {
+        diameter: number;
+        mass: number;
+        color: number;
+        maxVelocity: number;
+    }
+
+    interface PhysicOptions {
+        gravity: number[];
+        restitution: number;
     }
 
     export interface IPlayerReadyEvent {
@@ -36,10 +51,12 @@ export namespace AirHockey {
 
     export interface IPlayer {
         id: Shared.Id;
-        team: Team;
+        teamSide: Team;
         position: Shared.Vector2D;
         color: Shared.Color;
-        radius: number;
+        diameter: number;
+        mass: number;
+        speed: number;
     }
 
     export interface IPlayerUpdate {
@@ -49,6 +66,8 @@ export namespace AirHockey {
 
     export interface IBallUpdate {
         position: Shared.Vector2D;
+        angularVelocity: number;
+        velocity: [number, number];
     }
 
     export interface INetworkBall {
@@ -72,6 +91,28 @@ export namespace AirHockey {
         directionY: number;
     }
 
+    export interface IGoalOptions {
+        back: IPositionWithBox;
+        bottom: IPositionWithBox;
+        goal: IPositionWithBox;
+        top: IPositionWithBox;
+    }
+
+    export interface IPositionWithBox {
+        height: number;
+        width: number;
+        x: number;
+        y: number;
+    }
+
+    export interface IGoalEvent {
+        type: 'goal';
+        teamThatScored: Team;
+        teamLeftScore: number;
+        teamRightScore: number;
+        timeout: number;
+    }
+
     export type ClientToServerGameEvent =
         | IPlayerReadyEvent
         | IPlayerDirectionUpdate
@@ -81,5 +122,6 @@ export namespace AirHockey {
         | IGameStartingEvent
         | INetworkUpdateEvent
         | IGameStoppedEvent
-        | IGameLoadingEvent;
+        | IGameLoadingEvent
+        | IGoalEvent;
 }

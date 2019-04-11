@@ -1,8 +1,7 @@
-import { Logger } from '@nestjs/common';
 import p2 from 'p2';
-import { AirHockey, LunnNet } from 'shared/interfaces';
-import { Socket } from 'socket.io';
-import { TypedEvent } from '../common/typed-event';
+import logger from 'src/server/logger';
+import { AirHockey, Omit, Shared } from 'src/shared';
+import { TypedEvent } from '../common';
 import { Ball } from './ball';
 import { IGoal, IGoalEvent, ITeams } from './models';
 import { Player } from './player';
@@ -11,7 +10,7 @@ import { Team } from './team';
 export class World {
     public goalEmitter: TypedEvent<IGoalEvent>;
     private readonly BALL_INIT_VELOCITY = 10;
-    private readonly GAME_SIZE: Readonly<LunnNet.Utils.Size> = { width: 1200, height: 600 };
+    private readonly GAME_SIZE: Readonly<Shared.Size> = { width: 1200, height: 600 };
     private goals: IGoal[] = [];
     private p2World: p2.World;
 
@@ -21,7 +20,7 @@ export class World {
     private teamLeft: Team;
     private teamRight: Team;
 
-    constructor(player1Socket: Socket, player2Socket: Socket) {
+    constructor(player1Id: Shared.Id, player2Id: Shared.Id) {
         this.goalEmitter = new TypedEvent();
 
         this.p2World = new p2.World({ gravity: [0, 0] });
@@ -31,8 +30,8 @@ export class World {
 
         this.teamLeft = new Team('left');
         this.teamRight = new Team('right');
-        const player1 = new Player(this.p2World, player1Socket, 0xff0000, this.teamRight);
-        const player2 = new Player(this.p2World, player2Socket, 0x0000ff, this.teamLeft);
+        const player1 = new Player(this.p2World, player1Id, 0xff0000, this.teamRight);
+        const player2 = new Player(this.p2World, player2Id, 0x0000ff, this.teamLeft);
         this.players = [player1, player2];
         this.ball = new Ball(this.p2World);
 
@@ -49,11 +48,11 @@ export class World {
         this.p2World.clear();
         this.goalEmitter.removeAllListeners();
 
-        this.players.forEach(p => {
-            if (p.socket.connected) {
-                p.socket.disconnect(true);
-            }
-        });
+        // this.players.forEach(p => {
+        //     if (p.socket.connected) {
+        //         p.socket.disconnect(true);
+        //     }
+        // });
     }
 
     public reset(teamThatScored?: Team) {
@@ -65,14 +64,14 @@ export class World {
         this.p2World.step(timeStep, timeStep, maxSubSteps);
     }
 
-    public getTick() {
+    public getTick(): Omit<AirHockey.INetworkUpdateEvent, 'type' | 'tick'> {
         return {
             players: this.players.map(p => p.toUpdateNetworkPlayerPlayer()),
-            ballUpdate: this.ball.toBallUpdate(),
+            ball: this.ball.toBallUpdate(),
         };
     }
 
-    public getInit() {
+    public getInit(): Omit<AirHockey.IGameLoadingEvent, 'type'> {
         return {
             physicsOptions: {
                 gravity: this.p2World.gravity,
@@ -90,15 +89,27 @@ export class World {
         };
     }
 
-    public movePlayer(id: string, data: AirHockey.UpdateFromClient) {
-        const player = this.players.find(p => p.socket.id === id);
+    public movePlayer(id: Shared.Id, data: AirHockey.IPlayerDirectionUpdate) {
+        const player = this.players.find(p => p.socketId === id);
         if (!player) {
-            Logger.log(`movePlayer - got info about player not in game.`);
+            logger.info(`movePlayer - got info about player not in game.`);
             return;
         }
 
-        player.moveRight(data.velocityHorizontal);
-        player.moveUp(data.velocityVertical);
+        player.moveRight(data.direction.directionX * Player.SPEED);
+        player.moveUp(data.direction.directionY * Player.SPEED);
+    }
+
+    public setPlayerReady(id: Shared.Id): boolean {
+        const player = this.players.find(p => p.socketId === id);
+        if (!player) {
+            logger.info(`setPlayerReady - got info about player not in game.`);
+            return false;
+        }
+
+        player.isReady = true;
+
+        return this.players.every(p => p.isReady);
     }
 
     private getTeams(): ITeams {
@@ -149,7 +160,7 @@ export class World {
                     team != null &&
                     (evt.bodyA === this.ball.body || evt.bodyB === this.ball.body)
                 ) {
-                    Logger.log(`${team.TeamSide} GOAL!`);
+                    logger.info(`${team.TeamSide} GOAL!`);
 
                     const goalEvent: IGoalEvent = {
                         allTeams: this.getTeams(),
@@ -255,7 +266,10 @@ export class World {
                 width: goalWidth,
             })
         );
-        goal.position = [x, this.GAME_SIZE.height / 2, this.GAME_SIZE.height / 22];
+        goal.position = [
+            x - (team.TeamSide === 'left' ? this.GAME_SIZE.height / 2 : -this.GAME_SIZE.height / 2),
+            this.GAME_SIZE.height / 22,
+        ];
         goal.type = p2.Body.STATIC;
         this.p2World.addBody(goal);
 
@@ -267,7 +281,7 @@ export class World {
         };
     }
 
-    private mapToGoalOptions = (goal: IGoal): AirHockey.GoalOptions => {
+    private mapToGoalOptions = (goal: IGoal): AirHockey.IGoalOptions => {
         return {
             back: this.mapToPositionWithBox(goal.back),
             bottom: this.mapToPositionWithBox(goal.bottom),
@@ -276,7 +290,7 @@ export class World {
         };
     };
 
-    private mapToPositionWithBox(body: p2.Body): AirHockey.PositionWithBox {
+    private mapToPositionWithBox(body: p2.Body): AirHockey.IPositionWithBox {
         const box = body.shapes[0] as p2.Box;
         return {
             height: box.height,
