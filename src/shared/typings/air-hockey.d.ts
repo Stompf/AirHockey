@@ -7,12 +7,13 @@ export namespace AirHockey {
         type: 'gameLoading';
         gameSize: Shared.Size;
         physicsOptions: PhysicOptions;
-        goals: GoalOptions[];
+        goals: IGoalOptions[];
         players: IPlayer[];
         ball: BallOptions;
     }
 
     interface BallOptions {
+        position: Shared.Vector2D;
         diameter: number;
         mass: number;
         color: number;

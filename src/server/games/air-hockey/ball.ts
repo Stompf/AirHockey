@@ -27,6 +27,14 @@ export class Ball {
         this.body.previousPosition = this.body.position;
     }
 
+    public getPosition(): Shared.Vector2D {
+        const { position } = this.body;
+        return {
+            x: position[0],
+            y: position[1],
+        };
+    }
+
     public toBallUpdate(): AirHockey.IBallUpdate {
         return {
             angularVelocity: this.body.angularVelocity,

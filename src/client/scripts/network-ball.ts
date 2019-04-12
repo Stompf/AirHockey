@@ -3,11 +3,11 @@ import { AirHockey } from 'src/shared';
 export class NetworkBall {
     private sprite: Phaser.GameObjects.Arc;
 
-    constructor(options: AirHockey.INetworkBall, scene: Phaser.Scene) {
+    constructor(options: AirHockey.BallOptions, scene: Phaser.Scene) {
         this.sprite = scene.add.circle(
             options.position.x,
             options.position.y,
-            options.radius,
+            options.diameter / 2,
             options.color
         );
     }

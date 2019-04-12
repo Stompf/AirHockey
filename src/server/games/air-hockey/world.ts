@@ -84,6 +84,7 @@ export class World {
                 diameter: Ball.DIAMETER,
                 mass: Ball.MASS,
                 maxVelocity: Ball.MAX_VELOCITY,
+                position: this.ball.getPosition(),
             },
             goals: this.goals.map(this.mapToGoalOptions),
         };
@@ -266,10 +267,7 @@ export class World {
                 width: goalWidth,
             })
         );
-        goal.position = [
-            x - (team.TeamSide === 'left' ? this.GAME_SIZE.height / 2 : -this.GAME_SIZE.height / 2),
-            this.GAME_SIZE.height / 22,
-        ];
+        goal.position = [x, this.GAME_SIZE.height / 2];
         goal.type = p2.Body.STATIC;
         this.p2World.addBody(goal);
 
