@@ -1,25 +1,24 @@
-import { Bodies, Engine, World } from 'matter-js';
 import logger from 'src/server/logger';
 import { AirHockey, Shared, UnreachableCaseError } from 'src/shared';
-import { IAirHockeyGameOptions } from './models';
-import { Ball, Player } from './scripts';
+import { IAirHockeyGameOptions, IGoalEvent } from './models';
+import { World } from './world';
 
 export class AirHockeyServer {
-    private readonly physicsDelta = 1000 / 60;
-    private readonly networkUpdateDelta = 1000 / 60;
-    private readonly pauseTime = 0;
-    private readonly worldBounds = {
-        width: 800,
-        height: 600,
-    };
+    public static MAX_PLAYERS = 2;
+    public static MIN_PLAYERS = 2;
 
-    private currentTick: number = 0;
-    private players: Record<Shared.Id, Player>;
-    private ball: Ball;
+    public readonly GAME_NAME = 'AirHockey';
 
-    private engine: Engine;
-    private physicsInterval: NodeJS.Timer | undefined;
-    private networkUpdateInterval: NodeJS.Timeout | undefined;
+    private readonly FIXED_TIME_STEP = 1 / 20;
+    private readonly MAX_SUB_STEPS = 5;
+    private readonly SCORE_DELAY_MS = 2000;
+
+    private intervalReference: NodeJS.Timer | undefined;
+    private timeLimitReference: NodeJS.Timer | undefined;
+    private tick = 0;
+    private gameStated: boolean;
+    private paused = false;
+    private world: World;
 
     constructor(
         options: IAirHockeyGameOptions,
@@ -28,24 +27,11 @@ export class AirHockeyServer {
         if (options.playerIds.length !== 2) {
             throw Error(`Invalid number of players expected 2 got: ${options.playerIds.length}`);
         }
-        this.players = {};
-        this.ball = new Ball({
-            position: {
-                x: this.worldBounds.width / 2,
-                y: this.worldBounds.height / 2,
-            },
-        });
-        this.addPlayer('left', options.playerIds[0]);
-        this.addPlayer('right', options.playerIds[1]);
-        logger.info(this.players);
 
-        this.engine = Engine.create();
-        this.engine.world.gravity.y = 0;
-        const allBodies = this.getPlayers()
-            .map(p => p.body)
-            .concat([this.ball.body])
-            .concat(this.addBounds());
-        World.add(this.engine.world, allBodies);
+        this.gameStated = false;
+
+        this.world = new World(options.playerIds[0], options.playerIds[1]);
+        this.world.goalEmitter.on(this.onGoal);
     }
 
     public onEventReceived = ({ data, id }: AirHockey.IServerReceivedEvent) => {
@@ -54,7 +40,7 @@ export class AirHockeyServer {
                 this.onPlayerReady(id);
                 break;
             case 'directionUpdate':
-                this.onPlayerDirectionUpdate(id, data);
+                this.onPlayerMove(id, data);
                 break;
             case 'disconnected':
                 this.stopGame();
@@ -67,107 +53,21 @@ export class AirHockeyServer {
     public emitLoaded = () => {
         this.postEvent({
             type: 'gameLoading',
-            players: this.getPlayers().map(p => p.toNetworkPlayer()),
-            ball: this.ball.toNetworkBall(),
+            ...this.world.getInit(),
         });
     };
 
-    private addPlayer(team: AirHockey.Team, id: Shared.Id) {
-        this.players[id] = new Player({
-            name: team === 'left' ? 'left' : 'right',
-            position: { x: team === 'left' ? 50 : 150, y: 100 },
-            id,
-            team,
-        });
-    }
+    public stopGame = (forced?: boolean) => {
+        logger.info(`${this.GAME_NAME} - stopping game.${forced === true ? ' forced' : ''}`);
 
-    private addBounds() {
-        const boundsOptions: Matter.IChamferableBodyDefinition = {
-            isStatic: true,
-            mass: 1000,
-            restitution: 1,
-        };
+        this.gameStated = false;
 
-        const top = Bodies.rectangle(
-            this.worldBounds.width / 2,
-            0,
-            this.worldBounds.width,
-            10,
-            boundsOptions
-        );
-        const right = Bodies.rectangle(
-            this.worldBounds.width / 2,
-            this.worldBounds.height,
-            this.worldBounds.width,
-            10,
-            boundsOptions
-        );
-        const bottom = Bodies.rectangle(
-            this.worldBounds.width,
-            this.worldBounds.height / 2,
-            10,
-            this.worldBounds.height,
-            boundsOptions
-        );
-        const left = Bodies.rectangle(
-            0,
-            this.worldBounds.height / 2,
-            10,
-            this.worldBounds.height,
-            boundsOptions
-        );
-        return [top, right, bottom, left];
-    }
-
-    private onPlayerDirectionUpdate = (
-        id: Shared.Id,
-        eventData: AirHockey.IPlayerDirectionUpdate
-    ) => {
-        this.getPlayer(id).updateDirection(
-            eventData.direction.directionX,
-            eventData.direction.directionY
-        );
-    };
-
-    private onPlayerReady = (id: Shared.Id) => {
-        this.getPlayer(id).isReady = true;
-        if (this.getPlayers().every(p => p.isReady)) {
-            this.startGame();
-        }
-    };
-
-    private updatePhysics = () => {
-        Engine.update(this.engine, this.physicsDelta);
-    };
-
-    private startGame() {
-        this.currentTick = 0;
-        const startTime = new Date();
-        startTime.setMilliseconds(startTime.getMilliseconds() + this.pauseTime);
-
-        setTimeout(() => {
-            this.getPlayers().forEach(p => p.setPauseBody(false));
-            this.ball.setPauseBody(false);
-            this.physicsInterval = setInterval(this.updatePhysics, this.physicsDelta);
-        }, this.pauseTime);
-
-        this.postEvent({
-            type: 'gameStarting',
-            startTime: startTime.toISOString(),
-        });
-
-        this.networkUpdateInterval = setInterval(this.onSendNetworkUpdate, this.networkUpdateDelta);
-
-        logger.info('Started air-hockey game');
-    }
-
-    private stopGame = () => {
-        if (this.physicsInterval) {
-            clearInterval(this.physicsInterval);
+        if (this.intervalReference) {
+            clearInterval(this.intervalReference);
         }
 
-        if (this.networkUpdateInterval) {
-            clearInterval(this.networkUpdateInterval);
+        if (this.timeLimitReference) {
+            clearTimeout(this.timeLimitReference);
         }
 
         this.postEvent({
@@ -175,31 +75,73 @@ export class AirHockeyServer {
             reason: 'player_disconnected',
         });
 
-        // setTimeout(() => {
-        //     process.exit();
-        // }, 2000);
+        this.world.clear();
     };
 
-    private onSendNetworkUpdate = () => {
-        this.currentTick++;
+    private onPlayerReady(id: Shared.Id) {
+        const allReady = this.world.setPlayerReady(id);
 
-        this.postEvent({
-            type: 'networkUpdate',
-            players: this.getPlayers().map(p => p.toNetworkUpdate()),
-            tick: this.currentTick,
-            ball: this.ball.toNetworkUpdate(),
-        });
-    };
-
-    private getPlayer(id: Shared.Id) {
-        const player = this.players[id];
-        if (!player) {
-            throw Error(`Can not find player with id ${id}`);
+        if (allReady) {
+            this.startGame();
         }
-        return player;
     }
 
-    private getPlayers() {
-        return Object.values(this.players);
+    private onPlayerMove(id: Shared.Id, data: AirHockey.IPlayerDirectionUpdate) {
+        if (!this.gameStated) {
+            return;
+        }
+
+        this.world.movePlayer(id, data);
     }
+
+    private startGame() {
+        const gameStarting: AirHockey.IGameStartingEvent = {
+            type: 'gameStarting',
+            startTime: new Date().toISOString(),
+        };
+
+        logger.info(`${this.GAME_NAME} - starting game`);
+
+        this.postEvent(gameStarting);
+
+        this.intervalReference = setInterval(this.heartbeat, this.FIXED_TIME_STEP);
+        this.gameStated = true;
+    }
+
+    private onGoal = (goalEvent: IGoalEvent) => {
+        this.paused = true;
+
+        goalEvent.teamThatScored.addScore();
+
+        const newGoal: AirHockey.IGoalEvent = {
+            type: 'goal',
+            teamLeftScore: goalEvent.allTeams.teamLeft.Score,
+            teamRightScore: goalEvent.allTeams.teamRight.Score,
+            teamThatScored: goalEvent.teamThatScored.TeamSide,
+            timeout: this.SCORE_DELAY_MS,
+        };
+
+        this.postEvent(newGoal);
+
+        setTimeout(() => {
+            this.world.reset(goalEvent.teamThatScored);
+            this.paused = false;
+        }, this.SCORE_DELAY_MS);
+    };
+
+    private heartbeat = () => {
+        this.tick++;
+
+        if (!this.paused) {
+            this.world.onHeartbeat(this.FIXED_TIME_STEP, this.MAX_SUB_STEPS);
+        }
+
+        const serverTick: AirHockey.INetworkUpdateEvent = {
+            type: 'networkUpdate',
+            ...this.world.getTick(),
+            tick: this.tick,
+        };
+
+        this.postEvent(serverTick);
+    };
 }

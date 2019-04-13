@@ -10,7 +10,7 @@ export class NetworkPlayer {
         this.sprite = scene.add.circle(
             options.position.x,
             options.position.y,
-            options.radius,
+            options.diameter / 2,
             options.color
         );
     }

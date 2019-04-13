@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "concurrently \"npm run start-server\" \"npm run start-client-dev\"",
-        "start-server": "concurrently \"nodemon\" \"npm run server-watch\"",
+        "start-server": "nodemon",
         "server-watch": "tsc -p ./src/server/tsconfig.json --watch",
         "start-client-dev": "webpack --config=./webpack.dev.js --mode development --watch"
     },
@@ -23,6 +23,7 @@
         "express": "^4.16.4",
         "matter-js": "^0.14.2",
         "module-alias": "^2.2.0",
+        "p2": "^0.7.1",
         "phaser": "^3.16.2",
         "socket.io": "^2.2.0",
         "socket.io-client": "^2.2.0",
@@ -33,6 +34,7 @@
         "@types/matter-js": "^0.10.2",
         "@types/module-alias": "^2.0.0",
         "@types/node": "^10.12.24",
+        "@types/p2": "^0.7.32",
         "@types/socket.io": "^2.1.2",
         "@types/socket.io-client": "^1.4.32",
         "babel-core": "^6.26.3",

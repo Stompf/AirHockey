@@ -6,7 +6,9 @@ import { NetworkBall, NetworkPlayer } from '../scripts';
 export class MultiplayerScene extends Phaser.Scene {
     private cursors!: Phaser.Input.Keyboard.CursorKeys;
     private players: Record<Shared.Id, NetworkPlayer>;
-    private ball!: NetworkBall;
+    private sprites: Phaser.GameObjects.GameObject[] = [];
+
+    private ball: NetworkBall | undefined;
 
     private socket: SocketIOClient.Socket | undefined;
     private currentTick: number = 0;
@@ -41,21 +43,6 @@ export class MultiplayerScene extends Phaser.Scene {
             left: Phaser.Input.Keyboard.KeyCodes.A,
             right: Phaser.Input.Keyboard.KeyCodes.D,
         });
-
-        // const player = this.add.image(400, 300, 'player');
-        // player.setDisplaySize(50, 50);
-        // player.setOrigin(0.5, 0.5);
-        // player.setTintFill(0xff9955);
-        // this.player = player;
-
-        // const ball = this.physics.add.image(100, 50, 'player');
-        // ball.setDisplaySize(20, 20);
-        // ball.setCollideWorldBounds(true);
-        // ball.setTintFill(0x000000);
-        // ball.setBounce(1, 1);
-        // ball.setCircle(25);
-
-        // this.physics.add.collider(player, ball);
 
         this.queue();
     }
@@ -128,6 +115,10 @@ export class MultiplayerScene extends Phaser.Scene {
             case 'gameLoading':
                 this.handleOnGameLoading(event);
                 break;
+            case 'goal':
+                // tslint:disable-next-line: no-console
+                console.log('GOAL!');
+                break;
             default:
                 throw new UnreachableCaseError(event);
         }
@@ -140,8 +131,21 @@ export class MultiplayerScene extends Phaser.Scene {
 
         this.ball = new NetworkBall(event.ball, this);
 
+        event.goals.forEach(this.renderGoals);
+
         this.emitEvent({ type: 'playerReady' });
     };
+
+    private renderGoals = (goalOption: AirHockey.IGoalOptions) => {
+        this.drawPositionWithBox(goalOption.top, 0xd7d7d7);
+        this.drawPositionWithBox(goalOption.back, 0xd7d7d7);
+        this.drawPositionWithBox(goalOption.bottom, 0xd7d7d7);
+        this.drawPositionWithBox(goalOption.goal, 0x000000);
+    };
+
+    private drawPositionWithBox(pBox: AirHockey.IPositionWithBox, color: Shared.Color) {
+        this.sprites.push(this.add.rectangle(pBox.x, pBox.y, pBox.width, pBox.height, color));
+    }
 
     private handleOnGameStart = (event: AirHockey.IGameStartingEvent) => {
         this.currentTick = 0;
@@ -162,9 +166,17 @@ export class MultiplayerScene extends Phaser.Scene {
         }
 
         Object.values(this.players).forEach(p => p.destroy());
+        this.players = {};
+
         if (this.ball) {
             this.ball.destroy();
+            this.ball = undefined;
         }
+
+        this.sprites.forEach(g => g.destroy());
+
+        this.sprites = [];
+
         this.queue();
     };
 
