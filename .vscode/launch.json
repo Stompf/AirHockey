@@ -3,7 +3,7 @@
     "configurations": [
         {
             "preLaunchTask": "npm: start-client-dev",
-            "name": "Chrome",
+            "name": "Start client (Chrome)",
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:3000",
@@ -20,18 +20,18 @@
             "type": "node",
             "request": "attach",
             "processId": "${command:PickProcess}",
-            "name": "Attach server",
+            "name": "Attach Server",
             "port": 5858,
             "restart": true,
             "protocol": "inspector"
         },
         {
             "preLaunchTask": "npm: server-watch",
-            "name": "Launch server",
+            "name": "Launch Server",
             "type": "node",
             "request": "launch",
             "program": "${workspaceRoot}/node_modules/nodemon/bin/nodemon.js",
-            "autoAttachChildProcesses": true,
+            // "autoAttachChildProcesses": true,
             "restart": true,
             "console": "integratedTerminal"
         }
@@ -39,7 +39,7 @@
     "compounds": [
         {
             "name": "Launch Server & Client",
-            "configurations": ["Launch server", "Chrome"]
+            "configurations": ["Launch Server", "Start client (Chrome)"]
         }
     ]
 }
