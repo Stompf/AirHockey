@@ -131,6 +131,8 @@ export class MultiplayerScene extends Phaser.Scene {
     };
 
     private handleOnGameLoading = (event: AirHockey.IGameLoadingEvent) => {
+        this.renderArena(event.gameSize);
+
         event.players.forEach(p => {
             this.players[p.id] = new NetworkPlayer(p, this);
         });
@@ -141,6 +143,23 @@ export class MultiplayerScene extends Phaser.Scene {
 
         this.emitEvent({ type: 'playerReady' });
     };
+
+    private renderArena(gameSize: Shared.Size) {
+        const middleLine = this.add.line(
+            0,
+            0,
+            gameSize.width / 2,
+            0,
+            gameSize.width / 2,
+            gameSize.height * 2,
+            0x000000,
+            0.1
+        );
+
+        middleLine.setLineWidth(0.5);
+
+        this.sprites.push(middleLine);
+    }
 
     private renderGoals = (goalOption: AirHockey.IGoalOptions) => {
         this.drawPositionWithBox(goalOption.top, 0xd7d7d7);
