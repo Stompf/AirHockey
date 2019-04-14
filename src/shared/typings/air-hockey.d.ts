@@ -114,6 +114,11 @@ export namespace AirHockey {
         timeout: number;
     }
 
+    export interface ITerminateRequestEvent {
+        type: 'terminateRequest';
+        reason: 'gameStopped';
+    }
+
     export type ClientToServerGameEvent =
         | IPlayerReadyEvent
         | IPlayerDirectionUpdate

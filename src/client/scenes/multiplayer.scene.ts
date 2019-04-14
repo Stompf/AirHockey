@@ -44,7 +44,7 @@ export class MultiplayerScene extends Phaser.Scene {
             right: Phaser.Input.Keyboard.KeyCodes.D,
         });
 
-        this.queue();
+        this.connect();
     }
 
     private updateInput() {
@@ -73,7 +73,7 @@ export class MultiplayerScene extends Phaser.Scene {
         this.emitEvent({ type: 'directionUpdate', direction: this.currentDirection });
     };
 
-    private queue() {
+    private connect() {
         const socket = connect(
             window.location.href,
             { port: '3000' }
@@ -83,15 +83,21 @@ export class MultiplayerScene extends Phaser.Scene {
             // tslint:disable-next-line: no-console
             console.log('connected');
 
-            const matchmakerEvent: Shared.IMatchmakerEvent = {
-                game: 'AirHockey',
-            };
-            socket.emit('matchmaker', matchmakerEvent);
+            this.queue(socket);
         });
 
-        socket.on('serverEvent', this.onServerEvent);
+        socket.on('disconnect', this.handleOnGameStopped);
 
         this.socket = socket;
+    }
+
+    private queue(socket: SocketIOClient.Socket) {
+        socket.on('serverEvent', this.onServerEvent);
+
+        const matchmakerEvent: Shared.IMatchmakerEvent = {
+            game: 'AirHockey',
+        };
+        socket.emit('matchmaker', matchmakerEvent);
     }
 
     private emitEvent = (event: AirHockey.ClientToServerGameEvent) => {
@@ -161,10 +167,6 @@ export class MultiplayerScene extends Phaser.Scene {
     private handleOnGameStopped = (_event: AirHockey.IGameStoppedEvent) => {
         clearInterval(this.networkTickInterval);
 
-        if (this.socket) {
-            this.socket.off('serverEvent');
-        }
-
         Object.values(this.players).forEach(p => p.destroy());
         this.players = {};
 
@@ -177,7 +179,10 @@ export class MultiplayerScene extends Phaser.Scene {
 
         this.sprites = [];
 
-        this.queue();
+        if (this.socket) {
+            this.socket.off('serverEvent');
+            this.queue(this.socket);
+        }
     };
 
     private handleOnNetworkUpdate = (event: AirHockey.INetworkUpdateEvent) => {

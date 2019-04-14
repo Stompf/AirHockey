@@ -3,7 +3,7 @@
     "configurations": [
         {
             "preLaunchTask": "npm: start-client-dev",
-            "name": "Start client (Chrome)",
+            "name": "Start Client (Chrome)",
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:3000",
@@ -39,7 +39,7 @@
     "compounds": [
         {
             "name": "Launch Server & Client",
-            "configurations": ["Launch Server", "Start client (Chrome)"]
+            "configurations": ["Launch Server", "Start Client (Chrome)"]
         }
     ]
 }

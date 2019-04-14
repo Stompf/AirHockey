@@ -2,12 +2,13 @@ import { Socket } from 'socket.io';
 import logger from 'src/server/logger';
 import { Shared, UnreachableCaseError } from 'src/shared';
 import { Worker } from 'worker_threads';
+import { IWorkerMessage, WorkerId } from './models';
 
 const maxThreadLifeTimeMs = 60 * 60 * 1000;
 const maxCurrentThreads = 5;
 
-const currentThreads: Record<number, Worker | undefined> = {};
-const currentThreadTimeouts: Record<number, NodeJS.Timeout | undefined> = {};
+const currentThreads: Record<WorkerId, Worker | undefined> = {};
+const currentThreadTimeouts: Record<WorkerId, NodeJS.Timeout | undefined> = {};
 
 export function startWorker(game: Shared.Game, sockets: Socket[], workerData: any): boolean {
     try {
@@ -56,27 +57,28 @@ export function isThreadAvailable() {
     return Object.keys(currentThreads).length <= maxCurrentThreads;
 }
 
-export function terminateWorker(id: number) {
+export function terminateWorker(id: WorkerId) {
     const worker = currentThreads[id];
     if (!worker) {
         logger.info(`Tried to terminate worker with id: ${id} but no such worker was found`);
         return;
     }
 
+    delete currentThreads[id];
     worker.terminate();
 }
 
 function onWorkerMessage(sockets: Socket[], event: unknown) {
     logger.debug('message', event);
 
-    sockets.forEach(socket => socket.emit('serverEvent', event));
+    sockets.filter(s => s.connected).forEach(socket => socket.emit('serverEvent', event));
 }
 
-function onWorkerError(id: number, error: Error) {
+function onWorkerError(id: WorkerId, error: Error) {
     logger.error(`Worker with id: ${id} error`, error);
 }
 
-function onWorkerExited(id: number) {
+function onWorkerExited(id: WorkerId) {
     delete currentThreads[id];
 
     const timeout = currentThreadTimeouts[id];
@@ -101,15 +103,32 @@ function bindSocketGameEvents(socket: Socket, worker: Worker) {
     removeAllListeners(socket);
 
     socket.on('gameEvent', gameEvent => {
-        worker.postMessage({ id: socket.id, data: gameEvent });
+        postMessageToWorker(worker, { id: socket.id, data: gameEvent });
     });
 
     socket.on('disconnect', () => {
         logger.info(`Socket with id: ${socket.id} disconnected`);
-        worker.postMessage({ id: socket.id, data: { type: 'disconnected' } });
+        removeAllListeners(socket);
+
+        postMessageToWorker(worker, { id: socket.id, data: { type: 'disconnected' } });
     });
 }
 
 function removeAllListeners(socket: Socket) {
     socket.removeAllListeners('gameEvent');
+}
+
+function postMessageToWorker(worker: Worker, message: IWorkerMessage) {
+    if (isWorkerActive(worker)) {
+        worker.postMessage(message);
+    } else {
+        logger.warn(
+            `Tried to post to worker ${worker.threadId} but the worker is terminated`,
+            message
+        );
+    }
+}
+
+function isWorkerActive(worker: Worker) {
+    return !!currentThreads[worker.threadId];
 }

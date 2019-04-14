@@ -22,7 +22,8 @@ export class AirHockeyServer {
 
     constructor(
         options: IAirHockeyGameOptions,
-        private postEvent: (event: AirHockey.ServerToClientGameEvent) => void
+        private postEvent: (event: AirHockey.ServerToClientGameEvent) => void,
+        private requestTermination: (event: AirHockey.ITerminateRequestEvent) => void
     ) {
         if (options.playerIds.length !== 2) {
             throw Error(`Invalid number of players expected 2 got: ${options.playerIds.length}`);
@@ -76,6 +77,11 @@ export class AirHockeyServer {
         });
 
         this.world.clear();
+
+        this.requestTermination({
+            type: 'terminateRequest',
+            reason: 'gameStopped',
+        });
     };
 
     private onPlayerReady(id: Shared.Id) {
