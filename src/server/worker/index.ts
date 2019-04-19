@@ -2,7 +2,7 @@ import { Socket } from 'socket.io';
 import logger from 'src/server/logger';
 import { Shared, UnreachableCaseError } from 'src/shared';
 import { Worker } from 'worker_threads';
-import { IWorkerMessage, WorkerId } from './models';
+import { WorkerId } from './models';
 
 const maxThreadLifeTimeMs = 60 * 60 * 1000;
 const maxCurrentThreads = 5;
@@ -103,14 +103,14 @@ function bindSocketGameEvents(socket: Socket, worker: Worker) {
     removeAllListeners(socket);
 
     socket.on('gameEvent', gameEvent => {
-        postMessageToWorker(worker, { id: socket.id, data: gameEvent });
+        postMessageToWorker(worker, socket, gameEvent);
     });
 
     socket.on('disconnect', () => {
         logger.info(`Socket with id: ${socket.id} disconnected`);
         removeAllListeners(socket);
 
-        postMessageToWorker(worker, { id: socket.id, data: { type: 'disconnected' } });
+        postMessageToWorker(worker, socket, { type: 'disconnected' });
     });
 }
 
@@ -118,14 +118,16 @@ function removeAllListeners(socket: Socket) {
     socket.removeAllListeners('gameEvent');
 }
 
-function postMessageToWorker(worker: Worker, message: IWorkerMessage) {
+function postMessageToWorker(worker: Worker, socket: Socket, message: any) {
     if (isWorkerActive(worker)) {
-        worker.postMessage(message);
+        worker.postMessage({ id: socket.id, data: message });
     } else {
         logger.warn(
             `Tried to post to worker ${worker.threadId} but the worker is terminated`,
             message
         );
+
+        socket.disconnect(true);
     }
 }
 
