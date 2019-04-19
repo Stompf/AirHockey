@@ -1,4 +1,5 @@
 import express from 'express';
+import helmet from 'helmet';
 import http from 'http';
 import 'module-alias/register';
 import path from 'path';
@@ -10,6 +11,7 @@ import { Matchmaking } from './matchmaking';
 const port = 3000;
 
 const app = express();
+app.use(helmet());
 
 app.use(express.static('public'));
 
