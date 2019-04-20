@@ -8,6 +8,7 @@ export class MultiplayerScene extends Phaser.Scene {
     private players: Record<Shared.Id, NetworkPlayer>;
     private sprites: Phaser.GameObjects.GameObject[] = [];
 
+    private texts: Phaser.GameObjects.Text[] = [];
     private ball: NetworkBall | undefined;
 
     private socket: SocketIOClient.Socket | undefined;
@@ -122,11 +123,22 @@ export class MultiplayerScene extends Phaser.Scene {
                 this.handleOnGameLoading(event);
                 break;
             case 'goal':
-                // tslint:disable-next-line: no-console
-                console.log('GOAL!');
+                this.handleOnGoalEvent(event);
                 break;
             default:
                 throw new UnreachableCaseError(event);
+        }
+    };
+
+    private handleOnGoalEvent = (event: AirHockey.IGoalEvent) => {
+        const teamLeftScore = this.texts.find(t => t.getData('scoreText') === 'left');
+        const teamRightScore = this.texts.find(t => t.getData('scoreText') === 'right');
+
+        if (teamLeftScore) {
+            teamLeftScore.setText(String(event.teamLeftScore));
+        }
+        if (teamRightScore) {
+            teamRightScore.setText(String(event.teamRightScore));
         }
     };
 
@@ -159,6 +171,8 @@ export class MultiplayerScene extends Phaser.Scene {
         middleLine.setLineWidth(0.5);
 
         this.sprites.push(middleLine);
+
+        this.renderScore(gameSize);
     }
 
     private renderGoals = (goalOption: AirHockey.IGoalOptions) => {
@@ -166,6 +180,33 @@ export class MultiplayerScene extends Phaser.Scene {
         this.drawPositionWithBox(goalOption.back, 0xd7d7d7);
         this.drawPositionWithBox(goalOption.bottom, 0xd7d7d7);
         this.drawPositionWithBox(goalOption.goal, 0x000000);
+    };
+
+    private renderScore = (gameSize: Shared.Size) => {
+        const padding = 20;
+        const fontSize = 20;
+        const startX = gameSize.width / 2 - 6;
+
+        const middle = this.add.text(startX, 10, '-', {
+            color: '#000000',
+            fontSize,
+        });
+
+        const teamLeftScore = this.add.text(startX - padding, 10, `0`, {
+            color: '#FF0000',
+            fontSize,
+        });
+        teamLeftScore.setData('scoreText', 'left');
+
+        const teamRightScore = this.add.text(startX + padding, 10, `0`, {
+            color: '#0000FF',
+            fontSize,
+        });
+        teamRightScore.setData('scoreText', 'right');
+
+        this.texts.push(middle);
+        this.texts.push(teamLeftScore);
+        this.texts.push(teamRightScore);
     };
 
     private drawPositionWithBox(pBox: AirHockey.IPositionWithBox, color: Shared.Color) {
@@ -195,12 +236,13 @@ export class MultiplayerScene extends Phaser.Scene {
         }
 
         this.sprites.forEach(g => g.destroy());
-
         this.sprites = [];
+
+        this.texts.forEach(g => g.destroy());
+        this.texts = [];
 
         if (this.socket) {
             this.socket.off('serverEvent');
-            this.queue(this.socket);
         }
     };
 

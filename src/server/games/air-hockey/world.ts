@@ -30,8 +30,8 @@ export class World {
 
         this.teamLeft = new Team('left');
         this.teamRight = new Team('right');
-        const player1 = new Player(this.p2World, player1Id, 0xff0000, this.teamRight);
-        const player2 = new Player(this.p2World, player2Id, 0x0000ff, this.teamLeft);
+        const player1 = new Player(this.p2World, player1Id, 0xff0000, this.teamLeft);
+        const player2 = new Player(this.p2World, player2Id, 0x0000ff, this.teamRight);
         this.players = [player1, player2];
         this.ball = new Ball(this.p2World);
 
@@ -190,12 +190,12 @@ export class World {
 
     private resetPositions(scoreTeam?: Team) {
         this.players[0].setPosition({
-            x: this.GAME_SIZE.width / 1.25 - Player.DIAMETER,
+            x: this.GAME_SIZE.width / 4,
             y: this.GAME_SIZE.height / 2,
         });
 
         this.players[1].setPosition({
-            x: this.GAME_SIZE.width / 4,
+            x: this.GAME_SIZE.width / 1.25 - Player.DIAMETER,
             y: this.GAME_SIZE.height / 2,
         });
 
@@ -206,7 +206,7 @@ export class World {
 
         if (scoreTeam) {
             this.ball.resetVelocity(
-                scoreTeam === this.teamRight ? this.BALL_INIT_VELOCITY : -this.BALL_INIT_VELOCITY
+                scoreTeam === this.teamLeft ? this.BALL_INIT_VELOCITY : -this.BALL_INIT_VELOCITY
             );
         }
     }
