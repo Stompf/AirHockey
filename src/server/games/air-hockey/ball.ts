@@ -14,6 +14,7 @@ export class Ball {
         });
         const circle = new p2.Circle({ radius: Ball.DIAMETER / 2 });
         this.body.addShape(circle);
+
         this.body.damping = 0;
         world.addBody(this.body);
     }

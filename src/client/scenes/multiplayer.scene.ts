@@ -220,10 +220,6 @@ export class MultiplayerScene extends Phaser.Scene {
 
     private handleOnGameStart = (event: AirHockey.IGameStartingEvent) => {
         this.currentTick = 0;
-        // this.networkTickInterval = window.setInterval(
-        //     this.sendNetworkUpdate,
-        //     this.networkTickDelta
-        // );
 
         // tslint:disable-next-line: no-console
         console.log('handleOnGameStart', event);

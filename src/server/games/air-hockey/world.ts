@@ -99,8 +99,6 @@ export class World {
         }
 
         player.setDirection(data.direction);
-        // player.moveRight(data.direction.directionX * Player.SPEED);
-        // player.moveUp(data.direction.directionY * Player.SPEED);
     }
 
     public setPlayerReady(id: Shared.Id): boolean {
