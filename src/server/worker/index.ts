@@ -69,7 +69,7 @@ export function terminateWorker(id: WorkerId) {
 }
 
 function onWorkerMessage(sockets: Socket[], event: unknown) {
-    logger.debug('message', event);
+    // logger.debug('message', event);
 
     sockets.filter(s => s.connected).forEach(socket => socket.emit('serverEvent', event));
 }

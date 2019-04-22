@@ -9,7 +9,7 @@ export class AirHockeyServer {
 
     public readonly GAME_NAME = 'AirHockey';
 
-    private readonly FIXED_TIME_STEP = 1 / 20;
+    private readonly FIXED_TIME_STEP = 1000 / 60;
     private readonly MAX_SUB_STEPS = 5;
     private readonly SCORE_DELAY_MS = 2000;
 
@@ -36,6 +36,7 @@ export class AirHockeyServer {
     }
 
     public onEventReceived = ({ data, id }: AirHockey.IServerReceivedEvent) => {
+        logger.debug('EventReceived', data);
         switch (data.type) {
             case 'playerReady':
                 this.onPlayerReady(id);

@@ -9,7 +9,7 @@ import { Team } from './team';
 
 export class World {
     public goalEmitter: TypedEvent<IGoalEvent>;
-    private readonly BALL_INIT_VELOCITY = 10;
+    private readonly BALL_INIT_VELOCITY = 1;
     private readonly GAME_SIZE: Readonly<Shared.Size> = { width: 1200, height: 600 };
     private goals: IGoal[] = [];
     private p2World: p2.World;
@@ -60,6 +60,7 @@ export class World {
     }
 
     public onHeartbeat(timeStep: number, maxSubSteps: number) {
+        this.players.forEach(p => p.onUpdate());
         this.ball.onUpdate();
         this.p2World.step(timeStep, timeStep, maxSubSteps);
     }
@@ -97,8 +98,9 @@ export class World {
             return;
         }
 
-        player.moveRight(data.direction.directionX * Player.SPEED);
-        player.moveUp(data.direction.directionY * Player.SPEED);
+        player.setDirection(data.direction);
+        // player.moveRight(data.direction.directionX * Player.SPEED);
+        // player.moveUp(data.direction.directionY * Player.SPEED);
     }
 
     public setPlayerReady(id: Shared.Id): boolean {

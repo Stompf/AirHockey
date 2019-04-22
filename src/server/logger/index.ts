@@ -14,6 +14,7 @@ const myFormat = printf(info => {
 const logger = createLogger({
     format: combine(colorize(), metadata(), timestamp(), myFormat),
     transports: [new transports.Console()],
+    level: 'debug',
 });
 
 function isEmpty(obj: {}) {

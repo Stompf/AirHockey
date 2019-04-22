@@ -15,7 +15,7 @@ export class MultiplayerScene extends Phaser.Scene {
     private currentTick: number = 0;
 
     private networkTickInterval: number = 0;
-    private networkTickDelta = 1000 / 20;
+    // private networkTickDelta = 1000 / 20;
     private currentDirection: AirHockey.IDirection = {
         directionX: 0,
         directionY: 0,
@@ -49,6 +49,7 @@ export class MultiplayerScene extends Phaser.Scene {
     }
 
     private updateInput() {
+        const oldDirection = { ...this.currentDirection };
         let directionX = 0;
         let directionY = 0;
 
@@ -68,6 +69,10 @@ export class MultiplayerScene extends Phaser.Scene {
             directionX,
             directionY,
         };
+
+        if (oldDirection.directionX !== directionX || oldDirection.directionY !== directionY) {
+            this.sendNetworkUpdate();
+        }
     }
 
     private sendNetworkUpdate = () => {
@@ -215,10 +220,10 @@ export class MultiplayerScene extends Phaser.Scene {
 
     private handleOnGameStart = (event: AirHockey.IGameStartingEvent) => {
         this.currentTick = 0;
-        this.networkTickInterval = window.setInterval(
-            this.sendNetworkUpdate,
-            this.networkTickDelta
-        );
+        // this.networkTickInterval = window.setInterval(
+        //     this.sendNetworkUpdate,
+        //     this.networkTickDelta
+        // );
 
         // tslint:disable-next-line: no-console
         console.log('handleOnGameStart', event);
