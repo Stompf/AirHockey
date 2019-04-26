@@ -5,14 +5,12 @@ import { Team } from './team';
 export class Player {
     public static readonly DIAMETER = 60;
     public static readonly MASS = 10;
-    public static readonly SPEED = 100;
+    public static readonly SPEED = 1100;
     public socketId: Shared.Id;
     public body: p2.Body;
     public team: Team;
     public isReady: boolean = false;
-
     public readonly COLOR: number;
-
     private currentDirection: AirHockey.IDirection;
 
     constructor(world: p2.World, socketId: Shared.Id, color: number, team: Team) {

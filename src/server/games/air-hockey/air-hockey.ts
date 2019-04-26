@@ -9,11 +9,13 @@ export class AirHockeyServer {
 
     public readonly GAME_NAME = 'AirHockey';
 
-    private readonly FIXED_TIME_STEP = 1000 / 60;
-    private readonly MAX_SUB_STEPS = 5;
+    private readonly NETWORK_INTERVAL = 1 / 20;
+    private readonly FIXED_TIME_STEP = 1 / 60;
+    private readonly MAX_SUB_STEPS = 10;
     private readonly SCORE_DELAY_MS = 2000;
+    private networkIntervalReference: NodeJS.Timer | undefined;
+    private physicsIntervalReference: NodeJS.Timer | undefined;
 
-    private intervalReference: NodeJS.Timer | undefined;
     private timeLimitReference: NodeJS.Timer | undefined;
     private tick = 0;
     private gameStated: boolean;
@@ -64,12 +66,16 @@ export class AirHockeyServer {
 
         this.gameStated = false;
 
-        if (this.intervalReference) {
-            clearInterval(this.intervalReference);
+        if (this.physicsIntervalReference) {
+            clearInterval(this.physicsIntervalReference);
         }
 
         if (this.timeLimitReference) {
             clearTimeout(this.timeLimitReference);
+        }
+
+        if (this.networkIntervalReference) {
+            clearTimeout(this.networkIntervalReference);
         }
 
         this.postEvent({
@@ -111,7 +117,9 @@ export class AirHockeyServer {
 
         this.postEvent(gameStarting);
 
-        this.intervalReference = setInterval(this.heartbeat, this.FIXED_TIME_STEP);
+        this.physicsIntervalReference = setInterval(this.heartbeat, this.FIXED_TIME_STEP);
+        this.networkIntervalReference = setInterval(this.networkUpdate, this.NETWORK_INTERVAL);
+
         this.gameStated = true;
     }
 
@@ -137,11 +145,13 @@ export class AirHockeyServer {
     };
 
     private heartbeat = () => {
-        this.tick++;
-
         if (!this.paused) {
             this.world.onHeartbeat(this.FIXED_TIME_STEP, this.MAX_SUB_STEPS);
         }
+    };
+
+    private networkUpdate = () => {
+        this.tick++;
 
         const serverTick: AirHockey.INetworkUpdateEvent = {
             type: 'networkUpdate',

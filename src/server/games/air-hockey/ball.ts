@@ -5,7 +5,7 @@ export class Ball {
     public static readonly DIAMETER = 30;
     public static readonly MASS = 0.1;
     public static readonly COLOR = 0x000000;
-    public static readonly MAX_VELOCITY = 1;
+    public static readonly MAX_VELOCITY = 150;
     public body: p2.Body;
 
     constructor(world: p2.World) {

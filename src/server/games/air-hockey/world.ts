@@ -9,7 +9,7 @@ import { Team } from './team';
 
 export class World {
     public goalEmitter: TypedEvent<IGoalEvent>;
-    private readonly BALL_INIT_VELOCITY = 1;
+    private readonly BALL_INIT_VELOCITY = 40;
     private readonly GAME_SIZE: Readonly<Shared.Size> = { width: 1200, height: 600 };
     private goals: IGoal[] = [];
     private p2World: p2.World;
@@ -47,12 +47,6 @@ export class World {
     public clear() {
         this.p2World.clear();
         this.goalEmitter.removeAllListeners();
-
-        // this.players.forEach(p => {
-        //     if (p.socket.connected) {
-        //         p.socket.disconnect(true);
-        //     }
-        // });
     }
 
     public reset(teamThatScored?: Team) {
@@ -163,6 +157,7 @@ export class World {
                 ) {
                     logger.info(`${team.TeamSide} GOAL!`);
 
+                    this.ball.resetVelocity();
                     const goalEvent: IGoalEvent = {
                         allTeams: this.getTeams(),
                         teamThatScored: team,
@@ -261,13 +256,19 @@ export class World {
         back.type = p2.Body.STATIC;
 
         const goal = new p2.Body();
+        const goalBoxWidth = 4;
         goal.addShape(
             new p2.Box({
                 height: goalHeight,
-                width: goalWidth,
+                width: goalBoxWidth,
             })
         );
-        goal.position = [x, this.GAME_SIZE.height / 2];
+
+        const goalOffset = goalBoxWidth + 4;
+        goal.position = [
+            x - (team.TeamSide === 'left' ? goalOffset : -goalOffset),
+            this.GAME_SIZE.height / 2,
+        ];
         goal.type = p2.Body.STATIC;
         this.p2World.addBody(goal);
 
