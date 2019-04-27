@@ -1,0 +1,10 @@
+server-dist
+.vscode
+.gitignore
+.prettierrc.js
+LICENSE
+nodemon.json
+README.md
+bundle.js
+vendor.js
+node_modules

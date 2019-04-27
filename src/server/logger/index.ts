@@ -1,4 +1,6 @@
 import { createLogger, format, transports } from 'winston';
+import { isProduction } from '../utils';
+
 const { combine, timestamp, printf, colorize, metadata } = format;
 
 const myFormat = printf(info => {
@@ -14,7 +16,7 @@ const myFormat = printf(info => {
 const logger = createLogger({
     format: combine(colorize(), metadata(), timestamp(), myFormat),
     transports: [new transports.Console()],
-    level: 'debug',
+    level: isProduction() ? 'info' : 'debug',
 });
 
 function isEmpty(obj: {}) {
