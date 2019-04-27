@@ -12,7 +12,8 @@
         "build-client-prod": "webpack --config=./webpack.prod.js --mode production",
         "build-all-prod": "npm run build-client-prod && npm run build-server-prod",
         "start-prod": "NODE_ENV=production node --experimental-worker server-dist/server/index.js",
-        "build-docker-prod": "docker build -t stompf/lunne-web  ."
+        "build-docker-prod": "docker build -t stompf/lunne-web  .",
+        "push-to-docker": "docker push stompf/lunne-web:latest"
     },
     "repository": {
         "type": "git",
