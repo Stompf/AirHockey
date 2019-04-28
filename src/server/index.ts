@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import http from 'http';
 import 'module-alias/register';
+import morgan from 'morgan';
 import path from 'path';
 import socketIO from 'socket.io';
 import { Shared } from 'src/shared';
@@ -13,9 +14,11 @@ const port = 3000;
 const app = express();
 app.use(helmet());
 
+app.use(morgan('combined'));
 app.use(express.static('public'));
 
-app.get('/', (_req, res) => {
+app.get('/', (req, res) => {
+    logger.info(`Requested get`, req);
     res.sendFile(path.resolve(__dirname, './public/index.html'));
 });
 
