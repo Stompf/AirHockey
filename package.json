@@ -13,7 +13,7 @@
         "build-all-prod": "npm run build-client-prod && npm run build-server-prod",
         "start-prod": "NODE_ENV=production node --experimental-worker server-dist/server/index.js",
         "build-docker-prod": "docker build -t stompf/lunne-web  .",
-        "push-to-docker": "docker push stompf/lunne-web:latest",
+        "push-to-docker": "docker login && docker push stompf/lunne-web:latest",
         "build-and-push": "npm run build-docker-prod && npm run push-to-docker"
     },
     "repository": {
