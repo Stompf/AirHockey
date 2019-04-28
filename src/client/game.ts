@@ -1,4 +1,4 @@
-import { MultiplayerScene } from './scenes';
+import { MenuScene, MultiplayerScene } from './scenes';
 
 export class AirHockeyGame extends Phaser.Game {
     constructor() {
@@ -17,7 +17,7 @@ export class AirHockeyGame extends Phaser.Game {
             //         debug: true,
             //     },
             // },
-            scene: [MultiplayerScene], // MenuScene
+            scene: [MenuScene, MultiplayerScene],
             disableContextMenu: true,
             backgroundColor: '0x000000',
             canvasStyle: 'border: 1px solid black',

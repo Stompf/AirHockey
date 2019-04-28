@@ -155,7 +155,7 @@ export class World {
                     team != null &&
                     (evt.bodyA === this.ball.body || evt.bodyB === this.ball.body)
                 ) {
-                    logger.info(`${team.TeamSide} GOAL!`);
+                    logger.debug(`${team.TeamSide} GOAL!`);
 
                     this.ball.resetVelocity();
                     const goalEvent: IGoalEvent = {
@@ -167,20 +167,6 @@ export class World {
             },
             this
         );
-
-        // this.world.on('impact', () => {
-        //     winston.info(`impact: ${this.ball.body.velocity[0]} : ${this.ball.body.velocity[1]}`);
-        // }, this);
-
-        // this.world.on('endContact', () => {
-        //     winston.info(`endContact: ${this.ball.body.velocity[0]} : ${this.ball.body.velocity[1]} : ${this.ball.body.angularVelocity} `);
-
-        //     this.ballTick++;
-        //     const ballUpdate = this.ball.toBallUpdate(this.ballTick);
-
-        //     this.player1.socket.emit('BallUpdate', ballUpdate);
-        //     this.player2.socket.emit('BallUpdate', ballUpdate);
-        // }, this);
     }
 
     private resetPositions(scoreTeam?: Team) {
