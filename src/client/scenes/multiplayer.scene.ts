@@ -14,6 +14,8 @@ export class MultiplayerScene extends Phaser.Scene {
     private currentTick: number = 0;
     private textManager!: TextManager;
 
+    private canReconnect = false;
+    private isGameRunning = false;
     private reconnectKey!: Phaser.Input.Keyboard.Key;
 
     private networkTickInterval: number = 0;
@@ -53,6 +55,15 @@ export class MultiplayerScene extends Phaser.Scene {
     }
 
     private updateInput() {
+        if (this.reconnectKey.isDown && this.canReconnect) {
+            this.canReconnect = false;
+            this.connect();
+        }
+
+        if (!this.isGameRunning) {
+            return;
+        }
+
         const oldDirection = { ...this.currentDirection };
         let directionX = 0;
         let directionY = 0;
@@ -77,10 +88,6 @@ export class MultiplayerScene extends Phaser.Scene {
         if (oldDirection.directionX !== directionX || oldDirection.directionY !== directionY) {
             this.sendNetworkUpdate();
         }
-
-        if (this.reconnectKey.isDown && this.socket) {
-            this.queue(this.socket);
-        }
     }
 
     private sendNetworkUpdate = () => {
@@ -88,6 +95,7 @@ export class MultiplayerScene extends Phaser.Scene {
     };
 
     private connect() {
+        this.canReconnect = false;
         this.textManager.setInfoText('Connecting to LunneNet...');
         this.textManager.setInfoTextVisible(true);
 
@@ -205,6 +213,8 @@ export class MultiplayerScene extends Phaser.Scene {
     }
 
     private handleOnGameStart = (event: AirHockey.IGameStartingEvent) => {
+        this.isGameRunning = true;
+
         this.textManager.setScoreTextVisible(true);
         this.textManager.setInfoTextVisible(false);
 
@@ -215,6 +225,9 @@ export class MultiplayerScene extends Phaser.Scene {
     };
 
     private handleOnGameStopped = (event: AirHockey.IGameStoppedEvent) => {
+        this.isGameRunning = false;
+        this.canReconnect = true;
+
         clearInterval(this.networkTickInterval);
 
         Object.values(this.players).forEach(p => p.destroy());

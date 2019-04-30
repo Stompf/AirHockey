@@ -97,7 +97,8 @@ export class AirHockeyServer {
     private onPlayerReady(id: Shared.Id) {
         const allReady = this.world.setPlayerReady(id);
 
-        if (allReady) {
+        if (allReady && !this.gameStated) {
+            this.gameStated = true;
             this.startGame();
         }
     }
@@ -122,8 +123,6 @@ export class AirHockeyServer {
 
         this.physicsIntervalReference = setInterval(this.heartbeat, this.FIXED_TIME_STEP);
         this.networkIntervalReference = setInterval(this.networkUpdate, this.NETWORK_INTERVAL);
-
-        this.gameStated = true;
     }
 
     private onGoal = (goalEvent: IGoalEvent) => {
