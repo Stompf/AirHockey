@@ -8,3 +8,4 @@ README.md
 bundle.js
 vendor.js
 node_modules
+azure-pipelines.yml
