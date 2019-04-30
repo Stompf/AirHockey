@@ -1,21 +1,22 @@
 import Phaser from 'phaser';
 import { connect } from 'socket.io-client';
 import { AirHockey, Shared, UnreachableCaseError } from 'src/shared';
-import { NetworkBall, NetworkPlayer } from '../scripts';
+import { NetworkBall, NetworkPlayer, TextManager } from '../scripts';
 
 export class MultiplayerScene extends Phaser.Scene {
     private cursors!: Phaser.Input.Keyboard.CursorKeys;
     private players: Record<Shared.Id, NetworkPlayer>;
     private sprites: Phaser.GameObjects.GameObject[] = [];
 
-    private texts: Phaser.GameObjects.Text[] = [];
     private ball: NetworkBall | undefined;
 
     private socket: SocketIOClient.Socket | undefined;
     private currentTick: number = 0;
+    private textManager!: TextManager;
+
+    private reconnectKey!: Phaser.Input.Keyboard.Key;
 
     private networkTickInterval: number = 0;
-    // private networkTickDelta = 1000 / 20;
     private currentDirection: AirHockey.IDirection = {
         directionX: 0,
         directionY: 0,
@@ -33,7 +34,10 @@ export class MultiplayerScene extends Phaser.Scene {
     }
 
     protected preload() {
+        this.load.bitmapFont('font', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
         this.load.image('player', 'assets/player.png');
+        this.reconnectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        this.textManager = new TextManager(this);
     }
 
     protected create() {
@@ -73,6 +77,10 @@ export class MultiplayerScene extends Phaser.Scene {
         if (oldDirection.directionX !== directionX || oldDirection.directionY !== directionY) {
             this.sendNetworkUpdate();
         }
+
+        if (this.reconnectKey.isDown && this.socket) {
+            this.queue(this.socket);
+        }
     }
 
     private sendNetworkUpdate = () => {
@@ -80,14 +88,16 @@ export class MultiplayerScene extends Phaser.Scene {
     };
 
     private connect() {
+        this.textManager.setInfoText('Connecting to LunneNet...');
+        this.textManager.setInfoTextVisible(true);
+
         const socket = connect(
             window.location.href,
             { port: '3000' }
         );
 
         socket.on('connect', () => {
-            // tslint:disable-next-line: no-console
-            console.log('connected');
+            this.textManager.setInfoText('Connected');
 
             this.queue(socket);
         });
@@ -98,6 +108,10 @@ export class MultiplayerScene extends Phaser.Scene {
     }
 
     private queue(socket: SocketIOClient.Socket) {
+        this.textManager.setInfoText('Searching for match...');
+        this.textManager.setInfoTextVisible(true);
+        this.textManager.setScoreTextVisible(false);
+
         socket.on('serverEvent', this.onServerEvent);
 
         const matchmakerEvent: Shared.IMatchmakerEvent = {
@@ -136,18 +150,19 @@ export class MultiplayerScene extends Phaser.Scene {
     };
 
     private handleOnGoalEvent = (event: AirHockey.IGoalEvent) => {
-        const teamLeftScore = this.texts.find(t => t.getData('scoreText') === 'left');
-        const teamRightScore = this.texts.find(t => t.getData('scoreText') === 'right');
+        this.textManager.setInfoText('Goal!');
+        this.textManager.setInfoTextVisible(true);
 
-        if (teamLeftScore) {
-            teamLeftScore.setText(String(event.teamLeftScore));
-        }
-        if (teamRightScore) {
-            teamRightScore.setText(String(event.teamRightScore));
-        }
+        this.textManager.setScoreText(String(event.teamLeftScore), String(event.teamRightScore));
+
+        window.setTimeout(() => {
+            this.textManager.setInfoTextVisible(false);
+        }, event.timeout);
     };
 
     private handleOnGameLoading = (event: AirHockey.IGameLoadingEvent) => {
+        this.textManager.setInfoText('Found match! Loading...');
+
         this.renderArena(event.gameSize);
 
         event.players.forEach(p => {
@@ -176,8 +191,6 @@ export class MultiplayerScene extends Phaser.Scene {
         middleLine.setLineWidth(0.5);
 
         this.sprites.push(middleLine);
-
-        this.renderScore(gameSize);
     }
 
     private renderGoals = (goalOption: AirHockey.IGoalOptions) => {
@@ -187,45 +200,21 @@ export class MultiplayerScene extends Phaser.Scene {
         this.drawPositionWithBox(goalOption.goal, 0x000000);
     };
 
-    private renderScore = (gameSize: Shared.Size) => {
-        const padding = 20;
-        const fontSize = 20;
-        const startX = gameSize.width / 2 - 6;
-
-        const middle = this.add.text(startX, 10, '-', {
-            color: '#000000',
-            fontSize,
-        });
-
-        const teamLeftScore = this.add.text(startX - padding, 10, `0`, {
-            color: '#FF0000',
-            fontSize,
-        });
-        teamLeftScore.setData('scoreText', 'left');
-
-        const teamRightScore = this.add.text(startX + padding, 10, `0`, {
-            color: '#0000FF',
-            fontSize,
-        });
-        teamRightScore.setData('scoreText', 'right');
-
-        this.texts.push(middle);
-        this.texts.push(teamLeftScore);
-        this.texts.push(teamRightScore);
-    };
-
     private drawPositionWithBox(pBox: AirHockey.IPositionWithBox, color: Shared.Color) {
         this.sprites.push(this.add.rectangle(pBox.x, pBox.y, pBox.width, pBox.height, color));
     }
 
     private handleOnGameStart = (event: AirHockey.IGameStartingEvent) => {
+        this.textManager.setScoreTextVisible(true);
+        this.textManager.setInfoTextVisible(false);
+
         this.currentTick = 0;
 
         // tslint:disable-next-line: no-console
         console.log('handleOnGameStart', event);
     };
 
-    private handleOnGameStopped = (_event: AirHockey.IGameStoppedEvent) => {
+    private handleOnGameStopped = (event: AirHockey.IGameStoppedEvent) => {
         clearInterval(this.networkTickInterval);
 
         Object.values(this.players).forEach(p => p.destroy());
@@ -239,8 +228,14 @@ export class MultiplayerScene extends Phaser.Scene {
         this.sprites.forEach(g => g.destroy());
         this.sprites = [];
 
-        this.texts.forEach(g => g.destroy());
-        this.texts = [];
+        this.textManager.setScoreTextVisible(false);
+        this.textManager.setScoreText('0', '0');
+
+        this.textManager.setInfoText([
+            `Game session ended. Reason: ${event.reason}`,
+            'Press enter to search for new match.',
+        ]);
+        this.textManager.setInfoTextVisible(true);
 
         if (this.socket) {
             this.socket.off('serverEvent');
