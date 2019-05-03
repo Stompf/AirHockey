@@ -24,6 +24,4 @@ steps:
       inputs:
         sshEndpoint: 'Deploy'
         runOptions: 'commands'
-        commands: $(dc)
-      env:
-         dc: $(deployCommand)
+        commands: 'cd /var/data/docker && ./update-lunne'
