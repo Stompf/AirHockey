@@ -24,6 +24,6 @@ steps:
       inputs:
         sshEndpoint: 'Deploy'
         runOptions: 'commands'
-        commands: $deployCommand
+        commands: $(dc)
       env:
-         deployCommand: $(deployCommand)
+         dc: $(deployCommand)
