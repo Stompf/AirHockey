@@ -20,3 +20,9 @@ steps:
           docker push $(dockerId)/$(imageName)
       env:
           pswd: $(dockerPassword)
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'Deploy'
+        runOptions: 'commands'
+        commands: 'cd /var/data/docker && ./update-lunne'
+        failOnStdErr: false
