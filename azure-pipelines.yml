@@ -25,3 +25,4 @@ steps:
         sshEndpoint: 'Deploy'
         runOptions: 'commands'
         commands: 'cd /var/data/docker && ./update-lunne'
+        failOnStdErr: false
