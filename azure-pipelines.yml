@@ -20,3 +20,10 @@ steps:
           docker push $(dockerId)/$(imageName)
       env:
           pswd: $(dockerPassword)
+    - task: SSH@0
+      inputs:
+        sshEndpoint: 'Deploy'
+        runOptions: 'commands'
+        commands: $deployCommand
+      env:
+         deployCommand: $(deployCommand)
