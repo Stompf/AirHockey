@@ -8,7 +8,7 @@ variables:
     imageName: lunne-web
     ${{ if eq(variables['build.sourceBranch'], 'refs/heads/master') }}:
     tag: latest
-    ${{ if eq(variables['build.sourceBranch'], 'refs/heads/develop') }}:
+    ${{ else }}:
     tag: beta
 
 trigger:
