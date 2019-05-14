@@ -35,6 +35,7 @@ jobs:
         serviceConnection: 'lunne-web'
         method: 'POST'
         waitForCompletion: 'true'
+        successCriteria: 204
    
 - job: Build_beta
   pool:
@@ -59,3 +60,4 @@ jobs:
         serviceConnection: 'lunne-web-beta'
         method: 'POST'
         waitForCompletion: 'true'
+        successCriteria: 204        
