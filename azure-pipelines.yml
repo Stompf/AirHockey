@@ -32,7 +32,7 @@ jobs:
 - job: Build_beta
   pool:
     vmImage: 'Ubuntu-16.04'
-  condition: eq(variables['build.sourceBranch'], 'refs/heads/develop')
+  #condition: eq(variables['build.sourceBranch'], 'refs/heads/develop')
   steps:
     - script: |
           docker build -t $(dockerId)/$(imageName):beta .
