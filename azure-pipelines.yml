@@ -3,57 +3,64 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-variables:
-    dockerId: stompf
-    imageName: lunne-web
-
 trigger:
     - master
     - develop
 
 jobs:
-- job: Build_master
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  condition: eq(variables['build.sourceBranch'], 'refs/heads/master')
-  steps:
-    - script: |
-          docker build -t $(dockerId)/$(imageName):latest .
-          docker login -u $(dockerId) -p $pswd
-          docker push $(dockerId)/$(imageName):latest
-      env:
-          pswd: $(dockerPassword)
+    - template: templates/build.yml
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/master')
+      parameters:
+          tag: 'latest'
+          invokeConnection: 'lunne-web'
+    - template: templates/build.yml
+      condition: eq(variables['build.sourceBranch'], 'refs/heads/develop')
+      parameters:
+          tag: 'beta'
+          invokeConnection: 'lunne-web-beta'
+# jobs:
+# - job: Build_master
+#   pool:
+#     vmImage: 'Ubuntu-16.04'
+#   condition: eq(variables['build.sourceBranch'], 'refs/heads/master')
+#   steps:
+#     - script: |
+#           docker build -t $(dockerId)/$(imageName):latest .
+#           docker login -u $(dockerId) -p $pswd
+#           docker push $(dockerId)/$(imageName):latest
+#       env:
+#           pswd: $(dockerPassword)
 
-- job: Web_hook_master
-  pool: 'server'
-  dependsOn: Build_master
-  condition: succeeded('Build_master')
-  steps:
-    - task: InvokeRESTAPI@1
-      inputs:
-        connectionType: connectedServiceName
-        serviceConnection: 'lunne-web'
-        method: 'POST'
-   
-- job: Build_beta
-  pool:
-    vmImage: 'Ubuntu-16.04'
-  condition: eq(variables['build.sourceBranch'], 'refs/heads/develop')
-  steps:
-    - script: |
-          docker build -t $(dockerId)/$(imageName):beta .
-          docker login -u $(dockerId) -p $pswd
-          docker push $(dockerId)/$(imageName):beta
-      env:
-          pswd: $(dockerPassword) 
+# - job: Web_hook_master
+#   pool: 'server'
+#   dependsOn: Build_master
+#   condition: succeeded('Build_master')
+#   steps:
+#     - task: InvokeRESTAPI@1
+#       inputs:
+#         connectionType: connectedServiceName
+#         serviceConnection: 'lunne-web'
+#         method: 'POST'
 
-- job: Web_hook_beta
-  pool: 'server'
-  dependsOn: Build_beta
-  condition: succeeded('Build_beta')
-  steps:
-    - task: InvokeRESTAPI@1
-      inputs:
-        connectionType: connectedServiceName
-        serviceConnection: 'lunne-web-beta'
-        method: 'POST'
+# - job: Build_beta
+#   pool:
+#     vmImage: 'Ubuntu-16.04'
+#   condition: eq(variables['build.sourceBranch'], 'refs/heads/develop')
+#   steps:
+#     - script: |
+#           docker build -t $(dockerId)/$(imageName):beta .
+#           docker login -u $(dockerId) -p $pswd
+#           docker push $(dockerId)/$(imageName):beta
+#       env:
+#           pswd: $(dockerPassword)
+
+# - job: Web_hook_beta
+#   pool: 'server'
+#   dependsOn: Build_beta
+#   condition: succeeded('Build_beta')
+#   steps:
+#     - task: InvokeRESTAPI@1
+#       inputs:
+#         connectionType: connectedServiceName
+#         serviceConnection: 'lunne-web-beta'
+#         method: 'POST'
