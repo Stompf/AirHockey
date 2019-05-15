@@ -1,8 +1,8 @@
 import { AppBar, Button, Toolbar, Typography, withStyles, WithStyles } from '@material-ui/core';
-import { StyleRules } from '@material-ui/core/styles';
+import { createStyles } from '@material-ui/core/styles';
 import React from 'react';
 
-const styles: StyleRules = {
+const styles = createStyles({
     root: {
         flexGrow: 1,
     },
@@ -15,11 +15,11 @@ const styles: StyleRules = {
         height: '50px',
         cursor: 'pointer',
     },
-};
+});
 
-type IStartProps = WithStyles;
+type IStartProps = WithStyles<typeof styles>;
 
-class Start extends React.Component<IStartProps> {
+class MainAppBarComponent extends React.Component<IStartProps> {
     public render() {
         const { classes } = this.props;
         return (
@@ -33,12 +33,8 @@ class Start extends React.Component<IStartProps> {
                                 onClick={this.onIconClick}
                             />
                         </Typography>
-                        <Button className={classes.menuButton} color="inherit">
-                            About Me
-                        </Button>
-                        <Button className={classes.menuButton} color="inherit">
-                            Games
-                        </Button>
+                        <Button color="inherit">Games</Button>
+                        <Button color="inherit">About Me</Button>
                     </Toolbar>
                 </AppBar>
             </div>
@@ -50,4 +46,4 @@ class Start extends React.Component<IStartProps> {
     };
 }
 
-export default withStyles(styles)(Start);
+export const MainAppBar = withStyles(styles)(MainAppBarComponent);
