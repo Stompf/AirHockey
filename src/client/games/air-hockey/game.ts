@@ -9,7 +9,7 @@ export class AirHockeyGame extends Phaser.Game {
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 width: 1200,
                 height: 600,
-                parent: 'game-canvas',
+                parent: 'app',
             },
             // physics: {
             //     default: 'arcade',
