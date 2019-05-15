@@ -8,17 +8,27 @@ trigger:
     - develop
 
 jobs:
-    - template: templates/build.yml
-      condition: eq(variables['build.sourceBranch'], 'refs/heads/master')
-      parameters:
-          tag: 'latest'
-          invokeConnection: 'lunne-web'
-    - template: templates/build.yml
-      condition: eq(variables['build.sourceBranch'], 'refs/heads/develop')
-      parameters:
-          tag: 'beta'
-          invokeConnection: 'lunne-web-beta'
+- template: templates/build.yml
+    parameters:
+      ${{ if eq(variables['build.sourceBranch'], 'refs/heads/develop') }}
+        tag: 'beta'
+        invokeConnection: 'lunne-web-beta'
+      ${{ if eq(variables['build.sourceBranch'], 'refs/heads/master') }}
+        tag: 'latest'
+        invokeConnection: 'lunne-web'
+
 # jobs:
+#     - ${{ if eq(variables['build.sourceBranch'], 'refs/heads/master') }}
+#       - template: templates/build.yml
+#         parameters:
+#           tag: 'latest'
+#           invokeConnection: 'lunne-web'
+#     - ${{ if eq(variables['build.sourceBranch'], 'refs/heads/develop') }}
+#       - template: templates/build.yml
+#         parameters:
+#           tag: 'beta'
+#           invokeConnection: 'lunne-web-beta'
+# # jobs:
 # - job: Build_master
 #   pool:
 #     vmImage: 'Ubuntu-16.04'
