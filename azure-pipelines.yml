@@ -7,6 +7,10 @@ trigger:
     - master
     - develop
 
+variables:
+    dockerId: stompf
+    imageName: lunne-web
+
 jobs:
     - template: templates/build.yml
       parameters:
