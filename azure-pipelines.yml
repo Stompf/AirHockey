@@ -8,15 +8,14 @@ trigger:
     - develop
 
 jobs:
-- template: templates/build.yml
-  parameters:
-    ${{ if eq(variables['build.sourceBranch'], 'refs/heads/develop') }}
-      tag: 'beta'
-      invokeConnection: 'lunne-web-beta'
-    ${{ if eq(variables['build.sourceBranch'], 'refs/heads/master') }}
-      tag: 'latest'
-      invokeConnection: 'lunne-web'
-
+    - template: templates/build.yml
+      parameters:
+          ${{ if eq(variables['build.sourceBranch'], 'refs/heads/develop') }}:
+              tag: 'beta'
+              invokeConnection: 'lunne-web-beta'
+          ${{ if eq(variables['build.sourceBranch'], 'refs/heads/master') }}:
+              tag: 'latest'
+              invokeConnection: 'lunne-web'
 # jobs:
 #     - ${{ if eq(variables['build.sourceBranch'], 'refs/heads/master') }}
 #       - template: templates/build.yml
