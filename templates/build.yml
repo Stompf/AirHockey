@@ -11,8 +11,8 @@ jobs:
                 docker build -t $(dockerId)/$(imageName):${{ parameters.tag }} .
                 docker login -u $(dockerId) -p $pswd
                 docker push $(dockerId)/$(imageName):${{ parameters.tag }}
-      env:
-          pswd: $(dockerPassword)
+            env:
+                pswd: $(dockerPassword)
 
     - job: Web_hook
       pool: 'server'
