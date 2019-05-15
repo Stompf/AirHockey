@@ -4,7 +4,7 @@ import { AirHockey, Shared, UnreachableCaseError } from 'src/shared';
 import { NetworkBall, NetworkPlayer, TextManager } from '../scripts';
 
 export class MultiplayerScene extends Phaser.Scene {
-    private cursors!: Phaser.Input.Keyboard.CursorKeys;
+    private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
     private players: Record<Shared.Id, NetworkPlayer>;
     private sprites: Phaser.GameObjects.GameObject[] = [];
 

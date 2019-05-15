@@ -2,7 +2,7 @@ import { MenuScene, MultiplayerScene } from './scenes';
 
 export class AirHockeyGame extends Phaser.Game {
     constructor() {
-        const config: GameConfig = {
+        const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
             scale: {
                 mode: Phaser.Scale.FIT,
@@ -17,7 +17,7 @@ export class AirHockeyGame extends Phaser.Game {
             //         debug: true,
             //     },
             // },
-            scene: [MenuScene, MultiplayerScene],
+            scene: [MenuScene as any, MultiplayerScene],
             disableContextMenu: true,
             backgroundColor: '0x000000',
             canvasStyle: 'border: 1px solid black',
