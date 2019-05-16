@@ -13,6 +13,7 @@ import React from 'react';
 const styles = createStyles({
     card: {
         maxWidth: 345,
+        margin: 5,
     },
     media: {
         height: 140,
@@ -29,7 +30,7 @@ class GameCardComponent extends React.Component<IGameCardProps> {
     public render() {
         const { classes, image, title, text } = this.props;
         return (
-            <Card className={classes.card}>
+            <Card className={classes.card} raised>
                 <CardActionArea>
                     <CardMedia className={classes.media} image={image} title={title} />
                     <CardContent>
