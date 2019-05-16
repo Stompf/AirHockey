@@ -18,7 +18,7 @@ export class Games extends React.Component {
                         <GameCard
                             title="Air hockey"
                             text="Play air hockey either online or locally"
-                            image="assets/games/air-hockey.png"
+                            image="assets/games/air-hockey/air-hockey.png"
                         />
                     </Grid>
                 </Grid>
