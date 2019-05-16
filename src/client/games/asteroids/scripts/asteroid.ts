@@ -38,6 +38,7 @@ export class Asteroid {
         // const sprite = scene.add.sprite(position.x, position.y, textureName) as IArcadeSprite;
         // sprite.body..addPolygon({}, verticals);
         const sprite = group.create(position.x, position.y, textureName) as IArcadeSprite;
+        scene.physics.add.existing(sprite);
 
         // sprite.body.setCollisionGroup(MASKS.ASTEROID);
         // sprite.body.collides([
@@ -73,7 +74,6 @@ export class Asteroid {
 
         // sprite.data = this;
         this.sprite = sprite;
-        scene.physics.add.existing(sprite);
     }
 
     public explode = () => {

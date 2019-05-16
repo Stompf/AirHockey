@@ -17,18 +17,20 @@ export class Player {
             scene.scale.height / 2,
             'player'
         ) as IArcadeSprite;
+        scene.physics.add.existing(sprite);
         // sprite.anchor.x = 0.5;
         // sprite.anchor.y = 0.5;
         sprite.width = 40;
         sprite.height = 30;
         sprite.body.mass = 1;
+        sprite.body.useDamping = true;
+        sprite.body.setMaxVelocity(200);
+        sprite.body.setDragX(0.99);
         // sprite.body.damping = 0;
         // sprite.body.angularDamping = 0;
         // sprite.body.setRectangle(sprite.width, sprite.height);
         // sprite.body.setCollisionGroup(MASKS.PLAYER);
         // sprite.body.collides([MASKS.ASTEROID, MASKS.POWER_UP]);
-
-        scene.physics.add.existing(sprite);
 
         this.sprite = sprite;
     }

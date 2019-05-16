@@ -6,6 +6,14 @@ export class Bullet {
     public static BulletLifeTime = 900;
     public static BulletSpeed = 1200;
 
+    public static createBulletTexture(scene: Phaser.Scene) {
+        const graphics = scene.add.graphics();
+        graphics.fillStyle(0xffffff);
+        graphics.fill();
+        graphics.arc(0, 0, Bullet.BulletRadius, 0, 2 * Math.PI, false);
+        graphics.generateTexture('bullet');
+    }
+
     public shape!: p2.Circle;
     public sprite: IArcadeSprite;
 
@@ -16,13 +24,8 @@ export class Bullet {
         velocity: WebKitPoint,
         group: Phaser.GameObjects.Group
     ) {
-        const graphics = scene.add.graphics();
-        graphics.fillStyle(0xffffff);
-        graphics.fill();
-        graphics.arc(0, 0, Bullet.BulletRadius, 0, 2 * Math.PI, false);
-        graphics.generateTexture('bullet');
-
         const sprite = group.create(position.x, position.y, 'bullet') as IArcadeSprite;
+        scene.physics.add.existing(sprite);
 
         sprite.body.mass = 0.05;
         sprite.body.velocity.x = Bullet.BulletSpeed * Math.cos(angle) + velocity.x;
@@ -33,7 +36,6 @@ export class Bullet {
 
         // sprite.body.setCollisionGroup(MASKS.BULLET);
         // sprite.body.collides([MASKS.ASTEROID, MASKS.POWER_UP]);
-        scene.physics.add.existing(sprite);
 
         this.sprite = sprite;
 

@@ -15,3 +15,14 @@ export function constrainVelocity(sprite: IArcadeSprite, maxVelocity: number) {
         sprite.body.velocity.set(vx, vy);
     }
 }
+
+export function createGroups(scene: Phaser.Scene) {
+    return {
+        player: scene.add.group(),
+        asteroids: scene.add.group(),
+        bullets: scene.add.group(),
+        powerUps: scene.add.group(),
+    };
+}
+
+export type Groups = ReturnType<typeof createGroups>;

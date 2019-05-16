@@ -55,6 +55,7 @@ export class PowerUpShield extends BasePowerUp {
         // graphics.endFill();
 
         const shieldSprite = this.group.create(0, 0, 'shield');
+        scene.physics.add.existing(shieldSprite);
 
         shieldSprite.body.setCircle(this.radius);
         // shieldSprite.body.setCollisionGroup(shieldSprite.game.physics.p2.everythingCollisionGroup);

@@ -30,6 +30,7 @@
         "source.fixAll.tslint": true
     },
     "cSpell.words": [
+        "RESPAWN",
         "Unmount",
         "renderable"
     ]

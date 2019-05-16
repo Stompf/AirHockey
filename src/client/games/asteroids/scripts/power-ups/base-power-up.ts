@@ -15,6 +15,7 @@ export class BasePowerUp {
         protected group: Phaser.GameObjects.Group
     ) {
         const sprite = group.create(position.x, position.y, spriteName) as IArcadeSprite;
+        scene.physics.add.existing(sprite);
         // sprite.anchor.x = 0.5;
         // sprite.anchor.y = 0.5;
 

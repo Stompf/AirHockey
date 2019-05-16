@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Start } from './views';
+import Asteroids from './games/asteroids/asteroids';
+// import { Start } from './views';
 
-ReactDOM.render(<Start />, document.getElementById('app'));
+ReactDOM.render(<Asteroids />, document.getElementById('app'));

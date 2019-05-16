@@ -1,11 +1,13 @@
 import Phaser from 'phaser';
 
-export type IMapping = typeof PlayerMapping;
+export function createPlayerKeyboard(scene: Phaser.Scene) {
+    return {
+        up: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP),
+        down: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN),
+        left: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT),
+        right: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT),
+        fire: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+    };
+}
 
-export const PlayerMapping = {
-    up: Phaser.Input.Keyboard.KeyCodes.UP,
-    down: Phaser.Input.Keyboard.KeyCodes.DOWN,
-    left: Phaser.Input.Keyboard.KeyCodes.LEFT,
-    right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-    fire: Phaser.Input.Keyboard.KeyCodes.SPACE,
-};
+export type PlayerKeyboard = ReturnType<typeof createPlayerKeyboard>;
