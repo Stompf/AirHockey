@@ -1,7 +1,7 @@
-import { MenuScene, MultiplayerScene } from './scenes';
+import { MenuScene, MultiplayerScene } from '../scenes';
 
 export class AirHockeyGame extends Phaser.Game {
-    constructor() {
+    constructor(parent: string) {
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
             scale: {
@@ -9,7 +9,7 @@ export class AirHockeyGame extends Phaser.Game {
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 width: 1200,
                 height: 600,
-                parent: 'app',
+                parent,
             },
             // physics: {
             //     default: 'arcade',
@@ -24,5 +24,9 @@ export class AirHockeyGame extends Phaser.Game {
         };
 
         super(config);
+    }
+
+    public destroy() {
+        this.destroy();
     }
 }

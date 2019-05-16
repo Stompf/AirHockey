@@ -28,5 +28,9 @@
     "emmet.showExpandedAbbreviation": "never",
     "editor.codeActionsOnSave": {
         "source.fixAll.tslint": true
-    }
+    },
+    "cSpell.words": [
+        "Unmount",
+        "renderable"
+    ]
 }
