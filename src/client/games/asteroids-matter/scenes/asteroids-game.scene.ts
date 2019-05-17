@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
-import { Bullet, Player } from '../scripts';
+import { Asteroid, Bullet, Player } from '../scripts';
+import { flags } from '../scripts/flags';
 
 export class AsteroidGameScene extends Phaser.Scene {
     private pointsText!: Phaser.GameObjects.Text;
     private livesText!: Phaser.GameObjects.Text;
 
+    private currentLevel = 1;
     private player!: Player;
 
     constructor() {
@@ -48,10 +50,14 @@ export class AsteroidGameScene extends Phaser.Scene {
     private updatePhysics() {
         this.player.onUpdate(this.time.now);
 
-        this.warp(this.player.sprite);
+        this.children.list.forEach(gameObject => {
+            if (gameObject.type === 'Image') {
+                this.warp(gameObject as Phaser.GameObjects.Image);
+            }
+        });
     }
 
-    private warp(sprite: Phaser.Physics.Matter.Image) {
+    private warp(sprite: Phaser.GameObjects.Image) {
         const p = { x: sprite.x, y: sprite.y };
         if (p.x > this.sys.canvas.width) {
             p.x = 0;
@@ -71,6 +77,8 @@ export class AsteroidGameScene extends Phaser.Scene {
 
     private startNewGame() {
         this.player = new Player(this);
+
+        this.addAsteroids();
     }
 
     private addBackground() {
@@ -104,5 +112,35 @@ export class AsteroidGameScene extends Phaser.Scene {
     private updateHUD() {
         this.pointsText.setText('Points: ' + this.player.points);
         this.livesText.setText('Lives: ' + this.player.lives);
+    }
+
+    private addAsteroids() {
+        if (!flags.SPAWN_ASTEROIDS) {
+            return;
+        }
+
+        for (let i = 0; i < this.currentLevel; i++) {
+            const x = Math.random() * this.sys.canvas.width;
+            let y = Math.random() * this.sys.canvas.height;
+            const vx = (Math.random() - 0.5) * Asteroid.MaxAsteroidSpeed;
+            const vy = (Math.random() - 0.5) * Asteroid.MaxAsteroidSpeed;
+            const va = (Math.random() - 0.5) * Asteroid.MaxAsteroidSpeed;
+
+            // Avoid the ship!
+            if (Math.abs(x - this.player.sprite.x) < Asteroid.InitSpace) {
+                if (y - this.player.sprite.y > 0) {
+                    y += Asteroid.InitSpace;
+                } else {
+                    y -= Asteroid.InitSpace;
+                }
+            }
+
+            this.createAstroid({ x, y }, { x: vx, y: vy }, va, i);
+        }
+    }
+
+    private createAstroid(position: WebKitPoint, velocity: WebKitPoint, va: number, index: number) {
+        const asteroid = new Asteroid(this, position, velocity, va, 0, index);
+        return asteroid;
     }
 }
