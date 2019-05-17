@@ -34,6 +34,7 @@
         "RESPAWN",
         "Unmount",
         "renderable",
-        "stompf"
+        "stompf",
+        "verts"
     ]
 }

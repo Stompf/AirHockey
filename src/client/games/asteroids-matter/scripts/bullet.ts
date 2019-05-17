@@ -7,6 +7,7 @@ export class Bullet {
 
     public static createBulletTexture(scene: Phaser.Scene) {
         const graphics = scene.add.graphics();
+        graphics.setVisible(false);
         graphics.fillStyle(0xffffff);
         graphics.fillCircle(0, 0, Bullet.BulletRadius);
         graphics.generateTexture('bullet', Bullet.BulletRadius, Bullet.BulletRadius);

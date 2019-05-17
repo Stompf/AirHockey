@@ -30,48 +30,29 @@ export class Asteroid {
         const verticals = this.addAsteroidVerticals();
 
         const graphics = scene.add.graphics();
+
+        graphics.setVisible(false);
         this.createBodyGraphics(graphics, verticals);
         const textureName = `Asteroid-${index}-${level}`;
         graphics.generateTexture(textureName, 100, 100);
 
-        // const sprite = scene.add.sprite(position.x, position.y, textureName) as IArcadeSprite;
-        // sprite.body..addPolygon({}, verticals);
         const sprite = scene.matter.add.image(position.x, position.y, textureName) as IMatterSprite;
 
-        // sprite.body.setCollisionGroup(MASKS.ASTEROID);
-        // sprite.body.collides([
-        //     game.physics.p2.everythingCollisionGroup,
-        //     MASKS.ASTEROID,
-        //     MASKS.BULLET,
-        //     MASKS.PLAYER,
-        //     MASKS.POWER_UP,
-        // ]);
+        sprite.setBody(
+            {
+                type: 'fromVerts',
+                x: position.x,
+                y: position.y,
+                verts: verticals,
+            },
+            {}
+        );
 
-        sprite.setOrigin(0, 0);
         sprite.setMass(10 / (level + 1));
         sprite.setFrictionAir(0);
         sprite.setVelocity(velocity.x, velocity.y);
         sprite.setAngularVelocity(angularVelocity);
-        // sprite.body.damping = 0;
-        // sprite.body.angularDamping = 0;
 
-        // sprite.body.createGroupCallback(
-        //     MASKS.BULLET,
-        //     (asteroidBody: Phaser.Physics.P2.Body, impactedBody: Phaser.Physics.P2.Body) => {
-        //         eventEmitter.emit(Events.AsteroidDestroyed, asteroidBody, impactedBody);
-        //     },
-        //     this
-        // );
-
-        // sprite.body.createGroupCallback(
-        //     MASKS.PLAYER,
-        //     () => {
-        //         eventEmitter.emit(Events.AsteroidPlayerHit);
-        //     },
-        //     this
-        // );
-
-        // sprite.data = this;
         this.sprite = sprite;
     }
 
@@ -91,13 +72,13 @@ export class Asteroid {
         }
     };
 
-    private createBodyGraphics(graphics: Phaser.GameObjects.Graphics, concavePath: number[][]) {
+    private createBodyGraphics(graphics: Phaser.GameObjects.Graphics, concavePath: WebKitPoint[]) {
         graphics.lineStyle(this.strokeWidth, this.strokeColor);
         graphics.fillStyle(this.fillColor);
         graphics.beginPath();
         for (let j = 0; j < concavePath.length; j++) {
-            const xv = concavePath[j][0];
-            const yv = concavePath[j][1];
+            const xv = concavePath[j].x;
+            const yv = concavePath[j].y;
             if (j === 0) {
                 graphics.moveTo(xv, yv);
             } else {
@@ -106,12 +87,14 @@ export class Asteroid {
         }
         if (concavePath.length > 2) {
             graphics.moveTo(
-                concavePath[concavePath.length - 1][0],
-                concavePath[concavePath.length - 1][1]
+                concavePath[concavePath.length - 1].x,
+                concavePath[concavePath.length - 1].y
             );
-            graphics.lineTo(concavePath[0][0], concavePath[0][1]);
+            graphics.lineTo(concavePath[0].x, concavePath[0].y);
         }
-        graphics.fill();
+        graphics.closePath();
+        graphics.fillPath();
+        graphics.strokePath();
     }
 
     private getSubAstroidPosition = (
@@ -156,12 +139,12 @@ export class Asteroid {
         for (let j = 0; j < Asteroid.NumAsteroidVerticals; j++) {
             const angle = (j * 2 * Math.PI) / Asteroid.NumAsteroidVerticals;
             const xv = Number(
-                (radius * Math.cos(angle) + (Math.random() - 0.5) * radius * 0.4).toFixed(2)
+                (radius * Math.cos(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2)
             );
             const yv = Number(
-                (radius * Math.sin(angle) + (Math.random() - 0.5) * radius * 0.4).toFixed(2)
+                (radius * Math.sin(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2)
             );
-            verticals.push([xv, yv]);
+            verticals.push({ x: xv, y: yv });
         }
         return verticals;
     }

@@ -6,7 +6,7 @@ export class AsteroidGameScene extends Phaser.Scene {
     private pointsText!: Phaser.GameObjects.Text;
     private livesText!: Phaser.GameObjects.Text;
 
-    private currentLevel = 1;
+    private currentLevel = 50;
     private player!: Player;
 
     constructor() {
@@ -124,7 +124,7 @@ export class AsteroidGameScene extends Phaser.Scene {
             let y = Math.random() * this.sys.canvas.height;
             const vx = (Math.random() - 0.5) * Asteroid.MaxAsteroidSpeed;
             const vy = (Math.random() - 0.5) * Asteroid.MaxAsteroidSpeed;
-            const va = (Math.random() - 0.5) * Asteroid.MaxAsteroidSpeed;
+            const va = (Math.random() - 0.5) / 30;
 
             // Avoid the ship!
             if (Math.abs(x - this.player.sprite.x) < Asteroid.InitSpace) {
