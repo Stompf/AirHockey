@@ -15,7 +15,7 @@ export class AsteroidGameScene extends Phaser.Scene {
 
     private player!: Player;
     private INVULNERABLE = false;
-    private SPAWN_ASTEROIDS = true;
+    private SPAWN_ASTEROIDS = false;
 
     private currentLevel = 1;
     private powerUps: BasePowerUp[] = [];

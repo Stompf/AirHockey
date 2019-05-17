@@ -30,8 +30,10 @@
         "source.fixAll.tslint": true
     },
     "cSpell.words": [
+        "Lundmark",
         "RESPAWN",
         "Unmount",
-        "renderable"
+        "renderable",
+        "stompf"
     ]
 }

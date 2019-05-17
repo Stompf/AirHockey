@@ -13,15 +13,15 @@ export class Player {
 
     constructor(scene: Phaser.Scene, group: Phaser.GameObjects.Group) {
         const sprite = group.create(
-            scene.scale.width / 2,
-            scene.scale.height / 2,
+            scene.sys.canvas.width / 2,
+            scene.sys.canvas.height / 2,
             'player'
         ) as IArcadeSprite;
         scene.physics.add.existing(sprite);
         // sprite.anchor.x = 0.5;
         // sprite.anchor.y = 0.5;
-        sprite.width = 40;
-        sprite.height = 30;
+        sprite.displayWidth = 40;
+        sprite.displayHeight = 30;
         sprite.body.mass = 1;
         sprite.body.useDamping = true;
         sprite.body.setMaxVelocity(200);
