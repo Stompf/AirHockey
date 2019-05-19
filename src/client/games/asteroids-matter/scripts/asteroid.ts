@@ -103,13 +103,12 @@ export class Asteroid {
         index: number,
         totalSplits: number
     ) => {
-        if (totalSplits === 1) {
-            return bodyPosition.splice(0);
-        }
-        return [
-            this.sprite.x + (radius / 1.25) * (index <= totalSplits / 2 ? 1 : -1),
-            this.sprite.y + (radius / 1.25) * (index % 2 === 0 ? 1 : -1),
-        ];
+        return totalSplits === 1
+            ? bodyPosition.splice(0)
+            : [
+                  this.sprite.x + (radius / 1.25) * (index <= totalSplits / 2 ? 1 : -1),
+                  this.sprite.y + (radius / 1.25) * (index % 2 === 0 ? 1 : -1),
+              ];
     };
 
     private createSubAsteroid = (x: number, y: number, angle: number, index: number) => {

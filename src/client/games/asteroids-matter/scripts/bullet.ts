@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 
 export class Bullet {
-    public static BulletRadius = 3;
+    public static BulletRadius = 4;
     public static BulletLifeTime = 900;
     public static BulletSpeed = 25;
 
@@ -9,8 +9,8 @@ export class Bullet {
         const graphics = scene.add.graphics();
         graphics.setVisible(false);
         graphics.fillStyle(0xffffff);
-        graphics.fillCircle(0, 0, Bullet.BulletRadius);
-        graphics.generateTexture('bullet', Bullet.BulletRadius, Bullet.BulletRadius);
+        graphics.fillCircle(Bullet.BulletRadius, Bullet.BulletRadius, Bullet.BulletRadius);
+        graphics.generateTexture('bullet', Bullet.BulletRadius * 2, Bullet.BulletRadius * 2);
     }
 
     public sprite: Phaser.Physics.Matter.Image;
@@ -19,6 +19,7 @@ export class Bullet {
         const sprite = scene.matter.add.image(position.x, position.y, 'bullet');
 
         sprite.setMass(1);
+        sprite.setCircle(Bullet.BulletRadius, {});
         sprite.setVelocity(
             Bullet.BulletSpeed * Math.cos(angle) + velocity.x,
             Bullet.BulletSpeed * Math.sin(angle) + velocity.y
