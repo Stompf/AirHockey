@@ -16,13 +16,13 @@ export function constrainVelocity(sprite: IArcadeSprite, maxVelocity: number) {
     }
 }
 
-export function createGroups(scene: Phaser.Scene) {
+export function createPhysicsCategories(scene: Phaser.Scene) {
     return {
-        player: scene.add.group(),
-        asteroids: scene.add.group(),
-        bullets: scene.add.group(),
-        powerUps: scene.add.group(),
+        player: scene.matter.world.nextCategory(),
+        asteroids: scene.matter.world.nextCategory(),
+        bullets: scene.matter.world.nextCategory(),
+        powerUps: scene.matter.world.nextCategory(),
     };
 }
 
-export type Groups = ReturnType<typeof createGroups>;
+export type PhysicsCategories = ReturnType<typeof createPhysicsCategories>;

@@ -3,6 +3,7 @@ import { IMatterSprite } from '../../common';
 import { flags } from '../debug';
 import { Bullet } from './bullet';
 import { createPlayerKeyboard, PlayerKeyboard } from './key-mapping';
+import { PhysicsCategories } from './utils';
 
 export class Player {
     public lives = 3;
@@ -16,7 +17,7 @@ export class Player {
 
     private playerKeyboard: PlayerKeyboard;
 
-    constructor(private scene: Phaser.Scene) {
+    constructor(private scene: Phaser.Scene, category: PhysicsCategories) {
         const sprite = scene.matter.add.image(
             scene.sys.canvas.width / 2,
             scene.sys.canvas.height / 2,
@@ -27,6 +28,9 @@ export class Player {
         sprite.setFrictionAir(0.0001);
         sprite.setMass(30);
         sprite.setFixedRotation();
+        sprite.setCollisionCategory(category.player);
+
+        sprite.setCollidesWith([category.asteroids, category.powerUps]);
 
         this.playerKeyboard = createPlayerKeyboard(scene);
 

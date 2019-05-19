@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { flags } from '../debug';
-import { Asteroid, Bullet, Player } from '../scripts';
+import { Asteroid, Bullet, createPhysicsCategories, PhysicsCategories, Player } from '../scripts';
 
 export class AsteroidGameScene extends Phaser.Scene {
     private pointsText!: Phaser.GameObjects.Text;
@@ -8,6 +8,7 @@ export class AsteroidGameScene extends Phaser.Scene {
 
     private currentLevel = 1;
     private player!: Player;
+    private physicsCategories!: PhysicsCategories;
 
     constructor() {
         super({
@@ -76,7 +77,8 @@ export class AsteroidGameScene extends Phaser.Scene {
     }
 
     private startNewGame() {
-        this.player = new Player(this);
+        this.physicsCategories = createPhysicsCategories(this);
+        this.player = new Player(this, this.physicsCategories);
 
         this.addAsteroids();
     }
