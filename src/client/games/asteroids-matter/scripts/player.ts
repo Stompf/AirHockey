@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { IMatterSprite } from '../../common';
+import { flags } from '../debug';
 import { Bullet } from './bullet';
-import { flags } from './flags';
 import { createPlayerKeyboard, PlayerKeyboard } from './key-mapping';
 
 export class Player {

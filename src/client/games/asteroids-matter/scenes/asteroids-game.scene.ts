@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
+import { flags } from '../debug';
 import { Asteroid, Bullet, Player } from '../scripts';
-import { flags } from '../scripts/flags';
 
 export class AsteroidGameScene extends Phaser.Scene {
     private pointsText!: Phaser.GameObjects.Text;
     private livesText!: Phaser.GameObjects.Text;
 
-    private currentLevel = 50;
+    private currentLevel = 1;
     private player!: Player;
 
     constructor() {
