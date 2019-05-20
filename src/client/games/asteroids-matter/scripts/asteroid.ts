@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { IMatterSprite } from '../../common';
+import { PhysicsCategories } from './utils';
 
 export class Asteroid {
     public static MaxAsteroidSpeed = 2;
@@ -23,7 +24,8 @@ export class Asteroid {
         velocity: WebKitPoint,
         angularVelocity: number,
         level: number,
-        index: number
+        index: number,
+        private physicsCategories: PhysicsCategories
     ) {
         this.level = level;
 
@@ -34,7 +36,7 @@ export class Asteroid {
         graphics.setVisible(false);
         this.createBodyGraphics(graphics, verticals);
         const textureName = `Asteroid-${index}-${level}`;
-        graphics.generateTexture(textureName, 100, 100);
+        graphics.generateTexture(textureName, this.getRadius() * 2, this.getRadius() * 2);
 
         const sprite = scene.matter.add.image(position.x, position.y, textureName) as IMatterSprite;
 
@@ -53,6 +55,16 @@ export class Asteroid {
         sprite.setVelocity(velocity.x, velocity.y);
         sprite.setAngularVelocity(angularVelocity);
 
+        sprite.setCollisionCategory(physicsCategories.asteroids);
+
+        sprite.setCollidesWith([
+            physicsCategories.asteroids,
+            physicsCategories.player,
+            physicsCategories.bullet,
+            physicsCategories.powerUps,
+        ]);
+
+        sprite.setData('type', this);
         this.sprite = sprite;
     }
 
@@ -71,6 +83,12 @@ export class Asteroid {
             }
         }
     };
+
+    public destroy() {
+        if (this.sprite.visible) {
+            this.sprite.destroy();
+        }
+    }
 
     private createBodyGraphics(graphics: Phaser.GameObjects.Graphics, concavePath: WebKitPoint[]) {
         graphics.lineStyle(this.strokeWidth, this.strokeColor);
@@ -126,7 +144,8 @@ export class Asteroid {
             velocity,
             this.sprite.body.angularVelocity,
             this.level + 1,
-            index
+            index,
+            this.physicsCategories
         );
         return subAsteroid;
     };

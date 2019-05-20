@@ -17,7 +17,7 @@ export class Player {
 
     private playerKeyboard: PlayerKeyboard;
 
-    constructor(private scene: Phaser.Scene, category: PhysicsCategories) {
+    constructor(private scene: Phaser.Scene, private physicsCategories: PhysicsCategories) {
         const sprite = scene.matter.add.image(
             scene.sys.canvas.width / 2,
             scene.sys.canvas.height / 2,
@@ -28,11 +28,13 @@ export class Player {
         sprite.setFrictionAir(0.0001);
         sprite.setMass(30);
         sprite.setFixedRotation();
-        sprite.setCollisionCategory(category.player);
+        sprite.setCollisionCategory(physicsCategories.player);
 
-        sprite.setCollidesWith([category.asteroids, category.powerUps]);
+        sprite.setCollidesWith([physicsCategories.asteroids, physicsCategories.powerUps]);
 
         this.playerKeyboard = createPlayerKeyboard(scene);
+
+        sprite.setData('type', this);
 
         this.sprite = sprite;
     }
@@ -67,7 +69,8 @@ export class Player {
             this.scene,
             angle,
             { x: this.sprite.x, y: this.sprite.y },
-            this.sprite.body.velocity
+            this.sprite.body.velocity,
+            this.physicsCategories
         );
 
         // Keep track of the last time we shot

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { CollisionStartEvent, ICollisionStartEvent, IPairCollision } from '../../common';
 import { flags } from '../debug';
 import { Asteroid, Bullet, createPhysicsCategories, PhysicsCategories, Player } from '../scripts';
 
@@ -35,15 +36,12 @@ export class AsteroidGameScene extends Phaser.Scene {
         this.load.image('background', '/assets/games/asteroids/Backgrounds/space.jpg');
         Bullet.createBulletTexture(this);
 
-        // this.gameGroups = createGroups(this);
-        // this.gameOverGroup = this.add.group();
+        this.handleCollisions();
     }
 
     protected create() {
         this.addBackground();
         this.addHUD();
-        // // this.listenToEvents();
-        // this.createTimers();
 
         this.startNewGame();
     }
@@ -52,10 +50,48 @@ export class AsteroidGameScene extends Phaser.Scene {
         this.player.onUpdate(this.time.now);
 
         this.children.list.forEach(gameObject => {
-            if (gameObject.type === 'Image') {
+            if (gameObject.type === 'Image' && !(gameObject.getData('type') instanceof Bullet)) {
                 this.warp(gameObject as Phaser.GameObjects.Image);
             }
         });
+    }
+
+    private handleCollisions() {
+        this.matter.world.on(CollisionStartEvent, (event: ICollisionStartEvent) => {
+            event.pairs.forEach(pair => {
+                const asteroid = this.getType<Asteroid>(pair, Asteroid);
+                const bullet = this.getType<Bullet>(pair, Bullet);
+                const player = this.getType<Player>(pair, Player);
+
+                if (asteroid && bullet) {
+                    bullet.destroy();
+                    asteroid.explode();
+                    asteroid.destroy();
+                }
+
+                if (asteroid && player) {
+                    player.lives--;
+                }
+            });
+        });
+    }
+
+    // tslint:disable-next-line: ban-types
+    private getType<T extends any>(pair: IPairCollision, obj: any): T | null {
+        if (pair.bodyA.gameObject == null || pair.bodyB.gameObject == null) {
+            return null;
+        }
+
+        const bodyA = pair.bodyA.gameObject.getData('type');
+        const bodyB = pair.bodyB.gameObject.getData('type');
+
+        if (bodyA instanceof obj) {
+            return bodyA as T;
+        } else if (bodyB instanceof obj) {
+            return bodyB as T;
+        } else {
+            return null;
+        }
     }
 
     private warp(sprite: Phaser.GameObjects.Image) {
@@ -142,7 +178,15 @@ export class AsteroidGameScene extends Phaser.Scene {
     }
 
     private createAstroid(position: WebKitPoint, velocity: WebKitPoint, va: number, index: number) {
-        const asteroid = new Asteroid(this, position, velocity, va, 0, index);
+        const asteroid = new Asteroid(
+            this,
+            position,
+            velocity,
+            va,
+            0,
+            index,
+            this.physicsCategories
+        );
         return asteroid;
     }
 }

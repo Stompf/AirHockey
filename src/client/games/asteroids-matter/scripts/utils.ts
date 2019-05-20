@@ -20,7 +20,7 @@ export function createPhysicsCategories(scene: Phaser.Scene) {
     return {
         player: scene.matter.world.nextCategory(),
         asteroids: scene.matter.world.nextCategory(),
-        bullets: scene.matter.world.nextCategory(),
+        bullet: scene.matter.world.nextCategory(),
         powerUps: scene.matter.world.nextCategory(),
     };
 }

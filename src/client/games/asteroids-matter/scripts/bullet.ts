@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { PhysicsCategories } from './utils';
 
 export class Bullet {
     public static BulletRadius = 4;
@@ -15,7 +16,13 @@ export class Bullet {
 
     public sprite: Phaser.Physics.Matter.Image;
 
-    constructor(scene: Phaser.Scene, angle: number, position: WebKitPoint, velocity: WebKitPoint) {
+    constructor(
+        scene: Phaser.Scene,
+        angle: number,
+        position: WebKitPoint,
+        velocity: WebKitPoint,
+        physicsCategory: PhysicsCategories
+    ) {
         const sprite = scene.matter.add.image(position.x, position.y, 'bullet');
 
         sprite.setMass(1);
@@ -24,12 +31,21 @@ export class Bullet {
             Bullet.BulletSpeed * Math.cos(angle) + velocity.x,
             Bullet.BulletSpeed * Math.sin(angle) + velocity.y
         );
+        sprite.setCollisionCategory(physicsCategory.bullet);
+        sprite.setCollidesWith([
+            physicsCategory.bullet,
+            physicsCategory.asteroids,
+            physicsCategory.powerUps,
+        ]);
+
+        sprite.setData('type', this);
+
         this.sprite = sprite;
 
         scene.time.delayedCall(Bullet.BulletLifeTime, this.destroy, [], this);
     }
 
-    private destroy() {
+    public destroy() {
         if (this.sprite.visible) {
             this.sprite.destroy();
         }

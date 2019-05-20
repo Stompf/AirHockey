@@ -33,6 +33,8 @@
         "Lundmark",
         "RESPAWN",
         "Unmount",
+        "collisionstart",
+        "matterjs",
         "renderable",
         "stompf",
         "verts"

@@ -1,2 +1,2 @@
 export * from './arcade-sprite';
-export * from './matter-sprite';
+export * from './matterjs';
