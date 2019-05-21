@@ -3,7 +3,7 @@ import { IMatterSprite } from '../../common';
 import { PhysicsCategories } from './utils';
 
 export class Asteroid {
-    public static MaxAsteroidSpeed = 2;
+    public static MaxAsteroidSpeed = 5;
     public static NumAsteroidLevels = 4;
     public static NumAsteroidVerticals = 10;
     public static AsteroidRadius = 50;
@@ -61,6 +61,7 @@ export class Asteroid {
             physicsCategories.asteroids,
             physicsCategories.player,
             physicsCategories.bullet,
+            physicsCategories.shield,
             physicsCategories.powerUps,
         ]);
 
@@ -136,7 +137,10 @@ export class Asteroid {
             y: y + r * Math.sin(angle),
         };
 
-        const velocity = { x: Math.random() - 0.5, y: Math.random() - 0.5 };
+        const velocity = {
+            x: (Math.random() - 0.5) * Asteroid.MaxAsteroidSpeed,
+            y: (Math.random() - 0.5) * Asteroid.MaxAsteroidSpeed,
+        };
 
         const subAsteroid = new Asteroid(
             this.scene,

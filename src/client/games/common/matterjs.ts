@@ -17,5 +17,5 @@ export interface IPairCollision {
 }
 
 interface ICollisionBody {
-    gameObject: Phaser.GameObjects.GameObject;
+    gameObject: Phaser.GameObjects.GameObject | null;
 }

@@ -22,6 +22,7 @@ export function createPhysicsCategories(scene: Phaser.Scene) {
         asteroids: scene.matter.world.nextCategory(),
         bullet: scene.matter.world.nextCategory(),
         powerUps: scene.matter.world.nextCategory(),
+        shield: scene.matter.world.nextCategory(),
     };
 }
 

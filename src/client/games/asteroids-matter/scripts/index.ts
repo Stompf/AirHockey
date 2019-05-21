@@ -3,3 +3,4 @@ export * from './utils';
 export * from './player';
 export * from './asteroid';
 export * from './bullet';
+export * from './power-ups';

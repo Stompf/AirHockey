@@ -1,15 +1,27 @@
 import Phaser from 'phaser';
 import { CollisionStartEvent, ICollisionStartEvent, IPairCollision } from '../../common';
 import { flags } from '../debug';
-import { Asteroid, Bullet, createPhysicsCategories, PhysicsCategories, Player } from '../scripts';
+import {
+    Asteroid,
+    BasePowerUp,
+    Bullet,
+    createPhysicsCategories,
+    PhysicsCategories,
+    Player,
+    PowerUpShield,
+    PowerUpShootSpeed,
+} from '../scripts';
 
 export class AsteroidGameScene extends Phaser.Scene {
     private pointsText!: Phaser.GameObjects.Text;
     private livesText!: Phaser.GameObjects.Text;
-
+    private readonly PLAYER_RESPAWN_TIME = 1000;
+    private readonly powerUpShieldPercent = 1;
+    private readonly maxPowerUpsOnScreen = 2;
     private currentLevel = 1;
     private player!: Player;
     private physicsCategories!: PhysicsCategories;
+    private powerUps: BasePowerUp[] = [];
 
     constructor() {
         super({
@@ -34,7 +46,10 @@ export class AsteroidGameScene extends Phaser.Scene {
             '/assets/games/asteroids/PNG/Power-ups/powerUpBlue_shield.png'
         );
         this.load.image('background', '/assets/games/asteroids/Backgrounds/space.jpg');
+
         Bullet.createBulletTexture(this);
+
+        PowerUpShield.createShieldTexture(this);
 
         this.handleCollisions();
     }
@@ -54,6 +69,8 @@ export class AsteroidGameScene extends Phaser.Scene {
                 this.warp(gameObject as Phaser.GameObjects.Image);
             }
         });
+
+        this.powerUps.forEach(powerUp => powerUp.onUpdate());
     }
 
     private handleCollisions() {
@@ -62,18 +79,76 @@ export class AsteroidGameScene extends Phaser.Scene {
                 const asteroid = this.getType<Asteroid>(pair, Asteroid);
                 const bullet = this.getType<Bullet>(pair, Bullet);
                 const player = this.getType<Player>(pair, Player);
+                const powerUp = this.getType<BasePowerUp>(pair, BasePowerUp);
 
                 if (asteroid && bullet) {
+                    this.player.points += 10;
+
                     bullet.destroy();
+
+                    if (
+                        Math.random() <= this.powerUpShieldPercent &&
+                        this.powerUps.length < this.maxPowerUpsOnScreen
+                    ) {
+                        this.spawnRandomPowerUp(asteroid.sprite.body.position);
+                    }
+
                     asteroid.explode();
                     asteroid.destroy();
                 }
 
-                if (asteroid && player) {
-                    player.lives--;
+                if (asteroid && player && player.allowCollision()) {
+                    const remainingLives = player.kill();
+                    if (remainingLives > 0) {
+                        this.time.delayedCall(
+                            this.PLAYER_RESPAWN_TIME,
+                            this.respawnPlayer,
+                            [],
+                            this
+                        );
+                    }
+                }
+
+                if (player && player.isAlive() && powerUp) {
+                    const index = this.powerUps.indexOf(powerUp);
+                    if (index >= 0) {
+                        this.powerUps.splice(index, 1);
+                    }
+
+                    powerUp.activate(player);
                 }
             });
         });
+    }
+
+    private spawnRandomPowerUp(position: WebKitPoint) {
+        const randomRoll = Math.random();
+        let powerUp: BasePowerUp;
+        if (randomRoll >= 0.5) {
+            powerUp = new PowerUpShield(this, position, { x: 0, y: 0 }, 1, this.physicsCategories);
+        } else {
+            powerUp = new PowerUpShootSpeed(
+                this,
+                position,
+                { x: 0, y: 0 },
+                1,
+                this.physicsCategories
+            );
+        }
+        this.powerUps.push(powerUp);
+    }
+
+    private respawnPlayer() {
+        this.player.respawn();
+
+        const shield = new PowerUpShield(
+            this,
+            { x: this.player.sprite.x, y: this.player.sprite.y },
+            this.player.sprite.body.velocity,
+            this.player.sprite.body.angularVelocity,
+            this.physicsCategories
+        );
+        shield.activate(this.player);
     }
 
     // tslint:disable-next-line: ban-types
@@ -115,6 +190,7 @@ export class AsteroidGameScene extends Phaser.Scene {
     private startNewGame() {
         this.physicsCategories = createPhysicsCategories(this);
         this.player = new Player(this, this.physicsCategories);
+        this.powerUps = [];
 
         this.addAsteroids();
     }
@@ -135,12 +211,14 @@ export class AsteroidGameScene extends Phaser.Scene {
             fill: '#FFFFFF',
             fontSize: 12,
         });
+        pointsText.setDepth(10);
         pointsText.setOrigin(0, 0);
 
         const livesText = this.add.text(0, pointsText.height, 'Lives: ', {
             fill: '#FFFFFF',
             fontSize: 12,
         });
+        livesText.setDepth(10);
         livesText.setOrigin(0, 0);
 
         this.pointsText = pointsText;

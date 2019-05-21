@@ -9,8 +9,8 @@ export class Player {
     public lives = 3;
     public points = 0;
     public sprite: IMatterSprite;
-    private hasShield: boolean = false;
-    private reloadTime = 200;
+    public reloadTime = 200;
+    private shieldSprite: IMatterSprite | undefined;
     private lastShootTime = 0;
     private thrustSpeed = 0.02;
     private turnSpeed = 0.05;
@@ -26,10 +26,11 @@ export class Player {
 
         sprite.setDisplaySize(40, 30);
         sprite.setFrictionAir(0.0001);
+        sprite.setVelocity(-0.5, 0.5);
         sprite.setMass(30);
         sprite.setFixedRotation();
-        sprite.setCollisionCategory(physicsCategories.player);
 
+        sprite.setCollisionCategory(physicsCategories.player);
         sprite.setCollidesWith([physicsCategories.asteroids, physicsCategories.powerUps]);
 
         this.playerKeyboard = createPlayerKeyboard(scene);
@@ -56,13 +57,52 @@ export class Player {
             this.shoot();
             this.lastShootTime = time;
         }
+
+        if (this.shieldSprite) {
+            this.shieldSprite.setPosition(this.sprite.body.position.x, this.sprite.body.position.y);
+        }
+    }
+
+    public kill() {
+        this.lives--;
+        this.sprite.setVisible(false);
+        return this.lives;
+    }
+
+    public hasShield() {
+        return !!this.shieldSprite;
+    }
+
+    public setShield(shieldSprite: IMatterSprite) {
+        this.shieldSprite = shieldSprite;
+    }
+
+    public removeShield() {
+        this.shieldSprite = undefined;
+    }
+
+    public respawn() {
+        this.sprite.body.force.x = 0;
+        this.sprite.body.force.y = 0;
+        this.sprite.setVelocity(0, 0);
+        this.sprite.setAngularVelocity(0);
+        this.sprite.setAngle(0);
+        this.sprite.visible = true;
     }
 
     public allowCollision() {
-        return this.sprite.visible && !flags.INVULNERABLE && !this.hasShield;
+        return this.isAlive() && !flags.INVULNERABLE && !this.hasShield();
+    }
+
+    public isAlive() {
+        return !!this.sprite.visible;
     }
 
     private shoot() {
+        if (!this.isAlive()) {
+            return;
+        }
+
         const angle = this.sprite.rotation - Math.PI / 2;
 
         const bullet = new Bullet(
@@ -72,9 +112,6 @@ export class Player {
             this.sprite.body.velocity,
             this.physicsCategories
         );
-
-        // Keep track of the last time we shot
-        // this.player.lastShootTime = this.game.physics.p2.world.time;
 
         return bullet;
     }
