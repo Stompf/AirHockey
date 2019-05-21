@@ -16,12 +16,16 @@ export class AsteroidGameScene extends Phaser.Scene {
     private pointsText!: Phaser.GameObjects.Text;
     private livesText!: Phaser.GameObjects.Text;
     private readonly PLAYER_RESPAWN_TIME = 1000;
+    private readonly asteroidSpawnDelay = 14000;
+
     private readonly powerUpShieldPercent = 1;
     private readonly maxPowerUpsOnScreen = 2;
     private currentLevel = 1;
     private player!: Player;
     private physicsCategories!: PhysicsCategories;
     private powerUps: BasePowerUp[] = [];
+
+    private asteroidTimer!: Phaser.Time.TimerEvent;
 
     constructor() {
         super({
@@ -106,6 +110,8 @@ export class AsteroidGameScene extends Phaser.Scene {
                             [],
                             this
                         );
+                    } else {
+                        this.asteroidTimer.paused = true;
                     }
                 }
 
@@ -192,6 +198,18 @@ export class AsteroidGameScene extends Phaser.Scene {
         this.player = new Player(this, this.physicsCategories);
         this.powerUps = [];
 
+        if (this.asteroidTimer) {
+            this.asteroidTimer.paused = false;
+        } else {
+            this.asteroidTimer = this.time.addEvent({
+                callback: this.asteroidTick,
+                callbackScope: this,
+                loop: true,
+                delay: this.asteroidSpawnDelay,
+                args: [],
+            });
+        }
+
         this.addAsteroids();
     }
 
@@ -267,4 +285,8 @@ export class AsteroidGameScene extends Phaser.Scene {
         );
         return asteroid;
     }
+
+    private asteroidTick = () => {
+        this.addAsteroids();
+    };
 }
