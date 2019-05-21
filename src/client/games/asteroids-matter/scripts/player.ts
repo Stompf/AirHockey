@@ -30,8 +30,7 @@ export class Player {
         sprite.setMass(30);
         sprite.setFixedRotation();
 
-        sprite.setCollisionCategory(physicsCategories.player);
-        sprite.setCollidesWith([physicsCategories.asteroids, physicsCategories.powerUps]);
+        this.setCollisions(sprite);
 
         this.playerKeyboard = createPlayerKeyboard(scene);
 
@@ -66,6 +65,8 @@ export class Player {
     public kill() {
         this.lives--;
         this.sprite.setVisible(false);
+        this.sprite.setCollisionCategory(this.physicsCategories.nothing);
+        this.sprite.setCollidesWith([]);
         return this.lives;
     }
 
@@ -87,7 +88,8 @@ export class Player {
         this.sprite.setVelocity(0, 0);
         this.sprite.setAngularVelocity(0);
         this.sprite.setAngle(0);
-        this.sprite.visible = true;
+        this.setCollisions(this.sprite);
+        this.sprite.setVisible(true);
     }
 
     public allowCollision() {
@@ -96,6 +98,11 @@ export class Player {
 
     public isAlive() {
         return !!this.sprite.visible;
+    }
+
+    private setCollisions(sprite: IMatterSprite) {
+        sprite.setCollisionCategory(this.physicsCategories.player);
+        sprite.setCollidesWith([this.physicsCategories.asteroids, this.physicsCategories.powerUps]);
     }
 
     private shoot() {

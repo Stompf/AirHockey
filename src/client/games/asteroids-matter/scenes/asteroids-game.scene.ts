@@ -15,7 +15,7 @@ import {
 export class AsteroidGameScene extends Phaser.Scene {
     private pointsText!: Phaser.GameObjects.Text;
     private livesText!: Phaser.GameObjects.Text;
-    private readonly PLAYER_RESPAWN_TIME = 1000;
+    private readonly PLAYER_RESPAWN_TIME = 2000;
     private readonly asteroidSpawnDelay = 14000;
 
     private readonly powerUpShieldPercent = 1;

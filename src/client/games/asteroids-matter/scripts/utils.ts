@@ -23,6 +23,7 @@ export function createPhysicsCategories(scene: Phaser.Scene) {
         bullet: scene.matter.world.nextCategory(),
         powerUps: scene.matter.world.nextCategory(),
         shield: scene.matter.world.nextCategory(),
+        nothing: scene.matter.world.nextCategory(),
     };
 }
 
