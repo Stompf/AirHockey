@@ -14,7 +14,8 @@ export class Player {
     private lastShootTime = 0;
     private thrustSpeed = 0.02;
     private turnSpeed = 0.05;
-
+    private startSpeed = 0.5;
+    private maxSpeed = 7;
     private playerKeyboard: PlayerKeyboard;
 
     constructor(private scene: Phaser.Scene, private physicsCategories: PhysicsCategories) {
@@ -26,7 +27,7 @@ export class Player {
 
         sprite.setDisplaySize(40, 30);
         sprite.setFrictionAir(0.0001);
-        sprite.setVelocity(-0.5, 0.5);
+        sprite.setVelocity(-this.startSpeed, this.startSpeed);
         sprite.setMass(30);
         sprite.setFixedRotation();
 
@@ -60,6 +61,11 @@ export class Player {
         if (this.shieldSprite) {
             this.shieldSprite.setPosition(this.sprite.body.position.x, this.sprite.body.position.y);
         }
+
+        this.sprite.setVelocity(
+            Math.max(-this.maxSpeed, Math.min(this.maxSpeed, this.sprite.body.velocity.x)),
+            Math.max(-this.maxSpeed, Math.min(this.maxSpeed, this.sprite.body.velocity.y))
+        );
     }
 
     public kill() {
@@ -83,9 +89,10 @@ export class Player {
     }
 
     public respawn() {
+        this.sprite.setPosition(this.scene.sys.canvas.width / 2, this.scene.sys.canvas.height / 2);
         this.sprite.body.force.x = 0;
         this.sprite.body.force.y = 0;
-        this.sprite.setVelocity(0, 0);
+        this.sprite.setVelocity(-this.startSpeed, this.startSpeed);
         this.sprite.setAngularVelocity(0);
         this.sprite.setAngle(0);
         this.setCollisions(this.sprite);

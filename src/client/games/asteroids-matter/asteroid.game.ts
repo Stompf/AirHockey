@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { flags } from './debug';
 import { AsteroidGameScene } from './scenes';
 
 export class AsteroidsGame extends Phaser.Game {
@@ -19,7 +20,7 @@ export class AsteroidsGame extends Phaser.Game {
                         y: 0,
                         x: 0,
                     },
-                    debug: true,
+                    debug: flags.DEBUG_PHYSICS,
                 },
             },
             scene: [AsteroidGameScene as any],
