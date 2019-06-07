@@ -30,6 +30,7 @@ export class AsteroidGameScene extends Phaser.Scene {
     constructor() {
         super({
             key: 'AsteroidGameScene',
+            active: true,
         });
     }
 
@@ -112,6 +113,8 @@ export class AsteroidGameScene extends Phaser.Scene {
                         );
                     } else {
                         this.asteroidTimer.paused = true;
+                        this.sys.registry.set('points', this.player.points);
+                        this.scene.launch('GameOverScene');
                     }
                 }
 

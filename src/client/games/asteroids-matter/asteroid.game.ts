@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { flags } from './debug';
-import { AsteroidGameScene } from './scenes';
+import { AsteroidGameScene, GameOverScene } from './scenes';
 
 export class AsteroidsGame extends Phaser.Game {
     constructor(parent: string) {
@@ -23,7 +23,7 @@ export class AsteroidsGame extends Phaser.Game {
                     debug: flags.DEBUG_PHYSICS,
                 },
             },
-            scene: [AsteroidGameScene as any],
+            scene: [AsteroidGameScene as any, GameOverScene],
             disableContextMenu: true,
             backgroundColor: '0x000000',
             canvasStyle: 'border: 1px solid black',
