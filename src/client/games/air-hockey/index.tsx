@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { AirHockeyGame } from './scripts';
 
-class AirHockey extends React.Component<RouteComponentProps<any>, {}> {
+export class AirHockey extends React.Component<RouteComponentProps<any>, {}> {
     private game: AirHockeyGame | undefined;
 
     public render() {
@@ -19,5 +19,3 @@ class AirHockey extends React.Component<RouteComponentProps<any>, {}> {
         }
     }
 }
-
-export default AirHockey;

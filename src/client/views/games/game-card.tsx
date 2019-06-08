@@ -12,7 +12,7 @@ import React from 'react';
 
 const styles = createStyles({
     card: {
-        maxWidth: 345,
+        width: 345,
         margin: 5,
     },
     media: {

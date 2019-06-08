@@ -1,6 +1,8 @@
+import { createBrowserHistory } from 'history';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Asteroids } from './games/asteroids-matter';
-// import { Start } from './views';
+import { Start } from './views';
 
-ReactDOM.render(<Asteroids />, document.getElementById('app'));
+const history = createBrowserHistory();
+
+ReactDOM.render(<Start history={history} />, document.getElementById('app'));
