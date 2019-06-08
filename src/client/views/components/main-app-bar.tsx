@@ -1,6 +1,7 @@
 import { AppBar, Button, Toolbar, Typography, withStyles, WithStyles } from '@material-ui/core';
 import { createStyles } from '@material-ui/core/styles';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const styles = createStyles({
     root: {
@@ -27,23 +28,21 @@ class MainAppBarComponent extends React.Component<IStartProps> {
                 <AppBar position="static">
                     <Toolbar>
                         <Typography variant="h6" color="inherit" className={classes.grow}>
-                            <img
-                                src="favicon.ico"
-                                className={classes.img}
-                                onClick={this.onIconClick}
-                            />
+                            <Link to="/">
+                                <img src="favicon.ico" className={classes.img} />
+                            </Link>
                         </Typography>
-                        <Button color="inherit">Games</Button>
-                        <Button color="inherit">About Me</Button>
+                        <Link to="/games" style={{ textDecoration: 'none', color: 'white' }}>
+                            <Button color="inherit">Games</Button>
+                        </Link>
+                        <Link to="/about-me" style={{ textDecoration: 'none', color: 'white' }}>
+                            <Button color="inherit">About Me</Button>
+                        </Link>
                     </Toolbar>
                 </AppBar>
             </div>
         );
     }
-
-    private onIconClick = () => {
-        window.location.replace(window.location.origin);
-    };
 }
 
 export const MainAppBar = withStyles(styles)(MainAppBarComponent);
