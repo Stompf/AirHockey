@@ -15,7 +15,7 @@ export class AirHockey extends React.Component<RouteComponentProps<any>, {}> {
 
     public componentWillUnmount() {
         if (this.game) {
-            this.game.destroy();
+            this.game.destroy(true);
         }
     }
 }

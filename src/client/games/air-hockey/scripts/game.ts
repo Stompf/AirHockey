@@ -25,8 +25,4 @@ export class AirHockeyGame extends Phaser.Game {
 
         super(config);
     }
-
-    public destroy() {
-        this.destroy();
-    }
 }

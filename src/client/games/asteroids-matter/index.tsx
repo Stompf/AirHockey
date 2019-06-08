@@ -15,7 +15,7 @@ export class Asteroids extends React.Component<{}, {}> {
 
     public componentWillUnmount() {
         if (this.game) {
-            this.game.destroy();
+            this.game.destroy(true);
         }
     }
 }

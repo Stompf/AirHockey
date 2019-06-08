@@ -31,8 +31,4 @@ export class AsteroidsGame extends Phaser.Game {
 
         super(config);
     }
-
-    public destroy() {
-        this.destroy();
-    }
 }
