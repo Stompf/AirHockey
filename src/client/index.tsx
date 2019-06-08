@@ -1,8 +1,13 @@
-import { createBrowserHistory } from 'history';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { Start } from './views';
 
-const history = createBrowserHistory();
+// const supportsHistory = 'pushState' in window.history;
 
-ReactDOM.render(<Start history={history} />, document.getElementById('app'));
+ReactDOM.render(
+    <BrowserRouter>
+        <Start />
+    </BrowserRouter>,
+    document.getElementById('app')
+);

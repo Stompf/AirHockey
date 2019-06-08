@@ -100,7 +100,7 @@ export class MultiplayerScene extends Phaser.Scene {
         this.textManager.setInfoTextVisible(true);
 
         const socket = connect(
-            window.location.href,
+            window.location.origin,
             { port: '3000' }
         );
 
