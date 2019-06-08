@@ -17,8 +17,8 @@ app.use(helmet());
 app.use(morgan('combined'));
 app.use(express.static('public'));
 
-app.get('/', (_req, res) => {
-    res.sendFile(path.resolve(__dirname, './public/index.html'));
+app.get('*', (_req, res) => {
+    res.sendFile(path.resolve(__dirname, '../../public/index.html'));
 });
 
 const matchMaking = new Matchmaking();
