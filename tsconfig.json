@@ -17,7 +17,8 @@
         "moduleResolution": "node",
         "module": "commonjs",
         "outDir": "./dist",
-        "baseUrl": "."
+        "baseUrl": ".",
+        "jsx": "react"
     },
     "include": ["./src/shared"]
 }

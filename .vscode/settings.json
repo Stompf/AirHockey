@@ -28,5 +28,15 @@
     "emmet.showExpandedAbbreviation": "never",
     "editor.codeActionsOnSave": {
         "source.fixAll.tslint": true
-    }
+    },
+    "cSpell.words": [
+        "Lundmark",
+        "RESPAWN",
+        "Unmount",
+        "collisionstart",
+        "matterjs",
+        "renderable",
+        "stompf",
+        "verts"
+    ]
 }

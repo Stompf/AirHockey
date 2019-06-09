@@ -5,6 +5,7 @@
             "src/shared/*": ["../shared/*"]
         }
     },
+    "jsx": "react",
     "lib": ["dom", "es2017", "scripthost"],
     "include": ["./", "../shared"]
 }

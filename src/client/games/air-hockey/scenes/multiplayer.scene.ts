@@ -4,7 +4,7 @@ import { AirHockey, Shared, UnreachableCaseError } from 'src/shared';
 import { NetworkBall, NetworkPlayer, TextManager } from '../scripts';
 
 export class MultiplayerScene extends Phaser.Scene {
-    private cursors!: Phaser.Input.Keyboard.CursorKeys;
+    private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
     private players: Record<Shared.Id, NetworkPlayer>;
     private sprites: Phaser.GameObjects.GameObject[] = [];
 
@@ -37,7 +37,7 @@ export class MultiplayerScene extends Phaser.Scene {
 
     protected preload() {
         this.load.bitmapFont('font', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
-        this.load.image('player', 'assets/player.png');
+        this.load.image('player', 'assets/games/air-hockey/player.png');
         this.reconnectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.textManager = new TextManager(this);
     }
@@ -100,7 +100,7 @@ export class MultiplayerScene extends Phaser.Scene {
         this.textManager.setInfoTextVisible(true);
 
         const socket = connect(
-            window.location.href,
+            window.location.origin,
             { port: '3000' }
         );
 
