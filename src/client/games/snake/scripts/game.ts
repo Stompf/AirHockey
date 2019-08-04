@@ -1,4 +1,4 @@
-import { GameScene, MenuScene } from '../scenes';
+import { GameScene } from '../scenes';
 
 export class SnakeGame extends Phaser.Game {
     constructor(parent: string) {
@@ -17,9 +17,9 @@ export class SnakeGame extends Phaser.Game {
             //         debug: true,
             //     },
             // },
-            scene: [MenuScene as any, GameScene],
+            scene: [GameScene],
             disableContextMenu: true,
-            backgroundColor: '0x000000',
+            backgroundColor: '0xFFFFFF',
             canvasStyle: 'border: 1px solid black',
         };
 

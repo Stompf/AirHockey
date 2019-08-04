@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { SnakeGame } from './scripts';
 
-export class AirHockey extends React.Component<RouteComponentProps<any>, {}> {
+export class Snake extends React.Component<RouteComponentProps<any>, {}> {
     private game: SnakeGame | undefined;
 
     public render() {
