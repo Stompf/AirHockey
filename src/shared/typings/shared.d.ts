@@ -8,4 +8,6 @@ export namespace Shared {
     export interface IMatchmakerEvent {
         game: Game;
     }
+
+    export type Direction = 'left' | 'right' | 'up' | 'down';
 }

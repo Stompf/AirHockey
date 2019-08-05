@@ -1,27 +1,29 @@
 import Phaser from 'phaser';
-import { Direction, GameMap } from './gameMap';
+import { Shared } from 'src/shared';
+import { GameMap } from './gameMap';
 
 export class Player {
-    public static WIDTH = 10;
+    public static SIZE = 10;
     private readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-    private sprite: Phaser.GameObjects.Image;
-    private currentDirection: Direction;
+    private currentDirection: Shared.Direction;
 
-    constructor(scene: Phaser.Scene, private playerId: string, color: number, gameMap: GameMap) {
-        const textureName = this.createPlayerTexture(scene, playerId, color);
-        this.cursors = scene.input.keyboard.addKeys({
-            up: Phaser.Input.Keyboard.KeyCodes.W,
-            down: Phaser.Input.Keyboard.KeyCodes.S,
-            left: Phaser.Input.Keyboard.KeyCodes.A,
-            right: Phaser.Input.Keyboard.KeyCodes.D,
-        });
-        this.sprite = scene.add.image(50, 50, textureName);
-        this.currentDirection = 'right';
+    constructor(
+        scene: Phaser.Scene,
+        private playerId: string,
+        color: number,
+        gameMap: GameMap,
+        startPosition: Shared.Vector2D,
+        startDirection: Shared.Direction,
+        cursors: Phaser.Types.Input.Keyboard.CursorKeys
+    ) {
+        this.createPlayerTexture(scene, playerId, color);
+        this.cursors = cursors;
+        this.currentDirection = startDirection;
 
-        gameMap.setPosition(playerId, { x: this.sprite.x, y: this.sprite.y });
+        gameMap.setPosition(playerId, startPosition);
     }
 
-    public onUpdate(gameMap: GameMap) {
+    public onUpdate(gameMap: GameMap, scene: Phaser.Scene) {
         if (this.cursors.up!.isDown && this.currentDirection !== 'down') {
             this.currentDirection = 'up';
         } else if (this.cursors.down!.isDown && this.currentDirection !== 'up') {
@@ -32,16 +34,16 @@ export class Player {
             this.currentDirection = 'right';
         }
 
-        gameMap.setGrid(this.playerId, this.currentDirection);
+        gameMap.setGrid(this.playerId, this.currentDirection, scene, Player.SIZE);
     }
 
     private createPlayerTexture(scene: Phaser.Scene, playerId: string, color: number) {
         const graphics = scene.add.graphics();
         graphics.fillStyle(color);
-        graphics.fillRect(Player.WIDTH / 2, Player.WIDTH / 2, Player.WIDTH, Player.WIDTH);
+        graphics.fillRect(Player.SIZE / 2, Player.SIZE / 2, Player.SIZE, Player.SIZE);
         graphics.setVisible(false);
         const textureName = `player-${playerId}`;
-        graphics.generateTexture(textureName, Player.WIDTH, Player.WIDTH);
+        graphics.generateTexture(textureName, Player.SIZE * 2, Player.SIZE * 2);
         return textureName;
     }
 }
