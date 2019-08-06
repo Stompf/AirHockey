@@ -4,6 +4,7 @@ import { GameMap } from './gameMap';
 
 export class Player {
     public static SIZE = 10;
+    public score: number = 0;
     private readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     private currentDirection: Shared.Direction;
 
@@ -11,16 +12,20 @@ export class Player {
         scene: Phaser.Scene,
         private playerId: string,
         color: number,
-        gameMap: GameMap,
-        startPosition: Shared.Vector2D,
-        startDirection: Shared.Direction,
         cursors: Phaser.Types.Input.Keyboard.CursorKeys
     ) {
         this.createPlayerTexture(scene, playerId, color);
         this.cursors = cursors;
-        this.currentDirection = startDirection;
+        this.currentDirection = 'left';
+    }
 
-        gameMap.setPosition(playerId, startPosition);
+    public setPosition(
+        startPosition: Shared.Vector2D,
+        direction: Shared.Direction,
+        gameMap: GameMap
+    ) {
+        this.currentDirection = direction;
+        gameMap.setPosition(this.playerId, startPosition);
     }
 
     public onUpdate(gameMap: GameMap, scene: Phaser.Scene) {

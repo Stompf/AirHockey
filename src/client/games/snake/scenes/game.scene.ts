@@ -47,12 +47,23 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.players = [
-            new Player(this, '1', 0xff0000, this.gameMap, { x: 50, y: 50 }, 'right', cursor1),
-            new Player(this, '2', 0x0000ff, this.gameMap, { x: 10, y: 10 }, 'right', cursor2),
+            new Player(this, '1', 0xff0000, cursor1),
+            new Player(this, '2', 0x0000ff, cursor2),
         ];
+
+        this.reset();
     }
 
     protected create() {
         this.cameras.main.setBackgroundColor('#FFFFFF');
+    }
+
+    private reset() {
+        this.gameMap.reset();
+        this.players.forEach(player => {
+            const startPosition = this.gameMap.getRandomStartPosition(Player.SIZE);
+            const startDirection = this.gameMap.getRandomStartDirection();
+            player.setPosition(startPosition, startDirection, this.gameMap);
+        });
     }
 }
