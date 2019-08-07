@@ -70,8 +70,8 @@ export class GameScene extends Phaser.Scene {
         });
 
         window.setTimeout(() => {
-            // this.isPaused = false;
-            // this.players.forEach(player => player.showStartArrow(false));
+            this.isPaused = false;
+            this.players.forEach(player => player.showStartArrow(false));
         }, this.PauseTimer);
     }
 }
