@@ -11,12 +11,6 @@ export class SnakeGame extends Phaser.Game {
                 height: 600,
                 parent,
             },
-            // physics: {
-            //     default: 'arcade',
-            //     arcade: {
-            //         debug: true,
-            //     },
-            // },
             scene: [GameScene],
             disableContextMenu: true,
             backgroundColor: '0xFFFFFF',

@@ -1,4 +1,5 @@
 import { Shared, utils } from 'src/shared';
+import { snakeUtils } from './utils';
 
 export class GameMap {
     private grid: Array<Array<string | undefined>> = [];
@@ -14,22 +15,36 @@ export class GameMap {
         this.sprites = [];
     }
 
-    public setPosition(id: string, position: Shared.Vector2D, size: number, scene: Phaser.Scene) {
+    public getPlayerPosition(id: string) {
+        const { x, y } = this.positions[id];
+        return {
+            x: x * snakeUtils.playerSize,
+            y: y * snakeUtils.playerSize,
+        };
+    }
+
+    public setPosition(id: string, position: Shared.Vector2D, scene: Phaser.Scene) {
         this.positions[id] = position;
         const sprite = scene.add.image(
-            position.x * size + size / 2,
-            position.y * size + size / 2,
+            position.x * snakeUtils.playerSize + snakeUtils.playerSize / 2,
+            position.y * snakeUtils.playerSize + snakeUtils.playerSize / 2,
             `player-${id}`
         );
         this.sprites.push(sprite);
     }
 
-    public getRandomStartPosition(playerSize: number): Shared.Vector2D {
+    public getRandomStartPosition(): Shared.Vector2D {
         const positions = Object.values(this.positions);
         while (true) {
             const margin = 10;
-            const randX = utils.generateRandomInteger(margin, this.width - playerSize - margin);
-            const randY = utils.generateRandomInteger(margin, this.height - playerSize - margin);
+            const randX = utils.generateRandomInteger(
+                margin,
+                this.width - snakeUtils.playerSize - margin
+            );
+            const randY = utils.generateRandomInteger(
+                margin,
+                this.height - snakeUtils.playerSize - margin
+            );
 
             if (
                 !positions.some(
@@ -46,34 +61,7 @@ export class GameMap {
         }
     }
 
-    public getRandomStartDirection(): Shared.Direction {
-        const rand = Math.random();
-        if (rand <= 1 / 4) {
-            return 'left';
-        }
-        if (rand <= 2 / 4) {
-            return 'up';
-        }
-        if (rand <= 3 / 4) {
-            return 'down';
-        }
-        return 'right';
-    }
-
-    public getDirectionInRadians(direction: Shared.Direction): number {
-        switch (direction) {
-            case 'left':
-                return 0;
-            case 'up':
-                return Math.PI / 2;
-            case 'right':
-                return Math.PI;
-            default:
-                return Math.PI + Math.PI / 2;
-        }
-    }
-
-    public setGrid(id: string, direction: Shared.Direction, scene: Phaser.Scene, size: number) {
+    public setGrid(id: string, direction: Shared.Direction, scene: Phaser.Scene) {
         let { x, y } = this.positions[id];
         switch (direction) {
             case 'down':
@@ -106,7 +94,11 @@ export class GameMap {
 
         this.grid[x][y] = id;
         this.positions[id] = { x, y };
-        const sprite = scene.add.image(x * size + size / 2, y * size + size / 2, `player-${id}`);
+        const sprite = scene.add.image(
+            x * snakeUtils.playerSize + snakeUtils.playerSize / 2,
+            y * snakeUtils.playerSize + snakeUtils.playerSize / 2,
+            `player-${id}`
+        );
         this.sprites.push(sprite);
 
         return true;
