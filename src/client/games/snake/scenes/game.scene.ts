@@ -4,9 +4,11 @@ import { GameMap, Player } from '../scripts';
 export class GameScene extends Phaser.Scene {
     private players!: Player[];
     private gameMap!: GameMap;
-
     private lastDelta = 0;
-    private readonly UpdateTick = 20;
+    private readonly UpdateTick = 40;
+    private isPaused: boolean = true;
+    private readonly PauseTimer = 3000;
+    private sprites: Phaser.GameObjects.GameObject[] = [];
 
     constructor() {
         super({
@@ -16,7 +18,7 @@ export class GameScene extends Phaser.Scene {
 
     public update(_time: number, delta: number) {
         this.lastDelta += delta;
-        if (this.lastDelta < this.UpdateTick) {
+        if (this.isPaused || this.lastDelta < this.UpdateTick) {
             return;
         }
 
@@ -27,6 +29,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     protected preload() {
+        this.load.image('arrow', '/assets/games/snake/arrow.png');
+
         this.gameMap = new GameMap(
             this.sys.canvas.width / Player.SIZE,
             this.sys.canvas.height / Player.SIZE
@@ -50,20 +54,51 @@ export class GameScene extends Phaser.Scene {
             new Player(this, '1', 0xff0000, cursor1),
             new Player(this, '2', 0x0000ff, cursor2),
         ];
-
-        this.reset();
     }
 
     protected create() {
         this.cameras.main.setBackgroundColor('#FFFFFF');
+        this.reset();
     }
 
     private reset() {
+        this.isPaused = true;
         this.gameMap.reset();
         this.players.forEach(player => {
             const startPosition = this.gameMap.getRandomStartPosition(Player.SIZE);
             const startDirection = this.gameMap.getRandomStartDirection();
-            player.setPosition(startPosition, startDirection, this.gameMap);
+            player.setPosition(startPosition, startDirection, this.gameMap, this);
+            const startArrow = this.add.image(
+                startPosition.x * Player.SIZE + 5,
+                startPosition.y * Player.SIZE + 5,
+                'arrow'
+            );
+            startArrow.setName('arrow');
+            this.sprites.push(startArrow);
+            startArrow.setDisplaySize(20, 20);
+            startArrow.setRotation(this.gameMap.getDirectionInRadians(startDirection));
+
+            switch (startDirection) {
+                case 'down':
+                    startArrow.setY(startArrow.y + Player.SIZE * 1.5);
+                    break;
+                case 'up':
+                    startArrow.setY(startArrow.y - Player.SIZE * 1.5);
+                    break;
+                case 'right':
+                    startArrow.setX(startArrow.x + Player.SIZE * 1.5);
+                    break;
+                case 'left':
+                    startArrow.setX(startArrow.x - Player.SIZE * 1.5);
+                    break;
+            }
         });
+
+        window.setTimeout(() => {
+            this.isPaused = false;
+            this.sprites
+                .filter(sprite => sprite.name === 'arrow')
+                .forEach(arrow => arrow.destroy());
+        }, this.PauseTimer);
     }
 }

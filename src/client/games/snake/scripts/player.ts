@@ -22,10 +22,11 @@ export class Player {
     public setPosition(
         startPosition: Shared.Vector2D,
         direction: Shared.Direction,
-        gameMap: GameMap
+        gameMap: GameMap,
+        scene: Phaser.Scene
     ) {
         this.currentDirection = direction;
-        gameMap.setPosition(this.playerId, startPosition);
+        gameMap.setPosition(this.playerId, startPosition, Player.SIZE, scene);
     }
 
     public onUpdate(gameMap: GameMap, scene: Phaser.Scene) {

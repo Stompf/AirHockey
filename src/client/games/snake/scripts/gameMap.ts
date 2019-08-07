@@ -14,8 +14,14 @@ export class GameMap {
         this.sprites = [];
     }
 
-    public setPosition(id: string, position: Shared.Vector2D) {
+    public setPosition(id: string, position: Shared.Vector2D, size: number, scene: Phaser.Scene) {
         this.positions[id] = position;
+        const sprite = scene.add.image(
+            position.x * size + size / 2,
+            position.y * size + size / 2,
+            `player-${id}`
+        );
+        this.sprites.push(sprite);
     }
 
     public getRandomStartPosition(playerSize: number): Shared.Vector2D {
@@ -52,6 +58,19 @@ export class GameMap {
             return 'down';
         }
         return 'right';
+    }
+
+    public getDirectionInRadians(direction: Shared.Direction): number {
+        switch (direction) {
+            case 'left':
+                return 0;
+            case 'up':
+                return Math.PI / 2;
+            case 'right':
+                return Math.PI;
+            default:
+                return Math.PI + Math.PI / 2;
+        }
     }
 
     public setGrid(id: string, direction: Shared.Direction, scene: Phaser.Scene, size: number) {
