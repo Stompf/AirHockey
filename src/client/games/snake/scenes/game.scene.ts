@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { utils } from 'src/shared';
 import { GameMap, Player, snakeUtils } from '../scripts';
 
 export class GameScene extends Phaser.Scene {
@@ -8,6 +9,7 @@ export class GameScene extends Phaser.Scene {
     private readonly UpdateTick = 40;
     private isPaused: boolean = true;
     private readonly PauseTimer = 3000;
+    private startText!: Phaser.GameObjects.Text;
 
     constructor() {
         super({
@@ -37,6 +39,15 @@ export class GameScene extends Phaser.Scene {
     }
 
     protected create() {
+        const startText = this.add.text(this.sys.canvas.width / 2, 10, 'Starting in: 3 seconds', {
+            fill: '#000000',
+            fontSize: 20,
+        });
+        startText.setDepth(10);
+        startText.setOrigin(0, 0);
+        utils.centerText(startText);
+        this.startText = startText;
+
         const cursor1 = this.input.keyboard.addKeys({
             up: Phaser.Input.Keyboard.KeyCodes.W,
             down: Phaser.Input.Keyboard.KeyCodes.S,
@@ -69,9 +80,12 @@ export class GameScene extends Phaser.Scene {
             player.setPosition(startPosition, startDirection, this.gameMap, this);
         });
 
+        this.startText.setVisible(true);
+
         window.setTimeout(() => {
             this.isPaused = false;
             this.players.forEach(player => player.showStartArrow(false));
+            this.startText.setVisible(false);
         }, this.PauseTimer);
     }
 }
