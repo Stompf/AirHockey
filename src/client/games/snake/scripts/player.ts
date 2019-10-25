@@ -24,12 +24,16 @@ export class Player {
         this.startArrow.setDisplaySize(20, 20);
     }
 
-    public isAlive() {
+    public get IsAlive() {
         return this.alive;
     }
 
-    public displayName() {
+    public get DisplayName() {
         return this.playerId;
+    }
+
+    public reset() {
+        this.alive = true;
     }
 
     public showStartArrow = (show: boolean) => {

@@ -6,7 +6,7 @@ export class GameMap {
     private positions: Record<string, Shared.Vector2D> = {};
     private sprites: Phaser.GameObjects.GameObject[] = [];
 
-    constructor(private width: number, private height: number) {}
+    constructor(private width: number, private height: number, private readonly offsetY: number) {}
 
     public reset() {
         this.grid = [];
@@ -19,7 +19,7 @@ export class GameMap {
         const { x, y } = this.positions[id];
         return {
             x: x * snakeUtils.playerSize,
-            y: y * snakeUtils.playerSize,
+            y: y * snakeUtils.playerSize + this.offsetY,
         };
     }
 
@@ -27,7 +27,7 @@ export class GameMap {
         this.positions[id] = position;
         const sprite = scene.add.image(
             position.x * snakeUtils.playerSize + snakeUtils.playerSize / 2,
-            position.y * snakeUtils.playerSize + snakeUtils.playerSize / 2,
+            position.y * snakeUtils.playerSize + snakeUtils.playerSize / 2 + this.offsetY,
             `player-${id}`
         );
         this.sprites.push(sprite);
@@ -42,7 +42,7 @@ export class GameMap {
                 this.width - snakeUtils.playerSize - margin
             );
             const randY = utils.generateRandomInteger(
-                margin,
+                margin + this.offsetY,
                 this.height - snakeUtils.playerSize - margin
             );
 
@@ -81,8 +81,8 @@ export class GameMap {
         if (
             x < 0 ||
             x >= this.width ||
-            y < 0 ||
-            y >= this.height ||
+            y < this.offsetY ||
+            y >= this.height + this.offsetY ||
             (this.grid[x] && this.grid[x][y])
         ) {
             return false;
@@ -96,7 +96,7 @@ export class GameMap {
         this.positions[id] = { x, y };
         const sprite = scene.add.image(
             x * snakeUtils.playerSize + snakeUtils.playerSize / 2,
-            y * snakeUtils.playerSize + snakeUtils.playerSize / 2,
+            y * snakeUtils.playerSize + snakeUtils.playerSize / 2 + this.offsetY,
             `player-${id}`
         );
         this.sprites.push(sprite);

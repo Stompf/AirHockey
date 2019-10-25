@@ -10,8 +10,11 @@ export class GameScene extends Phaser.Scene {
     private readonly UpdateTick = 40;
     private isPaused: boolean = true;
     private readonly PauseTimer = 3000;
-    private startText!: Phaser.GameObjects.Text;
+    private statusText!: Phaser.GameObjects.Text;
+    private scoreTexts: Phaser.GameObjects.Text[] = [];
     private startTime: Date = new Date();
+    private readonly topContainerHeight = 30;
+    private graphics!: Phaser.GameObjects.Graphics;
 
     constructor() {
         super({
@@ -30,11 +33,28 @@ export class GameScene extends Phaser.Scene {
             player.onUpdate(this.gameMap, this, this.isPaused);
         });
 
-        const alivePlayers = this.players.filter(p => p.isAlive());
-        if (alivePlayers.length === 0) {
-            alert('Draw');
-        } else if (alivePlayers.length === 1) {
-            alert(`player: ${alivePlayers[0].displayName()} won`);
+        if (!this.isPaused) {
+            const alivePlayers = this.players.filter(p => p.IsAlive);
+            if (alivePlayers.length === 0) {
+                this.isPaused = true;
+                this.statusText.setVisible(true);
+                this.statusText.setText(`Draw!`);
+
+                window.setTimeout(() => {
+                    this.reset();
+                }, this.PauseTimer);
+            } else if (alivePlayers.length === 1) {
+                this.isPaused = true;
+                const player = alivePlayers[0];
+                this.statusText.setVisible(true);
+                this.statusText.setText(`Player: ${player.DisplayName} won!`);
+                player.score += 1;
+                this.scoreTexts[this.players.indexOf(player)].setText(String(player.score));
+
+                window.setTimeout(() => {
+                    this.reset();
+                }, this.PauseTimer);
+            }
         }
     }
 
@@ -43,28 +63,43 @@ export class GameScene extends Phaser.Scene {
 
         this.gameMap = new GameMap(
             this.sys.canvas.width / snakeUtils.playerSize,
-            this.sys.canvas.height / snakeUtils.playerSize
+            (this.sys.canvas.height - this.topContainerHeight) / snakeUtils.playerSize,
+            this.topContainerHeight / snakeUtils.playerSize
         );
     }
 
     protected create() {
-        const startText = this.add.text(
-            this.sys.canvas.width / 2,
-            10,
-            this.getStartText(this.PauseTimer / 1000),
-            {
-                fill: '#000000',
-                fontSize: 20,
-            }
-        );
-        this.startTime = moment()
-            .add(this.PauseTimer, 'milliseconds')
-            .toDate();
+        if (this.graphics) {
+            this.graphics.destroy();
+        }
 
-        startText.setDepth(10);
-        startText.setOrigin(0, 0);
-        utils.centerText(startText);
-        this.startText = startText;
+        this.graphics = this.add.graphics({ lineStyle: { width: 1, color: 0x000000 } });
+
+        const line = new Phaser.Geom.Line(
+            0,
+            this.topContainerHeight,
+            this.sys.canvas.width,
+            this.topContainerHeight
+        );
+
+        this.graphics.strokeLineShape(line);
+
+        const statusText = this.add.text(this.sys.canvas.width / 2, 7, '', {
+            fill: '#000000',
+            fontSize: 20,
+        });
+
+        if (this.scoreTexts) {
+            this.scoreTexts.forEach(scoreText => {
+                scoreText.destroy();
+            });
+            this.scoreTexts = [];
+        }
+
+        statusText.setDepth(10);
+        statusText.setOrigin(0, 0);
+        utils.centerText(statusText);
+        this.statusText = statusText;
 
         const cursor1 = this.input.keyboard.addKeys({
             up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -84,35 +119,55 @@ export class GameScene extends Phaser.Scene {
             new Player(this, 'red', Colors.red, cursor2),
         ];
 
+        this.players.forEach((player, index) => {
+            const text = this.add.text(10 + 25 * index, 7, '0', {
+                fill: player.DisplayName,
+                fontSize: 20,
+            });
+            text.setOrigin(0, 0);
+            this.scoreTexts.push(text);
+        });
+
         this.cameras.main.setBackgroundColor('#FFFFFF');
-        this.reset();
+        this.reset(true);
     }
 
-    private reset() {
+    private reset(center?: boolean) {
+        this.startTime = moment()
+            .add(this.PauseTimer, 'milliseconds')
+            .toDate();
+
+        this.statusText.setText(this.getStartText(this.PauseTimer / 1000));
+
+        if (center) {
+            utils.centerText(this.statusText);
+        }
+
         this.isPaused = true;
         this.gameMap.reset();
         this.players.forEach(player => {
             const startPosition = this.gameMap.getRandomStartPosition();
             const startDirection = snakeUtils.getRandomStartDirection();
+            player.reset();
             player.showStartArrow(true);
             player.setPosition(startPosition, startDirection, this.gameMap, this);
         });
 
-        this.startText.setVisible(true);
+        this.statusText.setVisible(true);
 
         this.updateStartText();
 
         window.setTimeout(() => {
             this.isPaused = false;
             this.players.forEach(player => player.showStartArrow(false));
-            this.startText.setVisible(false);
+            this.statusText.setVisible(false);
         }, this.PauseTimer);
     }
 
     private updateStartText = () => {
         window.setTimeout(() => {
             const diff = moment(this.startTime).diff(moment(), 'seconds');
-            this.startText.setText(this.getStartText(diff));
+            this.statusText.setText(this.getStartText(diff));
             if (diff > 0 && this.isPaused) {
                 this.updateStartText();
             }
