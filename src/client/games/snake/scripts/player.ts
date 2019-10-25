@@ -8,6 +8,7 @@ export class Player {
     private readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     private currentDirection: Shared.Direction;
     private startArrow: Phaser.GameObjects.Image;
+    private alive: boolean = true;
 
     constructor(
         scene: Phaser.Scene,
@@ -21,6 +22,14 @@ export class Player {
         this.startArrow = scene.add.image(0, 0, 'arrow');
         this.startArrow.setVisible(false);
         this.startArrow.setDisplaySize(20, 20);
+    }
+
+    public isAlive() {
+        return this.alive;
+    }
+
+    public displayName() {
+        return this.playerId;
     }
 
     public showStartArrow = (show: boolean) => {
@@ -39,6 +48,10 @@ export class Player {
     }
 
     public onUpdate(gameMap: GameMap, scene: Phaser.Scene, paused: boolean) {
+        if (!this.alive) {
+            return;
+        }
+
         if (this.cursors.up!.isDown && (paused || this.currentDirection !== 'down')) {
             this.currentDirection = 'up';
         } else if (this.cursors.down!.isDown && (paused || this.currentDirection !== 'up')) {
@@ -52,7 +65,9 @@ export class Player {
         if (paused) {
             this.updateStartArrow(gameMap);
         } else {
-            gameMap.setGrid(this.playerId, this.currentDirection, scene);
+            if (!gameMap.setGrid(this.playerId, this.currentDirection, scene)) {
+                this.alive = false;
+            }
         }
     }
 

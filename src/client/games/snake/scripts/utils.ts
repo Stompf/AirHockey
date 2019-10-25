@@ -28,3 +28,8 @@ export const snakeUtils = {
         }
     },
 };
+
+export const Colors = {
+    blue: 0x0000ff,
+    red: 0xff0000,
+};

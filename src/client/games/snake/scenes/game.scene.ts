@@ -1,6 +1,7 @@
+import moment from 'moment';
 import Phaser from 'phaser';
 import { utils } from 'src/shared';
-import { GameMap, Player, snakeUtils } from '../scripts';
+import { Colors, GameMap, Player, snakeUtils } from '../scripts';
 
 export class GameScene extends Phaser.Scene {
     private players!: Player[];
@@ -10,6 +11,7 @@ export class GameScene extends Phaser.Scene {
     private isPaused: boolean = true;
     private readonly PauseTimer = 3000;
     private startText!: Phaser.GameObjects.Text;
+    private startTime: Date = new Date();
 
     constructor() {
         super({
@@ -27,6 +29,13 @@ export class GameScene extends Phaser.Scene {
         this.players.forEach(player => {
             player.onUpdate(this.gameMap, this, this.isPaused);
         });
+
+        const alivePlayers = this.players.filter(p => p.isAlive());
+        if (alivePlayers.length === 0) {
+            alert('Draw');
+        } else if (alivePlayers.length === 1) {
+            alert(`player: ${alivePlayers[0].displayName()} won`);
+        }
     }
 
     protected preload() {
@@ -39,10 +48,19 @@ export class GameScene extends Phaser.Scene {
     }
 
     protected create() {
-        const startText = this.add.text(this.sys.canvas.width / 2, 10, 'Starting in: 3 seconds', {
-            fill: '#000000',
-            fontSize: 20,
-        });
+        const startText = this.add.text(
+            this.sys.canvas.width / 2,
+            10,
+            this.getStartText(this.PauseTimer / 1000),
+            {
+                fill: '#000000',
+                fontSize: 20,
+            }
+        );
+        this.startTime = moment()
+            .add(this.PauseTimer, 'milliseconds')
+            .toDate();
+
         startText.setDepth(10);
         startText.setOrigin(0, 0);
         utils.centerText(startText);
@@ -62,8 +80,8 @@ export class GameScene extends Phaser.Scene {
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
         });
         this.players = [
-            new Player(this, '1', 0xff0000, cursor1),
-            new Player(this, '2', 0x0000ff, cursor2),
+            new Player(this, 'blue', Colors.blue, cursor1),
+            new Player(this, 'red', Colors.red, cursor2),
         ];
 
         this.cameras.main.setBackgroundColor('#FFFFFF');
@@ -82,10 +100,26 @@ export class GameScene extends Phaser.Scene {
 
         this.startText.setVisible(true);
 
+        this.updateStartText();
+
         window.setTimeout(() => {
             this.isPaused = false;
             this.players.forEach(player => player.showStartArrow(false));
             this.startText.setVisible(false);
         }, this.PauseTimer);
+    }
+
+    private updateStartText = () => {
+        window.setTimeout(() => {
+            const diff = moment(this.startTime).diff(moment(), 'seconds');
+            this.startText.setText(this.getStartText(diff));
+            if (diff > 0 && this.isPaused) {
+                this.updateStartText();
+            }
+        }, 500);
+    };
+
+    private getStartText(time: number) {
+        return `Starting in: ${time} seconds`;
     }
 }
