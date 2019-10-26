@@ -18,7 +18,7 @@ export class Start extends React.Component<{}> {
                     <Route path="/games" component={Games} />
                     <Route path="/about-me" component={AboutMe} />
                     <Route path="/snake" component={Snake} />
-                    <Redirect to="/snake" />
+                    <Redirect to="/games" />
                 </Switch>
             </React.Fragment>
         );
