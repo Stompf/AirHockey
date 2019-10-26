@@ -31,6 +31,14 @@ export class Games extends React.Component {
                                 image="assets/games/asteroids/asteroids.png"
                             />
                         </Link>
+
+                        <Link to="/snake">
+                            <GameCard
+                                title="Snake"
+                                text="Snake game"
+                                image="assets/games/snake/snake.png"
+                            />
+                        </Link>
                     </Grid>
                 </Grid>
             </Grid>
