@@ -15,13 +15,13 @@ jobs:
             env:
                 pswd: $(dockerPassword)
 
-    - job: Web_hook
-      pool: 'server'
-      dependsOn: Build_docker
-      condition: succeeded('Build_docker')
-      steps:
-          - task: InvokeRESTAPI@1
-            inputs:
-                connectionType: connectedServiceName
-                serviceConnection: ${{ parameters.invokeConnection }}
-                method: 'POST'
+    # - job: Web_hook
+    #   pool: 'server'
+    #   dependsOn: Build_docker
+    #   condition: succeeded('Build_docker')
+    #   steps:
+    #       - task: InvokeRESTAPI@1
+    #         inputs:
+    #             connectionType: connectedServiceName
+    #             serviceConnection: ${{ parameters.invokeConnection }}
+    #             method: 'POST'
