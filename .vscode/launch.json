@@ -32,7 +32,6 @@
             "request": "launch",
             "program": "${workspaceRoot}/node_modules/nodemon/bin/nodemon.js",
             "autoAttachChildProcesses": true,
-
             "restart": true,
             "console": "integratedTerminal"
         }
