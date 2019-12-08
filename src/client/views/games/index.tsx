@@ -39,6 +39,14 @@ export class Games extends React.Component {
                                 image="assets/games/snake/snake.png"
                             />
                         </Link>
+
+                        <Link to="/unity-fps">
+                            <GameCard
+                                title="Unity Fps"
+                                text="Fps game made with Unity WebGL"
+                                image="assets/games/unity-fps/unity-fps.png"
+                            />
+                        </Link>
                     </Grid>
                 </Grid>
             </Grid>
