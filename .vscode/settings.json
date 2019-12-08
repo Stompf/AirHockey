@@ -35,6 +35,7 @@
         "Unmount",
         "collisionstart",
         "matterjs",
+        "printf",
         "renderable",
         "stompf",
         "verts"
