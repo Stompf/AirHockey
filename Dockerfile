@@ -1,4 +1,4 @@
-FROM node:10-alpine as builder
+FROM node:12-alpine as builder
 
 WORKDIR /usr/src/app
 
@@ -8,7 +8,7 @@ RUN npm ci
 RUN npm run build-all-prod
 RUN npm prune
 
-FROM node:10-alpine
+FROM node:12-alpine
 WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/node_modules ./node_modules

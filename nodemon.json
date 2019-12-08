@@ -2,5 +2,5 @@
     "watch": ["server-dist"],
     "ext": "js",
     "ignore": ["src/**/*.spec.ts"],
-    "exec": "node --experimental-worker --inspect=5858 server-dist/server/index.js"
+    "exec": "node --inspect=5858 server-dist/server/index.js"
 }
