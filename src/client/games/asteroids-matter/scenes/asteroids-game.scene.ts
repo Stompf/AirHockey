@@ -202,16 +202,16 @@ export class AsteroidGameScene extends Phaser.Scene {
         this.powerUps = [];
 
         if (this.asteroidTimer) {
-            this.asteroidTimer.paused = false;
-        } else {
-            this.asteroidTimer = this.time.addEvent({
-                callback: this.asteroidTick,
-                callbackScope: this,
-                loop: true,
-                delay: this.asteroidSpawnDelay,
-                args: [],
-            });
+            this.asteroidTimer.destroy();
         }
+
+        this.asteroidTimer = this.time.addEvent({
+            callback: this.asteroidTick,
+            callbackScope: this,
+            loop: true,
+            delay: this.asteroidSpawnDelay,
+            args: [],
+        });
 
         this.addAsteroids();
     }
