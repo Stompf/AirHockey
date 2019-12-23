@@ -82,12 +82,11 @@ export class GameMap {
             x < 0 ||
             x >= this.width ||
             y < this.offsetY ||
-            y >= this.height + this.offsetY ||
+            y >= this.height ||
             (this.grid[x] && this.grid[x][y])
         ) {
             return false;
         }
-
         if (!this.grid[x]) {
             this.grid[x] = [];
         }
