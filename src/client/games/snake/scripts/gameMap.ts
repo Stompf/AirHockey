@@ -1,5 +1,5 @@
 import { Shared, utils } from 'src/shared';
-import { snakeUtils } from './utils';
+import { SNAKE_CONSTS } from './constants';
 
 export class GameMap {
     private grid: Array<Array<string | undefined>> = [];
@@ -18,16 +18,16 @@ export class GameMap {
     public getPlayerPosition(id: string) {
         const { x, y } = this.positions[id];
         return {
-            x: x * snakeUtils.playerSize,
-            y: y * snakeUtils.playerSize + this.offsetY,
+            x: x * SNAKE_CONSTS.playerSize,
+            y: y * SNAKE_CONSTS.playerSize + this.offsetY,
         };
     }
 
     public setPosition(id: string, position: Shared.Vector2D, scene: Phaser.Scene) {
         this.positions[id] = position;
         const sprite = scene.add.image(
-            position.x * snakeUtils.playerSize + snakeUtils.playerSize / 2,
-            position.y * snakeUtils.playerSize + snakeUtils.playerSize / 2 + this.offsetY,
+            position.x * SNAKE_CONSTS.playerSize + SNAKE_CONSTS.playerSize / 2,
+            position.y * SNAKE_CONSTS.playerSize + SNAKE_CONSTS.playerSize / 2 + this.offsetY,
             `player-${id}`
         );
         this.sprites.push(sprite);
@@ -39,11 +39,11 @@ export class GameMap {
             const margin = 10;
             const randX = utils.generateRandomInteger(
                 margin,
-                this.width - snakeUtils.playerSize - margin
+                this.width - SNAKE_CONSTS.playerSize - margin
             );
             const randY = utils.generateRandomInteger(
                 margin + this.offsetY,
-                this.height - snakeUtils.playerSize - margin
+                this.height - SNAKE_CONSTS.playerSize - margin
             );
 
             if (
@@ -94,8 +94,8 @@ export class GameMap {
         this.grid[x][y] = id;
         this.positions[id] = { x, y };
         const sprite = scene.add.image(
-            x * snakeUtils.playerSize + snakeUtils.playerSize / 2,
-            y * snakeUtils.playerSize + snakeUtils.playerSize / 2 + this.offsetY,
+            x * SNAKE_CONSTS.playerSize + SNAKE_CONSTS.playerSize / 2,
+            y * SNAKE_CONSTS.playerSize + SNAKE_CONSTS.playerSize / 2 + this.offsetY,
             `player-${id}`
         );
         this.sprites.push(sprite);

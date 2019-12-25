@@ -1,7 +1,8 @@
 import moment from 'moment';
 import Phaser from 'phaser';
 import { utils } from 'src/shared';
-import { Colors, GameMap, Player, snakeUtils } from '../scripts';
+import { Colors, commonUtils } from '../../common';
+import { GameMap, Player, SNAKE_CONSTS } from '../scripts';
 
 export class GameScene extends Phaser.Scene {
     private players!: Player[];
@@ -62,9 +63,9 @@ export class GameScene extends Phaser.Scene {
         this.load.image('arrow', '/assets/games/snake/arrow.png');
 
         this.gameMap = new GameMap(
-            this.sys.canvas.width / snakeUtils.playerSize,
-            (this.sys.canvas.height - this.topContainerHeight) / snakeUtils.playerSize,
-            this.topContainerHeight / snakeUtils.playerSize
+            this.sys.canvas.width / SNAKE_CONSTS.playerSize,
+            (this.sys.canvas.height - this.topContainerHeight) / SNAKE_CONSTS.playerSize,
+            this.topContainerHeight / SNAKE_CONSTS.playerSize
         );
     }
 
@@ -147,7 +148,7 @@ export class GameScene extends Phaser.Scene {
         this.gameMap.reset();
         this.players.forEach(player => {
             const startPosition = this.gameMap.getRandomStartPosition();
-            const startDirection = snakeUtils.getRandomStartDirection();
+            const startDirection = commonUtils.getRandomStartDirection();
             player.reset();
             player.showStartArrow(true);
             player.setPosition(startPosition, startDirection, this.gameMap, this);

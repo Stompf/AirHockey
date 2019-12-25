@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { Shared } from 'src/shared';
+import { commonUtils } from '../../common';
+import { SNAKE_CONSTS } from './constants';
 import { GameMap } from './gameMap';
-import { snakeUtils } from './utils';
 
 export class Player {
     public score: number = 0;
@@ -78,21 +79,21 @@ export class Player {
     private updateStartArrow(gameMap: GameMap) {
         const playerPosition = gameMap.getPlayerPosition(this.playerId);
         this.startArrow.setPosition(
-            playerPosition.x + snakeUtils.playerSize / 2,
-            playerPosition.y + snakeUtils.playerSize / 2
+            playerPosition.x + SNAKE_CONSTS.playerSize / 2,
+            playerPosition.y + SNAKE_CONSTS.playerSize / 2
         );
-        this.startArrow.setRotation(snakeUtils.getDirectionInRadians(this.currentDirection));
-        const offset = snakeUtils.playerSize * 1.25;
+        this.startArrow.setRotation(commonUtils.getDirectionInRadians(this.currentDirection));
+        const offset = SNAKE_CONSTS.playerSize * 1.25;
 
         switch (this.currentDirection) {
             case 'down':
-                this.startArrow.setY(playerPosition.y + offset + snakeUtils.playerSize);
+                this.startArrow.setY(playerPosition.y + offset + SNAKE_CONSTS.playerSize);
                 break;
             case 'up':
                 this.startArrow.setY(playerPosition.y - offset);
                 break;
             case 'right':
-                this.startArrow.setX(playerPosition.x + offset + snakeUtils.playerSize);
+                this.startArrow.setX(playerPosition.x + offset + SNAKE_CONSTS.playerSize);
                 break;
             case 'left':
                 this.startArrow.setX(playerPosition.x - offset);
@@ -104,14 +105,18 @@ export class Player {
         const graphics = scene.add.graphics();
         graphics.fillStyle(color);
         graphics.fillRect(
-            snakeUtils.playerSize / 2,
-            snakeUtils.playerSize / 2,
-            snakeUtils.playerSize,
-            snakeUtils.playerSize
+            SNAKE_CONSTS.playerSize / 2,
+            SNAKE_CONSTS.playerSize / 2,
+            SNAKE_CONSTS.playerSize,
+            SNAKE_CONSTS.playerSize
         );
         graphics.setVisible(false);
         const textureName = `player-${playerId}`;
-        graphics.generateTexture(textureName, snakeUtils.playerSize * 2, snakeUtils.playerSize * 2);
+        graphics.generateTexture(
+            textureName,
+            SNAKE_CONSTS.playerSize * 2,
+            SNAKE_CONSTS.playerSize * 2
+        );
         return textureName;
     }
 }

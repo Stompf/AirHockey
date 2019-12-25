@@ -30,6 +30,7 @@
         "source.fixAll.tslint": true
     },
     "cSpell.words": [
+        "CONSTS",
         "Lundmark",
         "Lunne",
         "RESPAWN",

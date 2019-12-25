@@ -1,7 +1,6 @@
 import { Shared } from 'src/shared';
 
-export const snakeUtils = {
-    playerSize: 10,
+export const commonUtils = {
     getRandomStartDirection(): Shared.Direction {
         const rand = Math.random();
         if (rand <= 1 / 4) {
