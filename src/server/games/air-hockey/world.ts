@@ -9,15 +9,21 @@ import { Team } from './team';
 
 export class World {
     public goalEmitter: TypedEvent<IGoalEvent>;
+
     private readonly BALL_INIT_VELOCITY = 40;
+
     private readonly GAME_SIZE: Readonly<Shared.Size> = { width: 1200, height: 600 };
+
     private goals: IGoal[] = [];
+
     private p2World: p2.World;
 
     private players: Player[];
+
     private ball: Ball;
 
     private teamLeft: Team;
+
     private teamRight: Team;
 
     constructor(player1Id: Shared.Id, player2Id: Shared.Id) {
@@ -268,14 +274,14 @@ export class World {
 
     private mapToGoalOptions = (goal: IGoal): AirHockey.IGoalOptions => {
         return {
-            back: this.mapToPositionWithBox(goal.back),
-            bottom: this.mapToPositionWithBox(goal.bottom),
-            goal: this.mapToPositionWithBox(goal.goal),
-            top: this.mapToPositionWithBox(goal.top),
+            back: World.mapToPositionWithBox(goal.back),
+            bottom: World.mapToPositionWithBox(goal.bottom),
+            goal: World.mapToPositionWithBox(goal.goal),
+            top: World.mapToPositionWithBox(goal.top),
         };
     };
 
-    private mapToPositionWithBox(body: p2.Body): AirHockey.IPositionWithBox {
+    private static mapToPositionWithBox(body: p2.Body): AirHockey.IPositionWithBox {
         const box = body.shapes[0] as p2.Box;
         return {
             height: box.height,

@@ -3,9 +3,13 @@ import { AirHockey, Shared } from 'src/shared';
 
 export class Ball {
     public static readonly DIAMETER = 30;
+
     public static readonly MASS = 0.1;
+
     public static readonly COLOR = 0x000000;
+
     public static readonly MAX_VELOCITY = 70;
+
     public body: p2.Body;
 
     constructor(world: p2.World) {
@@ -20,7 +24,7 @@ export class Ball {
     }
 
     public onUpdate() {
-        this.constrainVelocity(this.body, Ball.MAX_VELOCITY);
+        Ball.constrainVelocity(this.body, Ball.MAX_VELOCITY);
     }
 
     public setPosition(position: Shared.Vector2D) {
@@ -48,10 +52,10 @@ export class Ball {
     }
 
     public resetVelocity(velocityX?: number) {
-        this.body.velocity = [velocityX ? velocityX : 0, 0];
+        this.body.velocity = [velocityX || 0, 0];
     }
 
-    private constrainVelocity(body: p2.Body, maxVelocity: number) {
+    private static constrainVelocity(body: p2.Body, maxVelocity: number) {
         let vx = body.velocity[0];
         let vy = body.velocity[1];
 
@@ -63,7 +67,9 @@ export class Ball {
             vx = Math.cos(angle) * maxVelocity;
             vy = Math.sin(angle) * maxVelocity;
 
+            // eslint-disable-next-line no-param-reassign
             body.velocity[0] = vx;
+            // eslint-disable-next-line no-param-reassign
             body.velocity[1] = vy;
         }
     }

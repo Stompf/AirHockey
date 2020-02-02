@@ -1,24 +1,33 @@
 import Phaser from 'phaser';
 import { connect } from 'socket.io-client';
 import { AirHockey, Shared, UnreachableCaseError } from 'src/shared';
-import { NetworkBall, NetworkPlayer, TextManager } from '../scripts';
+import { NetworkPlayer } from '../scripts/network-player';
+import { NetworkBall } from '../scripts/network-ball';
+import { TextManager } from '../scripts/text-manager';
 
 export class MultiplayerScene extends Phaser.Scene {
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+
     private players: Record<Shared.Id, NetworkPlayer>;
+
     private sprites: Phaser.GameObjects.GameObject[] = [];
 
     private ball: NetworkBall | undefined;
 
     private socket: SocketIOClient.Socket | undefined;
+
     private currentTick: number = 0;
+
     private textManager!: TextManager;
 
     private canReconnect = false;
+
     private isGameRunning = false;
+
     private reconnectKey!: Phaser.Input.Keyboard.Key;
 
     private networkTickInterval: number = 0;
+
     private currentDirection: AirHockey.IDirection = {
         directionX: 0,
         directionY: 0,
@@ -99,10 +108,7 @@ export class MultiplayerScene extends Phaser.Scene {
         this.textManager.setInfoText('Connecting to LunneNet...');
         this.textManager.setInfoTextVisible(true);
 
-        const socket = connect(
-            window.location.origin,
-            { port: '3000' }
-        );
+        const socket = connect(window.location.origin, { port: '3000' });
 
         socket.on('connect', () => {
             this.textManager.setInfoText('Connected');
@@ -220,7 +226,7 @@ export class MultiplayerScene extends Phaser.Scene {
 
         this.currentTick = 0;
 
-        // tslint:disable-next-line: no-console
+        // eslint-disable-next-line no-console
         console.log('handleOnGameStart', event);
     };
 

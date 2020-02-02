@@ -31,10 +31,10 @@ io.serveClient(false);
 io.attach(server);
 
 io.on('connection', socket => {
-    logger.info('a user connected: ' + socket.id);
+    logger.info(`a user connected: ${socket.id}`);
 
     socket.on('disconnect', () => {
-        logger.info('a user disconnected: ' + socket.id);
+        logger.info(`a user disconnected: ${socket.id}`);
 
         matchMaking.removeFromQueue(socket.id);
     });

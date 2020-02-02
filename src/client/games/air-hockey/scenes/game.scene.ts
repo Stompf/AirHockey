@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 
 export class GameScene extends Phaser.Scene {
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+
     private player: Phaser.Physics.Arcade.Image | undefined;
 
     constructor() {

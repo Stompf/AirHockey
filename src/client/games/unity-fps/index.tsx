@@ -1,23 +1,13 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 
-export class UnityFps extends React.Component<RouteComponentProps<any>, {}> {
-    public render() {
-        return (
-            <div
-                style={{
-                    overflow: 'hidden',
-                    width: '100%',
-                    height: '100%',
-                }}
-            >
-                <iframe
-                    id="serviceFrameSend"
-                    src="./unity-fps/index.html"
-                    width="100%"
-                    height="100%"
-                ></iframe>
-            </div>
-        );
-    }
-}
+export const UnityFps: React.FunctionComponent = () => (
+    <div style={{ overflow: 'hidden', width: '100%', height: '100%' }}>
+        <iframe
+            title="LunneFps"
+            id="serviceFrameSend"
+            src="./unity-fps/index.html"
+            width="100%"
+            height="100%"
+        />
+    </div>
+);

@@ -11,10 +11,13 @@ export class PowerUpShield extends BasePowerUp {
         graphics.fillCircle(PowerUpShield.radius, PowerUpShield.radius, PowerUpShield.radius);
         graphics.generateTexture('shield', PowerUpShield.radius * 2, PowerUpShield.radius * 2);
     }
+
     private static radius = 80;
 
     private durationMs = 7000;
+
     private warningMs = 2000;
+
     private shieldSprite!: IMatterSprite;
 
     constructor(
@@ -22,7 +25,7 @@ export class PowerUpShield extends BasePowerUp {
         position: WebKitPoint,
         velocity: WebKitPoint,
         angularVelocity: number,
-        private physicsCategories: PhysicsCategories
+        private physicsCategories: PhysicsCategories,
     ) {
         super(scene, 'powerUp_shield', position, velocity, angularVelocity, physicsCategories);
     }
@@ -55,7 +58,7 @@ export class PowerUpShield extends BasePowerUp {
         this.shieldSprite = scene.matter.add.image(
             player.sprite.x,
             player.sprite.y,
-            'shield'
+            'shield',
         ) as IMatterSprite;
 
         this.shieldSprite.setCircle(PowerUpShield.radius, {});

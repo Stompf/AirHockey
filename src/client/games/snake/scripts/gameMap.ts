@@ -1,9 +1,11 @@
-import { Shared, utils } from 'src/shared';
+import { Shared, utils, UnreachableCaseError } from 'src/shared';
 import { snakeUtils } from './utils';
 
 export class GameMap {
     private grid: Array<Array<string | undefined>> = [];
+
     private positions: Record<string, Shared.Vector2D> = {};
+
     private sprites: Phaser.GameObjects.GameObject[] = [];
 
     constructor(private width: number, private height: number, private readonly offsetY: number) {}
@@ -35,6 +37,8 @@ export class GameMap {
 
     public getRandomStartPosition(): Shared.Vector2D {
         const positions = Object.values(this.positions);
+
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             const margin = 10;
             const randX = utils.generateRandomInteger(
@@ -76,6 +80,8 @@ export class GameMap {
             case 'right':
                 x += 1;
                 break;
+            default:
+                throw new UnreachableCaseError(direction);
         }
 
         if (

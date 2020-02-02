@@ -5,10 +5,6 @@ import { SnakeGame } from './scripts';
 export class Snake extends React.Component<RouteComponentProps<any>, {}> {
     private game: SnakeGame | undefined;
 
-    public render() {
-        return <div id="SnakeGame" />;
-    }
-
     public componentDidMount() {
         this.game = new SnakeGame('SnakeGame');
     }
@@ -17,5 +13,9 @@ export class Snake extends React.Component<RouteComponentProps<any>, {}> {
         if (this.game) {
             this.game.destroy(true);
         }
+    }
+
+    public render() {
+        return <div id="SnakeGame" />;
     }
 }

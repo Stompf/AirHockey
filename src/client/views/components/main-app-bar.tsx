@@ -20,29 +20,24 @@ const styles = createStyles({
 
 type IStartProps = WithStyles<typeof styles>;
 
-class MainAppBarComponent extends React.Component<IStartProps> {
-    public render() {
-        const { classes } = this.props;
-        return (
-            <div className={classes.root}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography variant="h6" color="inherit" className={classes.grow}>
-                            <Link to="/">
-                                <img src="favicon.ico" className={classes.img} />
-                            </Link>
-                        </Typography>
-                        <Link to="/games" style={{ textDecoration: 'none', color: 'white' }}>
-                            <Button color="inherit">Games</Button>
-                        </Link>
-                        <Link to="/about-me" style={{ textDecoration: 'none', color: 'white' }}>
-                            <Button color="inherit">About Me</Button>
-                        </Link>
-                    </Toolbar>
-                </AppBar>
-            </div>
-        );
-    }
-}
+const MainAppBarComponent = ({ classes }: IStartProps) => (
+    <div className={classes.root}>
+        <AppBar position="static">
+            <Toolbar>
+                <Typography variant="h6" color="inherit" className={classes.grow}>
+                    <Link to="/">
+                        <img alt="" src="favicon.ico" className={classes.img} />
+                    </Link>
+                </Typography>
+                <Link to="/games" style={{ textDecoration: 'none', color: 'white' }}>
+                    <Button color="inherit">Games</Button>
+                </Link>
+                <Link to="/about-me" style={{ textDecoration: 'none', color: 'white' }}>
+                    <Button color="inherit">About Me</Button>
+                </Link>
+            </Toolbar>
+        </AppBar>
+    </div>
+);
 
 export const MainAppBar = withStyles(styles)(MainAppBarComponent);

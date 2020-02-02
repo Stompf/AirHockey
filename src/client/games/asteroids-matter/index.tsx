@@ -5,10 +5,6 @@ import { AsteroidsGame } from './asteroid.game';
 export class Asteroids extends React.Component<{}, {}> {
     private game: AsteroidsGame | undefined;
 
-    public render() {
-        return <div id="AsteroidsMatterCanvas" />;
-    }
-
     public componentDidMount() {
         this.game = new AsteroidsGame('AsteroidsMatterCanvas');
     }
@@ -17,5 +13,9 @@ export class Asteroids extends React.Component<{}, {}> {
         if (this.game) {
             this.game.destroy(true);
         }
+    }
+
+    public render() {
+        return <div id="AsteroidsMatterCanvas" />;
     }
 }

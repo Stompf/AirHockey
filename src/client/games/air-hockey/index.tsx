@@ -5,10 +5,6 @@ import { AirHockeyGame } from './scripts';
 export class AirHockey extends React.Component<RouteComponentProps<any>, {}> {
     private game: AirHockeyGame | undefined;
 
-    public render() {
-        return <div id="AirHockeyCanvas" />;
-    }
-
     public componentDidMount() {
         this.game = new AirHockeyGame('AirHockeyCanvas');
     }
@@ -17,5 +13,9 @@ export class AirHockey extends React.Component<RouteComponentProps<any>, {}> {
         if (this.game) {
             this.game.destroy(true);
         }
+    }
+
+    public render() {
+        return <div id="AirHockeyCanvas" />;
     }
 }

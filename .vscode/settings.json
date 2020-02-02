@@ -1,4 +1,22 @@
 {
+    "cSpell.words": [
+        "Lundmark",
+        "Lunne",
+        "RESPAWN",
+        "Unmount",
+        "collisionstart",
+        "matterjs",
+        "printf",
+        "renderable",
+        "stompf",
+        "verts"
+    ],
+    "debug.toolBarLocation": "docked",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "emmet.showExpandedAbbreviation": "never",
+    "eslint.autoFixOnSave": true,
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -21,24 +39,7 @@
         "npm-debug.log*": true,
         ".vscode/chrome": true
     },
-    "vsicons.presets.angular": true,
-    "debug.toolBarLocation": "docked",
     "terminal.integrated.copyOnSelection": true,
     "typescript.tsdk": "./node_modules/typescript/lib",
-    "emmet.showExpandedAbbreviation": "never",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.tslint": true
-    },
-    "cSpell.words": [
-        "Lundmark",
-        "Lunne",
-        "RESPAWN",
-        "Unmount",
-        "collisionstart",
-        "matterjs",
-        "printf",
-        "renderable",
-        "stompf",
-        "verts"
-    ]
+    "vsicons.presets.angular": true
 }

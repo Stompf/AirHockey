@@ -3,7 +3,9 @@ import { PhysicsCategories } from './utils';
 
 export class Bullet {
     public static BulletRadius = 4;
+
     public static BulletLifeTime = 900;
+
     public static BulletSpeed = 25;
 
     public static createBulletTexture(scene: Phaser.Scene) {
@@ -21,7 +23,7 @@ export class Bullet {
         angle: number,
         position: WebKitPoint,
         velocity: WebKitPoint,
-        physicsCategory: PhysicsCategories
+        physicsCategory: PhysicsCategories,
     ) {
         const sprite = scene.matter.add.image(position.x, position.y, 'bullet');
 
@@ -29,7 +31,7 @@ export class Bullet {
         sprite.setCircle(Bullet.BulletRadius, {});
         sprite.setVelocity(
             Bullet.BulletSpeed * Math.cos(angle) + velocity.x,
-            Bullet.BulletSpeed * Math.sin(angle) + velocity.y
+            Bullet.BulletSpeed * Math.sin(angle) + velocity.y,
         );
         sprite.setCollisionCategory(physicsCategory.bullet);
         sprite.setCollidesWith([

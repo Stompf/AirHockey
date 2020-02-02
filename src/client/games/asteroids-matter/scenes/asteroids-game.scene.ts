@@ -13,15 +13,23 @@ import {
 
 export class AsteroidGameScene extends Phaser.Scene {
     private pointsText!: Phaser.GameObjects.Text;
+
     private livesText!: Phaser.GameObjects.Text;
+
     private readonly PLAYER_RESPAWN_TIME = 2000;
+
     private readonly asteroidSpawnDelay = 14000;
 
     private readonly powerUpShieldPercent = 1;
+
     private readonly maxPowerUpsOnScreen = 2;
+
     private currentLevel = 1;
+
     private player!: Player;
+
     private physicsCategories!: PhysicsCategories;
+
     private powerUps: BasePowerUp[] = [];
 
     private asteroidTimer!: Phaser.Time.TimerEvent;
@@ -43,11 +51,11 @@ export class AsteroidGameScene extends Phaser.Scene {
         this.load.image('ufo', '/assets/games/asteroids/PNG/ufoRed.png');
         this.load.image(
             'powerUp_shootSpeed',
-            '/assets/games/asteroids/PNG/Power-ups/powerUpBlue_bolt.png'
+            '/assets/games/asteroids/PNG/Power-ups/powerUpBlue_bolt.png',
         );
         this.load.image(
             'powerUp_shield',
-            '/assets/games/asteroids/PNG/Power-ups/powerUpBlue_shield.png'
+            '/assets/games/asteroids/PNG/Power-ups/powerUpBlue_shield.png',
         );
         this.load.image('background', '/assets/games/asteroids/Backgrounds/space.jpg');
 
@@ -68,65 +76,68 @@ export class AsteroidGameScene extends Phaser.Scene {
     private updatePhysics() {
         this.player.onUpdate(this.time.now);
 
-        this.children.list.forEach(gameObject => {
+        this.children.list.forEach((gameObject) => {
             if (gameObject.type === 'Image' && !(gameObject.getData('type') instanceof Bullet)) {
                 this.warp(gameObject as Phaser.GameObjects.Image);
             }
         });
 
-        this.powerUps.forEach(powerUp => powerUp.onUpdate());
+        this.powerUps.forEach((powerUp) => powerUp.onUpdate());
     }
 
     private handleCollisions() {
-        this.matter.world.on('collisionstart', (event: Phaser.Physics.Matter.Events.CollisionActiveEvent) => {
-            event.pairs.forEach(pair => {
-                const asteroid = this.getType<Asteroid>(pair, Asteroid);
-                const bullet = this.getType<Bullet>(pair, Bullet);
-                const player = this.getType<Player>(pair, Player);
-                const powerUp = this.getType<BasePowerUp>(pair, BasePowerUp);
+        this.matter.world.on(
+            'collisionstart',
+            (event: Phaser.Physics.Matter.Events.CollisionActiveEvent) => {
+                event.pairs.forEach((pair) => {
+                    const asteroid = AsteroidGameScene.getType<Asteroid>(pair, Asteroid);
+                    const bullet = AsteroidGameScene.getType<Bullet>(pair, Bullet);
+                    const player = AsteroidGameScene.getType<Player>(pair, Player);
+                    const powerUp = AsteroidGameScene.getType<BasePowerUp>(pair, BasePowerUp);
 
-                if (asteroid && bullet) {
-                    this.player.points += 10;
+                    if (asteroid && bullet) {
+                        this.player.points += 10;
 
-                    bullet.destroy();
+                        bullet.destroy();
 
-                    if (
-                        Math.random() <= this.powerUpShieldPercent &&
-                        this.powerUps.length < this.maxPowerUpsOnScreen
-                    ) {
-                        this.spawnRandomPowerUp(asteroid.sprite.body.position);
+                        if (
+                            Math.random() <= this.powerUpShieldPercent
+                            && this.powerUps.length < this.maxPowerUpsOnScreen
+                        ) {
+                            this.spawnRandomPowerUp(asteroid.sprite.body.position);
+                        }
+
+                        asteroid.explode();
+                        asteroid.destroy();
                     }
 
-                    asteroid.explode();
-                    asteroid.destroy();
-                }
-
-                if (asteroid && player && player.allowCollision()) {
-                    const remainingLives = player.kill();
-                    if (remainingLives > 0) {
-                        this.time.delayedCall(
-                            this.PLAYER_RESPAWN_TIME,
-                            this.respawnPlayer,
-                            [],
-                            this
-                        );
-                    } else {
-                        this.asteroidTimer.paused = true;
-                        this.sys.registry.set('points', this.player.points);
-                        this.scene.launch('GameOverScene');
-                    }
-                }
-
-                if (player && player.isAlive() && powerUp) {
-                    const index = this.powerUps.indexOf(powerUp);
-                    if (index >= 0) {
-                        this.powerUps.splice(index, 1);
+                    if (asteroid && player && player.allowCollision()) {
+                        const remainingLives = player.kill();
+                        if (remainingLives > 0) {
+                            this.time.delayedCall(
+                                this.PLAYER_RESPAWN_TIME,
+                                this.respawnPlayer,
+                                [],
+                                this,
+                            );
+                        } else {
+                            this.asteroidTimer.paused = true;
+                            this.sys.registry.set('points', this.player.points);
+                            this.scene.launch('GameOverScene');
+                        }
                     }
 
-                    powerUp.activate(player);
-                }
-            });
-        });
+                    if (player && player.isAlive() && powerUp) {
+                        const index = this.powerUps.indexOf(powerUp);
+                        if (index >= 0) {
+                            this.powerUps.splice(index, 1);
+                        }
+
+                        powerUp.activate(player);
+                    }
+                });
+            },
+        );
     }
 
     private spawnRandomPowerUp(position: WebKitPoint) {
@@ -140,7 +151,7 @@ export class AsteroidGameScene extends Phaser.Scene {
                 position,
                 { x: 0, y: 0 },
                 1,
-                this.physicsCategories
+                this.physicsCategories,
             );
         }
         this.powerUps.push(powerUp);
@@ -154,13 +165,15 @@ export class AsteroidGameScene extends Phaser.Scene {
             { x: this.player.sprite.x, y: this.player.sprite.y },
             this.player.sprite.body.velocity,
             this.player.sprite.body.angularVelocity,
-            this.physicsCategories
+            this.physicsCategories,
         );
         shield.activate(this.player);
     }
 
-    // tslint:disable-next-line: ban-types
-    private getType<T extends any>(pair: Phaser.Types.Physics.Matter.MatterCollisionData, obj: any): T | null {
+    private static getType<T extends any>(
+        pair: Phaser.Types.Physics.Matter.MatterCollisionData,
+        obj: any,
+    ): T | null {
         if (pair.bodyA.gameObject == null || pair.bodyB.gameObject == null) {
             return null;
         }
@@ -170,11 +183,11 @@ export class AsteroidGameScene extends Phaser.Scene {
 
         if (bodyA instanceof obj) {
             return bodyA as T;
-        } else if (bodyB instanceof obj) {
-            return bodyB as T;
-        } else {
-            return null;
         }
+        if (bodyB instanceof obj) {
+            return bodyB as T;
+        }
+        return null;
     }
 
     private warp(sprite: Phaser.GameObjects.Image) {
@@ -221,7 +234,7 @@ export class AsteroidGameScene extends Phaser.Scene {
             0,
             this.sys.canvas.width,
             this.sys.canvas.height,
-            'background'
+            'background',
         );
         background.setOrigin(0, 0);
     }
@@ -246,8 +259,8 @@ export class AsteroidGameScene extends Phaser.Scene {
     }
 
     private updateHUD() {
-        this.pointsText.setText('Points: ' + this.player.points);
-        this.livesText.setText('Lives: ' + this.player.lives);
+        this.pointsText.setText(`Points: ${this.player.points}`);
+        this.livesText.setText(`Lives: ${this.player.lives}`);
     }
 
     private addAsteroids() {
@@ -255,7 +268,7 @@ export class AsteroidGameScene extends Phaser.Scene {
             return;
         }
 
-        for (let i = 0; i < this.currentLevel; i++) {
+        for (let i = 0; i < this.currentLevel; i += 1) {
             const x = Math.random() * this.sys.canvas.width;
             let y = Math.random() * this.sys.canvas.height;
             const vx = (Math.random() - 0.5) * Asteroid.MaxAsteroidSpeed;
@@ -283,7 +296,7 @@ export class AsteroidGameScene extends Phaser.Scene {
             va,
             0,
             index,
-            this.physicsCategories
+            this.physicsCategories,
         );
         return asteroid;
     }

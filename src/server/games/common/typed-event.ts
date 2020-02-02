@@ -7,6 +7,7 @@ export interface IDisposable {
 /** passes through events as they happen. You will not get events from before you start listening */
 export class TypedEvent<T> {
     private listeners: Array<Listener<T>> = [];
+
     private listenersOncer: Array<Listener<T>> = [];
 
     public on = (listener: Listener<T>): IDisposable => {
