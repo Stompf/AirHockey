@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { CollisionStartEvent, ICollisionStartEvent, IPairCollision } from '../../common';
 import { flags } from '../debug';
 import {
     Asteroid,
@@ -79,7 +78,7 @@ export class AsteroidGameScene extends Phaser.Scene {
     }
 
     private handleCollisions() {
-        this.matter.world.on(CollisionStartEvent, (event: ICollisionStartEvent) => {
+        this.matter.world.on('collisionstart', (event: Phaser.Physics.Matter.Events.CollisionActiveEvent) => {
             event.pairs.forEach(pair => {
                 const asteroid = this.getType<Asteroid>(pair, Asteroid);
                 const bullet = this.getType<Bullet>(pair, Bullet);
@@ -161,7 +160,7 @@ export class AsteroidGameScene extends Phaser.Scene {
     }
 
     // tslint:disable-next-line: ban-types
-    private getType<T extends any>(pair: IPairCollision, obj: any): T | null {
+    private getType<T extends any>(pair: Phaser.Types.Physics.Matter.MatterCollisionData, obj: any): T | null {
         if (pair.bodyA.gameObject == null || pair.bodyB.gameObject == null) {
             return null;
         }
