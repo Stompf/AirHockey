@@ -15,7 +15,7 @@
         "build-docker-prod": "docker build -t stompf/lunne-web  .",
         "push-to-docker": "docker login && docker push stompf/lunne-web:latest",
         "build-and-push": "npm run build-docker-prod && npm run push-to-docker",
-        "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src"
+        "lint": "eslint --ext .js,.jsx,.ts,.tsx ./src --fix"
     },
     "repository": {
         "type": "git",
