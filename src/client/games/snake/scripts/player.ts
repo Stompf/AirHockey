@@ -1,22 +1,26 @@
 import Phaser from 'phaser';
-import { Shared } from 'src/shared';
+import { Shared, UnreachableCaseError } from 'src/shared';
 import { GameMap } from './gameMap';
 import { snakeUtils } from './utils';
 
 export class Player {
     public score: number = 0;
+
     private readonly cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+
     private currentDirection: Shared.Direction;
+
     private startArrow: Phaser.GameObjects.Image;
+
     private alive: boolean = true;
 
     constructor(
         scene: Phaser.Scene,
         private playerId: string,
         color: number,
-        cursors: Phaser.Types.Input.Keyboard.CursorKeys
+        cursors: Phaser.Types.Input.Keyboard.CursorKeys,
     ) {
-        this.createPlayerTexture(scene, playerId, color);
+        Player.createPlayerTexture(scene, playerId, color);
         this.cursors = cursors;
         this.currentDirection = 'left';
         this.startArrow = scene.add.image(0, 0, 'arrow');
@@ -44,7 +48,7 @@ export class Player {
         startPosition: Shared.Vector2D,
         direction: Shared.Direction,
         gameMap: GameMap,
-        scene: Phaser.Scene
+        scene: Phaser.Scene,
     ) {
         this.currentDirection = direction;
         gameMap.setPosition(this.playerId, startPosition, scene);
@@ -68,10 +72,8 @@ export class Player {
 
         if (paused) {
             this.updateStartArrow(gameMap);
-        } else {
-            if (!gameMap.setGrid(this.playerId, this.currentDirection, scene)) {
-                this.alive = false;
-            }
+        } else if (!gameMap.setGrid(this.playerId, this.currentDirection, scene)) {
+            this.alive = false;
         }
     }
 
@@ -79,7 +81,7 @@ export class Player {
         const playerPosition = gameMap.getPlayerPosition(this.playerId);
         this.startArrow.setPosition(
             playerPosition.x + snakeUtils.playerSize / 2,
-            playerPosition.y + snakeUtils.playerSize / 2
+            playerPosition.y + snakeUtils.playerSize / 2,
         );
         this.startArrow.setRotation(snakeUtils.getDirectionInRadians(this.currentDirection));
         const offset = snakeUtils.playerSize * 1.25;
@@ -97,17 +99,19 @@ export class Player {
             case 'left':
                 this.startArrow.setX(playerPosition.x - offset);
                 break;
+            default:
+                throw new UnreachableCaseError(this.currentDirection);
         }
     }
 
-    private createPlayerTexture(scene: Phaser.Scene, playerId: string, color: number) {
+    private static createPlayerTexture(scene: Phaser.Scene, playerId: string, color: number) {
         const graphics = scene.add.graphics();
         graphics.fillStyle(color);
         graphics.fillRect(
             snakeUtils.playerSize / 2,
             snakeUtils.playerSize / 2,
             snakeUtils.playerSize,
-            snakeUtils.playerSize
+            snakeUtils.playerSize,
         );
         graphics.setVisible(false);
         const textureName = `player-${playerId}`;

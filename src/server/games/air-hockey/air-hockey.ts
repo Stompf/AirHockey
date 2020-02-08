@@ -6,21 +6,31 @@ import { World } from './world';
 
 export class AirHockeyServer {
     public static MAX_PLAYERS = 2;
+
     public static MIN_PLAYERS = 2;
 
     public readonly GAME_NAME = 'AirHockey';
 
     private readonly NETWORK_INTERVAL = getConfig().NETWORK_INTERVAL;
+
     private readonly FIXED_TIME_STEP = getConfig().FIXED_TIME_STEP;
+
     private readonly MAX_SUB_STEPS = getConfig().MAX_SUB_STEPS;
+
     private readonly SCORE_DELAY_MS = 2000;
+
     private networkIntervalReference: NodeJS.Timer | undefined;
+
     private physicsIntervalReference: NodeJS.Timer | undefined;
 
     private timeLimitReference: NodeJS.Timer | undefined;
+
     private tick = 0;
+
     private gameStated: boolean;
+
     private paused = false;
+
     private world: World;
 
     constructor(
@@ -153,7 +163,7 @@ export class AirHockeyServer {
     };
 
     private networkUpdate = () => {
-        this.tick++;
+        this.tick += 1;
 
         const serverTick: AirHockey.INetworkUpdateEvent = {
             type: 'networkUpdate',

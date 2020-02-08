@@ -2,6 +2,7 @@ export type TeamSide = 'left' | 'right';
 
 export class Team {
     private score: number = 0;
+
     private color: number;
 
     get TeamSide() {
@@ -26,6 +27,6 @@ export class Team {
     }
 
     public addScore() {
-        this.score++;
+        this.score += 1;
     }
 }

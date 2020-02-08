@@ -1,19 +1,31 @@
 import moment from 'moment';
 import Phaser from 'phaser';
 import { utils } from 'src/shared';
-import { Colors, GameMap, Player, snakeUtils } from '../scripts';
+import { Player } from '../scripts/player';
+import { GameMap } from '../scripts/gameMap';
+import { snakeUtils, Colors } from '../scripts/utils';
 
 export class GameScene extends Phaser.Scene {
     private players!: Player[];
+
     private gameMap!: GameMap;
+
     private lastDelta = 0;
+
     private readonly UpdateTick = 40;
-    private isPaused: boolean = true;
+
+    private isPaused = true;
+
     private readonly PauseTimer = 3000;
+
     private statusText!: Phaser.GameObjects.Text;
+
     private scoreTexts: Phaser.GameObjects.Text[] = [];
+
     private startTime: Date = new Date();
+
     private readonly topContainerHeight = 30;
+
     private graphics!: Phaser.GameObjects.Graphics;
 
     constructor() {
@@ -137,7 +149,7 @@ export class GameScene extends Phaser.Scene {
             .add(this.PauseTimer, 'milliseconds')
             .toDate();
 
-        this.statusText.setText(this.getStartText(this.PauseTimer / 1000));
+        this.statusText.setText(GameScene.getStartText(this.PauseTimer / 1000));
 
         if (center) {
             utils.centerText(this.statusText);
@@ -167,14 +179,14 @@ export class GameScene extends Phaser.Scene {
     private updateStartText = () => {
         window.setTimeout(() => {
             const diff = moment(this.startTime).diff(moment(), 'seconds');
-            this.statusText.setText(this.getStartText(diff));
+            this.statusText.setText(GameScene.getStartText(diff));
             if (diff > 0 && this.isPaused) {
                 this.updateStartText();
             }
         }, 500);
     };
 
-    private getStartText(time: number) {
+    private static getStartText(time: number) {
         return `Starting in: ${time} seconds`;
     }
 }

@@ -1,10 +1,11 @@
 import Phaser from 'phaser';
 import { IMatterSprite } from '../../../common';
-import { Player } from '../player';
 import { PhysicsCategories } from '../utils';
+import { Player } from '../player';
 
 export class BasePowerUp {
     public sprite: IMatterSprite;
+
     public isActive: boolean = false;
 
     private readonly maxAngularVelocity = 0.05;
@@ -15,7 +16,7 @@ export class BasePowerUp {
         position: WebKitPoint,
         velocity: WebKitPoint,
         angularVelocity: number,
-        physicsCategories: PhysicsCategories
+        physicsCategories: PhysicsCategories,
     ) {
         const sprite = scene.matter.add.image(position.x, position.y, spriteName) as IMatterSprite;
 

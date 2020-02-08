@@ -93,7 +93,7 @@ function onWorkerExited(id: WorkerId) {
 function getGamePath(game: Shared.Game) {
     switch (game) {
         case 'AirHockey':
-            return __dirname + '/../games/air-hockey/index.js';
+            return `${__dirname}/../games/air-hockey/index.js`;
         default:
             throw new UnreachableCaseError(game);
     }

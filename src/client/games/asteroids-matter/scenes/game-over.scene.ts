@@ -21,22 +21,22 @@ export class GameOverScene extends Phaser.Scene {
             {
                 fill: '#000000',
                 fontSize: 34,
-            }
+            },
         );
         gameOverText.setDepth(10);
-        this.centerText(gameOverText);
+        GameOverScene.centerText(gameOverText);
 
         const scoreText = this.add.text(
             this.sys.canvas.width / 2,
             this.sys.canvas.height / 2,
-            'Score: ' + this.sys.registry.get('points'),
+            `Score: ${this.sys.registry.get('points')}`,
             {
                 fill: '#000000',
                 fontSize: 34,
-            }
+            },
         );
         scoreText.setDepth(10);
-        this.centerText(scoreText);
+        GameOverScene.centerText(scoreText);
 
         const clickToResetText = this.add.text(
             this.sys.canvas.width / 2,
@@ -45,17 +45,17 @@ export class GameOverScene extends Phaser.Scene {
             {
                 fill: '#000000',
                 fontSize: 34,
-            }
+            },
         );
         clickToResetText.setDepth(10);
-        this.centerText(clickToResetText);
+        GameOverScene.centerText(clickToResetText);
 
         this.input.once(
             'pointerup',
             () => {
                 this.scene.start('AsteroidGameScene');
             },
-            this
+            this,
         );
     }
 
@@ -70,7 +70,7 @@ export class GameOverScene extends Phaser.Scene {
         graphics.generateTexture('gameOverBg', width, height);
     }
 
-    private centerText(text: Phaser.GameObjects.Text) {
+    private static centerText(text: Phaser.GameObjects.Text) {
         text.setX(text.x - text.width / 2);
     }
 }

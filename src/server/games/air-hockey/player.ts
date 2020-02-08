@@ -4,13 +4,21 @@ import { Team } from './team';
 
 export class Player {
     public static readonly DIAMETER = 60;
+
     public static readonly MASS = 10;
+
     public static readonly SPEED = 1100;
+
     public socketId: Shared.Id;
+
     public body: p2.Body;
+
     public team: Team;
+
     public isReady: boolean = false;
+
     public readonly COLOR: number;
+
     private currentDirection: AirHockey.IDirection;
 
     constructor(world: p2.World, socketId: Shared.Id, color: number, team: Team) {
@@ -67,7 +75,7 @@ export class Player {
         if (input === 0) {
             this.body.velocity[1] = 0;
         } else {
-            this.body.velocity[1] = this.pxmi(input > 0 ? -Player.SPEED : Player.SPEED);
+            this.body.velocity[1] = Player.pxmi(input > 0 ? -Player.SPEED : Player.SPEED);
         }
     }
 
@@ -75,11 +83,11 @@ export class Player {
         if (input === 0) {
             this.body.velocity[0] = 0;
         } else {
-            this.body.velocity[0] = this.pxmi(input > 0 ? -Player.SPEED : Player.SPEED);
+            this.body.velocity[0] = Player.pxmi(input > 0 ? -Player.SPEED : Player.SPEED);
         }
     }
 
-    private pxmi(v: number) {
+    private static pxmi(v: number) {
         return v * -0.05;
     }
 }

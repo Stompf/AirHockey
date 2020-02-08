@@ -7,22 +7,32 @@ import { PhysicsCategories } from './utils';
 
 export class Player {
     public lives = 3;
+
     public points = 0;
+
     public sprite: IMatterSprite;
+
     public reloadTime = 200;
+
     private shieldSprite: IMatterSprite | undefined;
+
     private lastShootTime = 0;
+
     private thrustSpeed = 0.02;
+
     private turnSpeed = 0.05;
+
     private startSpeed = 0.5;
+
     private maxSpeed = 7;
+
     private playerKeyboard: PlayerKeyboard;
 
     constructor(private scene: Phaser.Scene, private physicsCategories: PhysicsCategories) {
         const sprite = scene.matter.add.image(
             scene.sys.canvas.width / 2,
             scene.sys.canvas.height / 2,
-            'player'
+            'player',
         ) as IMatterSprite;
 
         sprite.setDisplaySize(40, 30);
@@ -64,12 +74,12 @@ export class Player {
 
         this.sprite.setVelocity(
             Math.max(-this.maxSpeed, Math.min(this.maxSpeed, this.sprite.body.velocity.x)),
-            Math.max(-this.maxSpeed, Math.min(this.maxSpeed, this.sprite.body.velocity.y))
+            Math.max(-this.maxSpeed, Math.min(this.maxSpeed, this.sprite.body.velocity.y)),
         );
     }
 
     public kill() {
-        this.lives--;
+        this.lives -= 1;
         this.sprite.setVisible(false);
         this.sprite.setCollisionCategory(this.physicsCategories.nothing);
         this.sprite.setCollidesWith([]);
@@ -114,7 +124,7 @@ export class Player {
 
     private shoot() {
         if (!this.isAlive()) {
-            return;
+            return undefined;
         }
 
         const angle = this.sprite.rotation - Math.PI / 2;
@@ -124,7 +134,7 @@ export class Player {
             angle,
             { x: this.sprite.x, y: this.sprite.y },
             this.sprite.body.velocity,
-            this.physicsCategories
+            this.physicsCategories,
         );
 
         return bullet;

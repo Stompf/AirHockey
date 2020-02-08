@@ -1,4 +1,5 @@
-import { MenuScene, MultiplayerScene } from '../scenes';
+import { MenuScene } from "../scenes/menu.scene";
+import { MultiplayerScene } from "../scenes/multiplayer.scene";
 
 export class AirHockeyGame extends Phaser.Game {
     constructor(parent: string) {

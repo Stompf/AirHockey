@@ -1,9 +1,12 @@
 export class TextManager {
     private readonly infoText: Phaser.GameObjects.BitmapText;
+
     private readonly teamLeftScore: Phaser.GameObjects.BitmapText;
+
     private readonly teamRightScore: Phaser.GameObjects.BitmapText;
 
     private readonly scorePadding = 20;
+
     private readonly fontSize = 20;
 
     constructor(private scene: Phaser.Scene) {
@@ -12,10 +15,10 @@ export class TextManager {
             scene.sys.canvas.height / 2,
             'font',
             'Searching for game...',
-            this.fontSize
+            this.fontSize,
         );
         this.infoText.setTintFill(0x000000);
-        this.centerText(this.infoText);
+        TextManager.centerText(this.infoText);
 
         const startX = scene.sys.canvas.width / 2;
 
@@ -24,17 +27,17 @@ export class TextManager {
             10,
             'font',
             `0`,
-            this.fontSize
+            this.fontSize,
         );
         this.teamLeftScore.setTintFill(0xff0000);
-        this.teamLeftScore.setX(this.teamLeftScore.x - this.teamLeftScore.width);
+            this.teamLeftScore.setX(this.teamLeftScore.x - this.teamLeftScore.width);
 
         this.teamRightScore = scene.add.bitmapText(
             startX + this.scorePadding,
             10,
             'font',
             `0`,
-            this.fontSize
+            this.fontSize,
         );
         this.teamRightScore.setTintFill(0x0000ff);
 
@@ -62,10 +65,10 @@ export class TextManager {
         this.infoText.setText(text);
         this.infoText.setFontSize(fontSize);
         this.infoText.setX(this.scene.sys.canvas.width / 2);
-        this.centerText(this.infoText);
+        TextManager.centerText(this.infoText);
     }
 
-    private centerText(text: Phaser.GameObjects.BitmapText) {
+    private static centerText(text: Phaser.GameObjects.BitmapText) {
         text.setX(text.x - text.width / 2);
     }
 }

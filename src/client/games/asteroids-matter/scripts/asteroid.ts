@@ -4,18 +4,27 @@ import { PhysicsCategories } from './utils';
 
 export class Asteroid {
     public static MaxAsteroidSpeed = 5;
+
     public static NumAsteroidLevels = 4;
+
     public static NumAsteroidVerticals = 10;
+
     public static AsteroidRadius = 50;
+
     public static InitSpace = Asteroid.AsteroidRadius * 2;
+
     public static MaxLevel = 3;
+
     public static Splits = 4;
 
     public level: number;
+
     public sprite: IMatterSprite;
 
     private fillColor = 0xbfbfbf;
+
     private strokeColor = 0x6d6d6d;
+
     private strokeWidth = 4;
 
     constructor(
@@ -25,7 +34,7 @@ export class Asteroid {
         angularVelocity: number,
         level: number,
         index: number,
-        private physicsCategories: PhysicsCategories
+        private physicsCategories: PhysicsCategories,
     ) {
         this.level = level;
 
@@ -47,7 +56,7 @@ export class Asteroid {
                 y: position.y,
                 verts: verticals,
             },
-            {}
+            {},
         );
 
         sprite.setMass(10 / (level + 1));
@@ -72,13 +81,13 @@ export class Asteroid {
     public explode = () => {
         if (this.level < Asteroid.MaxLevel) {
             const angleDisturb = (Math.PI / 2) * (Math.random() - 0.5);
-            for (let i = 0; i < this.level + 2; i++) {
+            for (let i = 0; i < this.level + 2; i += 1) {
                 const angle = (Math.PI / 2) * i + angleDisturb;
                 const position = this.getSubAstroidPosition(
                     [this.sprite.body.position.x, this.sprite.body.position.y],
                     this.getRadius(),
                     i,
-                    Asteroid.Splits
+                    Asteroid.Splits,
                 );
                 this.createSubAsteroid(position[0], position[1], angle, i);
             }
@@ -95,7 +104,7 @@ export class Asteroid {
         graphics.lineStyle(this.strokeWidth, this.strokeColor);
         graphics.fillStyle(this.fillColor);
         graphics.beginPath();
-        for (let j = 0; j < concavePath.length; j++) {
+        for (let j = 0; j < concavePath.length; j += 1) {
             const xv = concavePath[j].x;
             const yv = concavePath[j].y;
             if (j === 0) {
@@ -107,7 +116,7 @@ export class Asteroid {
         if (concavePath.length > 2) {
             graphics.moveTo(
                 concavePath[concavePath.length - 1].x,
-                concavePath[concavePath.length - 1].y
+                concavePath[concavePath.length - 1].y,
             );
             graphics.lineTo(concavePath[0].x, concavePath[0].y);
         }
@@ -120,15 +129,13 @@ export class Asteroid {
         bodyPosition: number[],
         radius: number,
         index: number,
-        totalSplits: number
-    ) => {
-        return totalSplits === 1
+        totalSplits: number,
+    ) => (totalSplits === 1
             ? bodyPosition.splice(0)
             : [
                   this.sprite.x + (radius / 1.25) * (index <= totalSplits / 2 ? 1 : -1),
                   this.sprite.y + (radius / 1.25) * (index % 2 === 0 ? 1 : -1),
-              ];
-    };
+              ]);
 
     private createSubAsteroid = (x: number, y: number, angle: number, index: number) => {
         const r = this.getRadius() / 2;
@@ -149,7 +156,7 @@ export class Asteroid {
             this.sprite.body.angularVelocity,
             this.level + 1,
             index,
-            this.physicsCategories
+            this.physicsCategories,
         );
         return subAsteroid;
     };
@@ -158,13 +165,13 @@ export class Asteroid {
     private addAsteroidVerticals() {
         const verticals = [];
         const radius = this.getRadius();
-        for (let j = 0; j < Asteroid.NumAsteroidVerticals; j++) {
+        for (let j = 0; j < Asteroid.NumAsteroidVerticals; j += 1) {
             const angle = (j * 2 * Math.PI) / Asteroid.NumAsteroidVerticals;
             const xv = Number(
-                (radius * Math.cos(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2)
+                (radius * Math.cos(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2),
             );
             const yv = Number(
-                (radius * Math.sin(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2)
+                (radius * Math.sin(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2),
             );
             verticals.push({ x: xv, y: yv });
         }
@@ -173,8 +180,8 @@ export class Asteroid {
 
     private getRadius() {
         return (
-            (Asteroid.AsteroidRadius * (Asteroid.NumAsteroidLevels - this.level)) /
-            Asteroid.NumAsteroidLevels
+            (Asteroid.AsteroidRadius * (Asteroid.NumAsteroidLevels - this.level))
+            / Asteroid.NumAsteroidLevels
         );
     }
 }

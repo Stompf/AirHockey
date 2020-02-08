@@ -1,4 +1,4 @@
-import { Shared } from './shared';
+import { Shared } from './shared.d';
 
 export namespace AirHockey {
     export type Team = 'left' | 'right';

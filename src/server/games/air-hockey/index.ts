@@ -9,18 +9,6 @@ if (!parentPort) {
     throw Error(`No parent port was found`);
 }
 
-const server = new AirHockeyServer(
-    workerData as IAirHockeyGameOptions,
-    postEvent,
-    onTerminationRequested
-);
-
-// Listen on events
-parentPort.on('message', server.onEventReceived);
-
-// Emit loaded
-server.emitLoaded();
-
 function postEvent(event: AirHockey.ServerToClientGameEvent) {
     if (!parentPort) {
         throw Error(`No parent port was found`);
@@ -34,3 +22,15 @@ function onTerminationRequested(event: AirHockey.ITerminateRequestEvent) {
 
     setTimeout(() => process.exit(), 0);
 }
+
+const server = new AirHockeyServer(
+    workerData as IAirHockeyGameOptions,
+    postEvent,
+    onTerminationRequested
+);
+
+// Listen on events
+parentPort.on('message', server.onEventReceived);
+
+// Emit loaded
+server.emitLoaded();

@@ -3,6 +3,10 @@ import { isProduction } from '../utils';
 
 const { combine, timestamp, printf, colorize, metadata } = format;
 
+function isEmpty(obj: {}) {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
+
 const myFormat = printf(info => {
     let message = `${new Date(info.timestamp).toLocaleString('sv')} ${info.level}: ${info.message}`;
 
@@ -18,9 +22,5 @@ const logger = createLogger({
     transports: [new transports.Console()],
     level: isProduction() ? 'info' : 'debug',
 });
-
-function isEmpty(obj: {}) {
-    return Object.keys(obj).length === 0 && obj.constructor === Object;
-}
 
 export default logger;

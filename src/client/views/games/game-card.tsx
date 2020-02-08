@@ -26,23 +26,18 @@ type IGameCardProps = WithStyles<typeof styles> & {
     text: string;
 };
 
-class GameCardComponent extends React.Component<IGameCardProps> {
-    public render() {
-        const { classes, image, title, text } = this.props;
-        return (
-            <Card className={classes.card} raised>
-                <CardActionArea>
-                    <CardMedia className={classes.media} image={image} title={title} />
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            {title}
-                        </Typography>
-                        <Typography component="p">{text}</Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-        );
-    }
-}
+const GameCardComponent = ({ classes, image, title, text }: IGameCardProps) => (
+    <Card className={classes.card} raised>
+        <CardActionArea>
+            <CardMedia className={classes.media} image={image} title={title} />
+            <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                    {title}
+                </Typography>
+                <Typography component="p">{text}</Typography>
+            </CardContent>
+        </CardActionArea>
+    </Card>
+);
 
 export const GameCard = withStyles(styles)(GameCardComponent);
