@@ -1,6 +1,6 @@
 import { AirHockey, Shared } from 'src/shared';
 
-export class NetworkPlayer {
+export class AirHockeyPlayer {
     public readonly Id: Shared.Id;
 
     private sprite: Phaser.GameObjects.Arc;
@@ -11,7 +11,7 @@ export class NetworkPlayer {
             options.position.x,
             options.position.y,
             options.diameter / 2,
-            options.color,
+            options.color
         );
     }
 

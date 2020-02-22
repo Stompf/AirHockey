@@ -1,6 +1,6 @@
 import { AirHockey } from 'src/shared';
 
-export class NetworkBall {
+export class AirHockeyBall {
     private sprite: Phaser.GameObjects.Arc;
 
     constructor(options: AirHockey.BallOptions, scene: Phaser.Scene) {
@@ -8,7 +8,7 @@ export class NetworkBall {
             options.position.x,
             options.position.y,
             options.diameter / 2,
-            options.color,
+            options.color
         );
     }
 

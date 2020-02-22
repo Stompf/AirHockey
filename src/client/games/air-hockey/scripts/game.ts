@@ -1,8 +1,9 @@
-import { MenuScene } from "../scenes/menu.scene";
-import { MultiplayerScene } from "../scenes/multiplayer.scene";
+import { MenuScene } from '../scenes/menu.scene';
+import { MultiplayerScene } from '../scenes/multiplayer.scene';
+import { LocalScene } from '../scenes/local.scene';
 
 export class AirHockeyGame extends Phaser.Game {
-    constructor(parent: string) {
+    constructor(parent: string, type: GameType) {
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
             scale: {
@@ -12,17 +13,23 @@ export class AirHockeyGame extends Phaser.Game {
                 height: 600,
                 parent,
             },
-            // physics: {
-            //     default: 'arcade',
-            //     arcade: {
-            //         debug: true,
-            //     },
-            // },
-            scene: [MenuScene as any, MultiplayerScene],
             disableContextMenu: true,
             backgroundColor: '0x000000',
             canvasStyle: 'border: 1px solid black',
         };
+
+        if (type === 'local') {
+            config.physics = {
+                default: 'arcade',
+                arcade: {
+                    debug: true,
+                },
+            };
+
+            config.scene = [LocalScene];
+        } else {
+            config.scene = [MenuScene, MultiplayerScene];
+        }
 
         super(config);
     }

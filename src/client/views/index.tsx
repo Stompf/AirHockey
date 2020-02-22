@@ -1,6 +1,10 @@
 import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { AirHockey } from '../games/air-hockey';
+import {
+    AirHockeyMainMenu,
+    AirHockeyLocalGameComponent,
+    AirHockeyOnlineGameComponent,
+} from '../games/air-hockey';
 import { Asteroids } from '../games/asteroids-matter';
 import { Snake } from '../games/snake';
 import { UnityFps } from '../games/unity-fps';
@@ -13,7 +17,9 @@ export const Start: React.FunctionComponent = () => (
         <MainAppBar />
         <Switch>
             <Route path="/asteroids" component={Asteroids} />
-            <Route path="/air-hockey" component={AirHockey} />
+            <Route path="/air-hockey/local" component={AirHockeyLocalGameComponent} />
+            <Route path="/air-hockey/online" component={AirHockeyOnlineGameComponent} />
+            <Route path="/air-hockey" component={AirHockeyMainMenu} />
             <Route path="/games" component={Games} />
             <Route path="/about-me" component={AboutMe} />
             <Route path="/snake" component={Snake} />

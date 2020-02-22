@@ -1,18 +1,18 @@
 import Phaser from 'phaser';
 import { connect } from 'socket.io-client';
 import { AirHockey, Shared, UnreachableCaseError } from 'src/shared';
-import { NetworkPlayer } from '../scripts/network-player';
-import { NetworkBall } from '../scripts/network-ball';
+import { AirHockeyPlayer } from '../scripts/player';
+import { AirHockeyBall } from '../scripts/ball';
 import { TextManager } from '../scripts/text-manager';
 
 export class MultiplayerScene extends Phaser.Scene {
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
-    private players: Record<Shared.Id, NetworkPlayer>;
+    private players: Record<Shared.Id, AirHockeyPlayer>;
 
     private sprites: Phaser.GameObjects.GameObject[] = [];
 
-    private ball: NetworkBall | undefined;
+    private ball: AirHockeyBall | undefined;
 
     private socket: SocketIOClient.Socket | undefined;
 
@@ -45,8 +45,8 @@ export class MultiplayerScene extends Phaser.Scene {
     }
 
     protected preload() {
-        this.load.bitmapFont('font', 'assets/fonts/font.png', 'assets/fonts/font.fnt');
-        this.load.image('player', 'assets/games/air-hockey/player.png');
+        this.load.bitmapFont('font', '/assets/fonts/font.png', '/assets/fonts/font.fnt');
+        this.load.image('player', '/assets/games/air-hockey/player.png');
         this.reconnectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.textManager = new TextManager(this);
     }
@@ -180,10 +180,10 @@ export class MultiplayerScene extends Phaser.Scene {
         this.renderArena(event.gameSize);
 
         event.players.forEach(p => {
-            this.players[p.id] = new NetworkPlayer(p, this);
+            this.players[p.id] = new AirHockeyPlayer(p, this);
         });
 
-        this.ball = new NetworkBall(event.ball, this);
+        this.ball = new AirHockeyBall(event.ball, this);
 
         event.goals.forEach(this.renderGoals);
 

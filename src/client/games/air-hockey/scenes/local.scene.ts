@@ -1,13 +1,13 @@
 import Phaser from 'phaser';
 
-export class GameScene extends Phaser.Scene {
+export class LocalScene extends Phaser.Scene {
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
     private player: Phaser.Physics.Arcade.Image | undefined;
 
     constructor() {
         super({
-            key: 'GameScene',
+            key: 'LocalScene',
         });
     }
 
@@ -33,7 +33,8 @@ export class GameScene extends Phaser.Scene {
     }
 
     protected preload() {
-        this.load.image('player', 'assets/player.png');
+        this.load.bitmapFont('font', '/assets/fonts/font.png', '/assets/fonts/font.fnt');
+        this.load.image('player', '/assets/games/air-hockey/player.png');
     }
 
     protected create() {

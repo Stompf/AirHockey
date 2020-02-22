@@ -1,0 +1,1 @@
+type GameType = 'local' | 'online';
