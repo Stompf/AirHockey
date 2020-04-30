@@ -1,9 +1,12 @@
 import Phaser from 'phaser';
+import { ArenaRender } from '../scripts/arena';
 
 export class LocalScene extends Phaser.Scene {
     private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
     private player: Phaser.Physics.Arcade.Image | undefined;
+
+    private arenaRender!: ArenaRender;
 
     constructor() {
         super({
@@ -35,10 +38,19 @@ export class LocalScene extends Phaser.Scene {
     protected preload() {
         this.load.bitmapFont('font', '/assets/fonts/font.png', '/assets/fonts/font.fnt');
         this.load.image('player', '/assets/games/air-hockey/player.png');
+        this.arenaRender = new ArenaRender(this);
     }
 
     protected create() {
         this.cameras.main.setBackgroundColor('#FFFFFF');
+
+        this.arenaRender.renderArena({
+            height: this.sys.canvas.height,
+            width: this.sys.canvas.width,
+        });
+
+        this.arenaRender.renderGoals({});
+
         this.cursors = this.input.keyboard.addKeys({
             up: Phaser.Input.Keyboard.KeyCodes.W,
             down: Phaser.Input.Keyboard.KeyCodes.S,
