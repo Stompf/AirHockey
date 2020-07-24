@@ -1,4 +1,4 @@
-import { Shared } from './shared.d';
+import { Shared } from './shared';
 
 export namespace AirHockey {
     export type Team = 'left' | 'right';
@@ -12,7 +12,7 @@ export namespace AirHockey {
         ball: BallOptions;
     }
 
-    interface BallOptions {
+    export interface BallOptions {
         position: Shared.Vector2D;
         diameter: number;
         mass: number;

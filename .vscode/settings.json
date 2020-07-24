@@ -5,6 +5,7 @@
         "RESPAWN",
         "Unmount",
         "collisionstart",
+        "devtool",
         "matterjs",
         "printf",
         "renderable",
