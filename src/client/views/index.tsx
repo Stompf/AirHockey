@@ -7,6 +7,7 @@ import { UnityFps } from '../games/unity-fps';
 import { AboutMe } from './about-me';
 import { MainAppBar } from './components';
 import { Games } from './games';
+import { WebRTC } from '../games/webrtc';
 
 export const Start: React.FunctionComponent = () => (
     <>
@@ -18,6 +19,7 @@ export const Start: React.FunctionComponent = () => (
             <Route path="/about-me" component={AboutMe} />
             <Route path="/snake" component={Snake} />
             <Route path="/unity-fps" component={UnityFps} />
+            <Route path="/webrtc" component={WebRTC} />
             <Redirect to="/games" />
         </Switch>
     </>

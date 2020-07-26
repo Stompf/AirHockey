@@ -45,6 +45,14 @@ export const Games: React.FunctionComponent = () => (
                         image="assets/games/unity-fps/unity-fps.png"
                     />
                 </Link>
+
+                <Link to="/webrtc">
+                    <GameCard
+                        title="WebRTC"
+                        text="Testing WebRTC"
+                        image="assets/games/unity-fps/unity-fps.png"
+                    />
+                </Link>
             </Grid>
         </Grid>
     </Grid>
