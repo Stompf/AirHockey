@@ -12,7 +12,24 @@ import { Matchmaking } from './matchmaking';
 const port = 3000;
 
 const app = express();
-app.use(helmet());
+
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "example.com", "'unsafe-inline'", "'unsafe-eval'"],
+            objectSrc: ["'self'", "blob:"],
+            imgSrc: ["'self'", "data:", "blob:"],
+            styleSrc: ["'unsafe-inline'"],
+            styleSrcElem: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            workerSrc: ["'self'","blob:"],
+            scriptSrcElem: ["'self'","blob:", "'unsafe-inline'"],
+            connectSrc: ["'self'","blob:", "https://config.uca.cloud.unity3d.com", "https://cdp.cloud.unity3d.com"],
+            upgradeInsecureRequests: [],
+        }
+    }
+}));
 
 app.use(morgan('combined'));
 app.use(express.static('public'));
