@@ -179,7 +179,7 @@ export class MultiplayerScene extends Phaser.Scene {
 
         this.renderArena(event.gameSize);
 
-        event.players.forEach(p => {
+        event.players.forEach((p) => {
             this.players[p.id] = new NetworkPlayer(p, this);
         });
 
@@ -236,7 +236,7 @@ export class MultiplayerScene extends Phaser.Scene {
 
         clearInterval(this.networkTickInterval);
 
-        Object.values(this.players).forEach(p => p.destroy());
+        Object.values(this.players).forEach((p) => p.destroy());
         this.players = {};
 
         if (this.ball) {
@@ -244,7 +244,7 @@ export class MultiplayerScene extends Phaser.Scene {
             this.ball = undefined;
         }
 
-        this.sprites.forEach(g => g.destroy());
+        this.sprites.forEach((g) => g.destroy());
         this.sprites = [];
 
         this.textManager.setScoreTextVisible(false);
@@ -266,7 +266,7 @@ export class MultiplayerScene extends Phaser.Scene {
             return;
         }
 
-        event.players.forEach(p => {
+        event.players.forEach((p) => {
             this.players[p.id].updatePlayer(p);
         });
 

@@ -43,9 +43,7 @@ const matchMaking = new Matchmaking();
 const server = http.createServer(app);
 server.listen(port, listening);
 
-const io = socketIO();
-io.serveClient(false);
-io.attach(server);
+const io = new socketIO.Server(server);
 
 io.on('connection', socket => {
     logger.info(`a user connected: ${socket.id}`);

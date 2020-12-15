@@ -33,15 +33,9 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js'],
         plugins: [new TsconfigPathsPlugin({ configFile: './src/client/tsconfig.json' })],
     },
-    optimization: {
-        splitChunks: {
-            chunks: 'all',
-        },
-    },
     output: {
         path: path.resolve(__dirname, 'public'),
         filename: 'bundle.js',
-        chunkFilename: 'vendor.js',
     },
     plugins: [
         new webpack.DefinePlugin({
