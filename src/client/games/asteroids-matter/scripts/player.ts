@@ -32,7 +32,7 @@ export class Player {
         const sprite = scene.matter.add.image(
             scene.sys.canvas.width / 2,
             scene.sys.canvas.height / 2,
-            'player',
+            'player'
         ) as IMatterSprite;
 
         sprite.setDisplaySize(40, 30);
@@ -74,7 +74,7 @@ export class Player {
 
         this.sprite.setVelocity(
             Math.max(-this.maxSpeed, Math.min(this.maxSpeed, this.sprite.body.velocity.x)),
-            Math.max(-this.maxSpeed, Math.min(this.maxSpeed, this.sprite.body.velocity.y)),
+            Math.max(-this.maxSpeed, Math.min(this.maxSpeed, this.sprite.body.velocity.y))
         );
     }
 
@@ -134,7 +134,7 @@ export class Player {
             angle,
             { x: this.sprite.x, y: this.sprite.y },
             this.sprite.body.velocity,
-            this.physicsCategories,
+            this.physicsCategories
         );
 
         return bullet;

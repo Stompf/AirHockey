@@ -18,7 +18,7 @@ export class Player {
         scene: Phaser.Scene,
         private playerId: string,
         color: number,
-        cursors: Phaser.Types.Input.Keyboard.CursorKeys,
+        cursors: Phaser.Types.Input.Keyboard.CursorKeys
     ) {
         Player.createPlayerTexture(scene, playerId, color);
         this.cursors = cursors;
@@ -48,7 +48,7 @@ export class Player {
         startPosition: Shared.Vector2D,
         direction: Shared.Direction,
         gameMap: GameMap,
-        scene: Phaser.Scene,
+        scene: Phaser.Scene
     ) {
         this.currentDirection = direction;
         gameMap.setPosition(this.playerId, startPosition, scene);
@@ -81,7 +81,7 @@ export class Player {
         const playerPosition = gameMap.getPlayerPosition(this.playerId);
         this.startArrow.setPosition(
             playerPosition.x + snakeUtils.playerSize / 2,
-            playerPosition.y + snakeUtils.playerSize / 2,
+            playerPosition.y + snakeUtils.playerSize / 2
         );
         this.startArrow.setRotation(snakeUtils.getDirectionInRadians(this.currentDirection));
         const offset = snakeUtils.playerSize * 1.25;
@@ -111,7 +111,7 @@ export class Player {
             snakeUtils.playerSize / 2,
             snakeUtils.playerSize / 2,
             snakeUtils.playerSize,
-            snakeUtils.playerSize,
+            snakeUtils.playerSize
         );
         graphics.setVisible(false);
         const textureName = `player-${playerId}`;

@@ -13,7 +13,7 @@ export class GameMap {
     public reset() {
         this.grid = [];
         this.positions = {};
-        this.sprites.forEach(sprite => sprite.destroy());
+        this.sprites.forEach((sprite) => sprite.destroy());
         this.sprites = [];
     }
 
@@ -52,7 +52,7 @@ export class GameMap {
 
             if (
                 !positions.some(
-                    position =>
+                    (position) =>
                         Math.abs(position.x - randX) <= margin * 2 &&
                         Math.abs(position.y - randY) <= margin * 2
                 )

@@ -11,7 +11,7 @@ export class NetworkPlayer {
             options.position.x,
             options.position.y,
             options.diameter / 2,
-            options.color,
+            options.color
         );
     }
 

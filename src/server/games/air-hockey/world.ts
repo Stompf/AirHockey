@@ -60,14 +60,14 @@ export class World {
     }
 
     public onHeartbeat(timeStep: number, maxSubSteps: number) {
-        this.players.forEach(p => p.onUpdate());
+        this.players.forEach((p) => p.onUpdate());
         this.ball.onUpdate();
         this.p2World.step(timeStep, timeStep, maxSubSteps);
     }
 
     public getTick(): Omit<AirHockey.INetworkUpdateEvent, 'type' | 'tick'> {
         return {
-            players: this.players.map(p => p.toUpdateNetworkPlayerPlayer()),
+            players: this.players.map((p) => p.toUpdateNetworkPlayerPlayer()),
             ball: this.ball.toBallUpdate(),
         };
     }
@@ -78,7 +78,7 @@ export class World {
                 gravity: this.p2World.gravity,
                 restitution: this.p2World.defaultContactMaterial.restitution,
             },
-            players: this.players.map(p => p.toNewNetworkPlayer()),
+            players: this.players.map((p) => p.toNewNetworkPlayer()),
             gameSize: this.GAME_SIZE,
             ball: {
                 color: Ball.COLOR,
@@ -92,7 +92,7 @@ export class World {
     }
 
     public movePlayer(id: Shared.Id, data: AirHockey.IPlayerDirectionUpdate) {
-        const player = this.players.find(p => p.socketId === id);
+        const player = this.players.find((p) => p.socketId === id);
         if (!player) {
             logger.info(`movePlayer - got info about player not in game.`);
             return;
@@ -102,7 +102,7 @@ export class World {
     }
 
     public setPlayerReady(id: Shared.Id): boolean {
-        const player = this.players.find(p => p.socketId === id);
+        const player = this.players.find((p) => p.socketId === id);
         if (!player) {
             logger.info(`setPlayerReady - got info about player not in game.`);
             return false;
@@ -110,7 +110,7 @@ export class World {
 
         player.isReady = true;
 
-        return this.players.every(p => p.isReady);
+        return this.players.every((p) => p.isReady);
     }
 
     private getTeams(): ITeams {
@@ -272,14 +272,12 @@ export class World {
         };
     }
 
-    private mapToGoalOptions = (goal: IGoal): AirHockey.IGoalOptions => {
-        return {
-            back: World.mapToPositionWithBox(goal.back),
-            bottom: World.mapToPositionWithBox(goal.bottom),
-            goal: World.mapToPositionWithBox(goal.goal),
-            top: World.mapToPositionWithBox(goal.top),
-        };
-    };
+    private mapToGoalOptions = (goal: IGoal): AirHockey.IGoalOptions => ({
+        back: World.mapToPositionWithBox(goal.back),
+        bottom: World.mapToPositionWithBox(goal.bottom),
+        goal: World.mapToPositionWithBox(goal.goal),
+        top: World.mapToPositionWithBox(goal.top),
+    });
 
     private static mapToPositionWithBox(body: p2.Body): AirHockey.IPositionWithBox {
         const box = body.shapes[0] as p2.Box;

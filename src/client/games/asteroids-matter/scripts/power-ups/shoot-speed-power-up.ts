@@ -13,7 +13,7 @@ export class PowerUpShootSpeed extends BasePowerUp {
         position: WebKitPoint,
         velocity: WebKitPoint,
         angularVelocity: number,
-        physicsCategories: PhysicsCategories,
+        physicsCategories: PhysicsCategories
     ) {
         super(scene, 'powerUp_shootSpeed', position, velocity, angularVelocity, physicsCategories);
     }

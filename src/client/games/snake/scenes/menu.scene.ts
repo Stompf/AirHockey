@@ -24,7 +24,7 @@ export class MenuScene extends Phaser.Scene {
             this.sys.canvas.height / 2,
             'font',
             'Press ENTER to search for match',
-            18,
+            18
         );
 
         startText.setX(startText.x - startText.width / 2);

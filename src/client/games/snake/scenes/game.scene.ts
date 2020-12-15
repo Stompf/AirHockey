@@ -41,12 +41,12 @@ export class GameScene extends Phaser.Scene {
         }
 
         this.lastDelta = 0;
-        this.players.forEach(player => {
+        this.players.forEach((player) => {
             player.onUpdate(this.gameMap, this, this.isPaused);
         });
 
         if (!this.isPaused) {
-            const alivePlayers = this.players.filter(p => p.IsAlive);
+            const alivePlayers = this.players.filter((p) => p.IsAlive);
             if (alivePlayers.length === 0) {
                 this.isPaused = true;
                 this.statusText.setVisible(true);
@@ -102,7 +102,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         if (this.scoreTexts) {
-            this.scoreTexts.forEach(scoreText => {
+            this.scoreTexts.forEach((scoreText) => {
                 scoreText.destroy();
             });
             this.scoreTexts = [];
@@ -145,9 +145,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     private reset(center?: boolean) {
-        this.startTime = moment()
-            .add(this.PauseTimer, 'milliseconds')
-            .toDate();
+        this.startTime = moment().add(this.PauseTimer, 'milliseconds').toDate();
 
         this.statusText.setText(GameScene.getStartText(this.PauseTimer / 1000));
 
@@ -157,7 +155,7 @@ export class GameScene extends Phaser.Scene {
 
         this.isPaused = true;
         this.gameMap.reset();
-        this.players.forEach(player => {
+        this.players.forEach((player) => {
             const startPosition = this.gameMap.getRandomStartPosition();
             const startDirection = snakeUtils.getRandomStartDirection();
             player.reset();
@@ -171,7 +169,7 @@ export class GameScene extends Phaser.Scene {
 
         window.setTimeout(() => {
             this.isPaused = false;
-            this.players.forEach(player => player.showStartArrow(false));
+            this.players.forEach((player) => player.showStartArrow(false));
             this.statusText.setVisible(false);
         }, this.PauseTimer);
     }

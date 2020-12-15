@@ -16,7 +16,7 @@ export class BasePowerUp {
         position: WebKitPoint,
         velocity: WebKitPoint,
         angularVelocity: number,
-        physicsCategories: PhysicsCategories,
+        physicsCategories: PhysicsCategories
     ) {
         const sprite = scene.matter.add.image(position.x, position.y, spriteName) as IMatterSprite;
 

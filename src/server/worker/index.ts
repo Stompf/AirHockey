@@ -33,8 +33,8 @@ export function startWorker(game: Shared.Game, sockets: Socket[], workerData: an
             }`
         );
 
-        worker.on('message', event => onWorkerMessage(sockets, event));
-        worker.on('error', error => onWorkerError(id, error));
+        worker.on('message', (event) => onWorkerMessage(sockets, event));
+        worker.on('error', (error) => onWorkerError(id, error));
         worker.on('exit', () => onWorkerExited(id));
 
         currentThreadTimeouts[id] = setTimeout(() => {
@@ -44,7 +44,7 @@ export function startWorker(game: Shared.Game, sockets: Socket[], workerData: an
             terminateWorker(id);
         }, maxThreadLifeTimeMs);
 
-        sockets.forEach(socket => bindSocketGameEvents(socket, worker));
+        sockets.forEach((socket) => bindSocketGameEvents(socket, worker));
 
         return true;
     } catch (e) {
@@ -71,7 +71,7 @@ export function terminateWorker(id: WorkerId) {
 function onWorkerMessage(sockets: Socket[], event: unknown) {
     // logger.debug('message', event);
 
-    sockets.filter(s => s.connected).forEach(socket => socket.emit('serverEvent', event));
+    sockets.filter((s) => s.connected).forEach((socket) => socket.emit('serverEvent', event));
 }
 
 function onWorkerError(id: WorkerId, error: Error) {
@@ -102,7 +102,7 @@ function getGamePath(game: Shared.Game) {
 function bindSocketGameEvents(socket: Socket, worker: Worker) {
     removeAllListeners(socket);
 
-    socket.on('gameEvent', gameEvent => {
+    socket.on('gameEvent', (gameEvent) => {
         postMessageToWorker(worker, socket, gameEvent);
     });
 

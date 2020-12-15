@@ -31,8 +31,8 @@ export class Matchmaking {
     }
 
     public removeFromQueue(socketId: string) {
-        this.supportedGames.forEach(game => {
-            this.currentQueue[game] = this.currentQueue[game].filter(s => s.id !== socketId);
+        this.supportedGames.forEach((game) => {
+            this.currentQueue[game] = this.currentQueue[game].filter((s) => s.id !== socketId);
         });
     }
 

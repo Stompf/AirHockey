@@ -35,14 +35,12 @@ export class TypedEvent<T> {
 
     public emit = (event: T) => {
         /** Update any general listeners */
-        this.listeners.forEach(listener => listener(event));
+        this.listeners.forEach((listener) => listener(event));
 
         /** Clear the `once` queue */
-        this.listenersOncer.forEach(listener => listener(event));
+        this.listenersOncer.forEach((listener) => listener(event));
         this.listenersOncer = [];
     };
 
-    public pipe = (te: TypedEvent<T>): IDisposable => {
-        return this.on(e => te.emit(e));
-    };
+    public pipe = (te: TypedEvent<T>): IDisposable => this.on((e) => te.emit(e));
 }

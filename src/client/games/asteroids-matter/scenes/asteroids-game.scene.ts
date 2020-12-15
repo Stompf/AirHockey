@@ -51,11 +51,11 @@ export class AsteroidGameScene extends Phaser.Scene {
         this.load.image('ufo', '/assets/games/asteroids/PNG/ufoRed.png');
         this.load.image(
             'powerUp_shootSpeed',
-            '/assets/games/asteroids/PNG/Power-ups/powerUpBlue_bolt.png',
+            '/assets/games/asteroids/PNG/Power-ups/powerUpBlue_bolt.png'
         );
         this.load.image(
             'powerUp_shield',
-            '/assets/games/asteroids/PNG/Power-ups/powerUpBlue_shield.png',
+            '/assets/games/asteroids/PNG/Power-ups/powerUpBlue_shield.png'
         );
         this.load.image('background', '/assets/games/asteroids/Backgrounds/space.jpg');
 
@@ -101,8 +101,8 @@ export class AsteroidGameScene extends Phaser.Scene {
                         bullet.destroy();
 
                         if (
-                            Math.random() <= this.powerUpShieldPercent
-                            && this.powerUps.length < this.maxPowerUpsOnScreen
+                            Math.random() <= this.powerUpShieldPercent &&
+                            this.powerUps.length < this.maxPowerUpsOnScreen
                         ) {
                             this.spawnRandomPowerUp(asteroid.sprite.body.position);
                         }
@@ -118,7 +118,7 @@ export class AsteroidGameScene extends Phaser.Scene {
                                 this.PLAYER_RESPAWN_TIME,
                                 this.respawnPlayer,
                                 [],
-                                this,
+                                this
                             );
                         } else {
                             this.asteroidTimer.paused = true;
@@ -136,7 +136,7 @@ export class AsteroidGameScene extends Phaser.Scene {
                         powerUp.activate(player);
                     }
                 });
-            },
+            }
         );
     }
 
@@ -151,7 +151,7 @@ export class AsteroidGameScene extends Phaser.Scene {
                 position,
                 { x: 0, y: 0 },
                 1,
-                this.physicsCategories,
+                this.physicsCategories
             );
         }
         this.powerUps.push(powerUp);
@@ -165,14 +165,14 @@ export class AsteroidGameScene extends Phaser.Scene {
             { x: this.player.sprite.x, y: this.player.sprite.y },
             this.player.sprite.body.velocity,
             this.player.sprite.body.angularVelocity,
-            this.physicsCategories,
+            this.physicsCategories
         );
         shield.activate(this.player);
     }
 
     private static getType<T extends any>(
         pair: Phaser.Types.Physics.Matter.MatterCollisionData,
-        obj: any,
+        obj: any
     ): T | null {
         if (pair.bodyA.gameObject == null || pair.bodyB.gameObject == null) {
             return null;
@@ -234,7 +234,7 @@ export class AsteroidGameScene extends Phaser.Scene {
             0,
             this.sys.canvas.width,
             this.sys.canvas.height,
-            'background',
+            'background'
         );
         background.setOrigin(0, 0);
     }
@@ -296,7 +296,7 @@ export class AsteroidGameScene extends Phaser.Scene {
             va,
             0,
             index,
-            this.physicsCategories,
+            this.physicsCategories
         );
         return asteroid;
     }

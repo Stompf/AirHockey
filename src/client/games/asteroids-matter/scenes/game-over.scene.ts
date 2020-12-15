@@ -21,7 +21,7 @@ export class GameOverScene extends Phaser.Scene {
             {
                 fill: '#000000',
                 fontSize: 34,
-            },
+            }
         );
         gameOverText.setDepth(10);
         GameOverScene.centerText(gameOverText);
@@ -33,7 +33,7 @@ export class GameOverScene extends Phaser.Scene {
             {
                 fill: '#000000',
                 fontSize: 34,
-            },
+            }
         );
         scoreText.setDepth(10);
         GameOverScene.centerText(scoreText);
@@ -45,7 +45,7 @@ export class GameOverScene extends Phaser.Scene {
             {
                 fill: '#000000',
                 fontSize: 34,
-            },
+            }
         );
         clickToResetText.setDepth(10);
         GameOverScene.centerText(clickToResetText);
@@ -55,7 +55,7 @@ export class GameOverScene extends Phaser.Scene {
             () => {
                 this.scene.start('AsteroidGameScene');
             },
-            this,
+            this
         );
     }
 

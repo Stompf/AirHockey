@@ -15,7 +15,7 @@ export class TextManager {
             scene.sys.canvas.height / 2,
             'font',
             'Searching for game...',
-            this.fontSize,
+            this.fontSize
         );
         this.infoText.setTintFill(0x000000);
         TextManager.centerText(this.infoText);
@@ -27,17 +27,17 @@ export class TextManager {
             10,
             'font',
             `0`,
-            this.fontSize,
+            this.fontSize
         );
         this.teamLeftScore.setTintFill(0xff0000);
-            this.teamLeftScore.setX(this.teamLeftScore.x - this.teamLeftScore.width);
+        this.teamLeftScore.setX(this.teamLeftScore.x - this.teamLeftScore.width);
 
         this.teamRightScore = scene.add.bitmapText(
             startX + this.scorePadding,
             10,
             'font',
             `0`,
-            this.fontSize,
+            this.fontSize
         );
         this.teamRightScore.setTintFill(0x0000ff);
 

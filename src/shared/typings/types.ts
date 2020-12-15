@@ -7,7 +7,7 @@ export type DeepPartial<T> = {
         ? Array<DeepPartial<U>>
         : T[P] extends ReadonlyArray<infer U>
         ? ReadonlyArray<DeepPartial<U>>
-        : DeepPartial<T[P]>
+        : DeepPartial<T[P]>;
 };
 
 /** Like Required but recursive */
@@ -23,7 +23,7 @@ interface DeepRequiredArray<T> extends Array<DeepRequired<T>> {}
 /** Like Readonly but recursive */
 export type DeepReadonly<T> = T extends Primitive
     ? T
-    : T extends (any[] | ReadonlyArray<any>)
+    : T extends any[] | ReadonlyArray<any>
     ? DeepReadonlyArray<T[number]>
     : T extends Function
     ? T
@@ -47,9 +47,9 @@ export type NonNever<T extends {}> = Pick<
 export type Merge<M, N> = Omit<M, Extract<keyof M, keyof N>> & N;
 
 /** Convert union type to intersection #darkmagic */
-export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends ((
+export type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
     k: infer I
-) => void)
+) => void
     ? I
     : never;
 

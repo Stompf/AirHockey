@@ -25,7 +25,7 @@ export class PowerUpShield extends BasePowerUp {
         position: WebKitPoint,
         velocity: WebKitPoint,
         angularVelocity: number,
-        private physicsCategories: PhysicsCategories,
+        private physicsCategories: PhysicsCategories
     ) {
         super(scene, 'powerUp_shield', position, velocity, angularVelocity, physicsCategories);
     }
@@ -58,7 +58,7 @@ export class PowerUpShield extends BasePowerUp {
         this.shieldSprite = scene.matter.add.image(
             player.sprite.x,
             player.sprite.y,
-            'shield',
+            'shield'
         ) as IMatterSprite;
 
         this.shieldSprite.setCircle(PowerUpShield.radius, {});

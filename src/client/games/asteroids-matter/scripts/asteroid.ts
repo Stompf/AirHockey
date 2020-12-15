@@ -34,7 +34,7 @@ export class Asteroid {
         angularVelocity: number,
         level: number,
         index: number,
-        private physicsCategories: PhysicsCategories,
+        private physicsCategories: PhysicsCategories
     ) {
         this.level = level;
 
@@ -56,7 +56,7 @@ export class Asteroid {
                 y: position.y,
                 verts: verticals,
             },
-            {},
+            {}
         );
 
         sprite.setMass(10 / (level + 1));
@@ -87,7 +87,7 @@ export class Asteroid {
                     [this.sprite.body.position.x, this.sprite.body.position.y],
                     this.getRadius(),
                     i,
-                    Asteroid.Splits,
+                    Asteroid.Splits
                 );
                 this.createSubAsteroid(position[0], position[1], angle, i);
             }
@@ -116,7 +116,7 @@ export class Asteroid {
         if (concavePath.length > 2) {
             graphics.moveTo(
                 concavePath[concavePath.length - 1].x,
-                concavePath[concavePath.length - 1].y,
+                concavePath[concavePath.length - 1].y
             );
             graphics.lineTo(concavePath[0].x, concavePath[0].y);
         }
@@ -129,13 +129,14 @@ export class Asteroid {
         bodyPosition: number[],
         radius: number,
         index: number,
-        totalSplits: number,
-    ) => (totalSplits === 1
+        totalSplits: number
+    ) =>
+        totalSplits === 1
             ? bodyPosition.splice(0)
             : [
                   this.sprite.x + (radius / 1.25) * (index <= totalSplits / 2 ? 1 : -1),
                   this.sprite.y + (radius / 1.25) * (index % 2 === 0 ? 1 : -1),
-              ]);
+              ];
 
     private createSubAsteroid = (x: number, y: number, angle: number, index: number) => {
         const r = this.getRadius() / 2;
@@ -156,7 +157,7 @@ export class Asteroid {
             this.sprite.body.angularVelocity,
             this.level + 1,
             index,
-            this.physicsCategories,
+            this.physicsCategories
         );
         return subAsteroid;
     };
@@ -168,10 +169,10 @@ export class Asteroid {
         for (let j = 0; j < Asteroid.NumAsteroidVerticals; j += 1) {
             const angle = (j * 2 * Math.PI) / Asteroid.NumAsteroidVerticals;
             const xv = Number(
-                (radius * Math.cos(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2),
+                (radius * Math.cos(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2)
             );
             const yv = Number(
-                (radius * Math.sin(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2),
+                (radius * Math.sin(angle) + (Math.random() + 2) * radius * 0.4).toFixed(2)
             );
             verticals.push({ x: xv, y: yv });
         }
@@ -180,8 +181,8 @@ export class Asteroid {
 
     private getRadius() {
         return (
-            (Asteroid.AsteroidRadius * (Asteroid.NumAsteroidLevels - this.level))
-            / Asteroid.NumAsteroidLevels
+            (Asteroid.AsteroidRadius * (Asteroid.NumAsteroidLevels - this.level)) /
+            Asteroid.NumAsteroidLevels
         );
     }
 }
