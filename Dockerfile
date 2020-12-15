@@ -8,7 +8,7 @@ RUN npm ci
 RUN npm run build-all-prod
 RUN npm prune
 
-FROM node:12-alpine
+FROM node:14-alpine
 WORKDIR /usr/src/app
 
 COPY --from=builder /usr/src/app/node_modules ./node_modules
