@@ -14,7 +14,7 @@ export const Games: React.FunctionComponent = () => (
         </Grid>
         <Grid item xs={12}>
             <Grid container justify="center" alignItems="center">
-                <Link to="/air-hockey">
+                <Link style={{ textDecoration: 'none' }} to="/air-hockey">
                     <GameCard
                         title="Air hockey"
                         text="Play air hockey either online or locally"
@@ -22,7 +22,7 @@ export const Games: React.FunctionComponent = () => (
                     />
                 </Link>
 
-                <Link to="/asteroids">
+                <Link style={{ textDecoration: 'none' }} to="/asteroids">
                     <GameCard
                         title="Asteroids"
                         text="Classic asteroids game"
@@ -30,7 +30,7 @@ export const Games: React.FunctionComponent = () => (
                     />
                 </Link>
 
-                <Link to="/snake">
+                <Link style={{ textDecoration: 'none' }} to="/snake">
                     <GameCard
                         title="Snake"
                         text="Snake game"
@@ -38,7 +38,7 @@ export const Games: React.FunctionComponent = () => (
                     />
                 </Link>
 
-                <Link to="/unity-fps">
+                <Link style={{ textDecoration: 'none' }} to="/unity-fps">
                     <GameCard
                         title="Unity Fps"
                         text="Fps game made with Unity WebGL"
