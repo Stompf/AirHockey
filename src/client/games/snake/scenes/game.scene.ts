@@ -97,8 +97,8 @@ export class GameScene extends Phaser.Scene {
         this.graphics.strokeLineShape(line);
 
         const statusText = this.add.text(this.sys.canvas.width / 2, 7, '', {
-            fill: '#000000',
-            fontSize: 20,
+            color: '#000000',
+            fontSize: '20px',
         });
 
         if (this.scoreTexts) {
@@ -118,14 +118,15 @@ export class GameScene extends Phaser.Scene {
             down: Phaser.Input.Keyboard.KeyCodes.S,
             left: Phaser.Input.Keyboard.KeyCodes.A,
             right: Phaser.Input.Keyboard.KeyCodes.D,
-        });
+        }) as Phaser.Types.Input.Keyboard.CursorKeys;
 
         const cursor2 = this.input.keyboard.addKeys({
             up: Phaser.Input.Keyboard.KeyCodes.UP,
             down: Phaser.Input.Keyboard.KeyCodes.DOWN,
             left: Phaser.Input.Keyboard.KeyCodes.LEFT,
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-        });
+        }) as Phaser.Types.Input.Keyboard.CursorKeys;
+
         this.players = [
             new Player(this, 'blue', Colors.blue, cursor1),
             new Player(this, 'red', Colors.red, cursor2),
@@ -133,8 +134,8 @@ export class GameScene extends Phaser.Scene {
 
         this.players.forEach((player, index) => {
             const text = this.add.text(10 + 25 * index, 7, '0', {
-                fill: player.DisplayName,
-                fontSize: 20,
+                color: player.DisplayName,
+                fontSize: '20px',
             });
             text.setOrigin(0, 0);
             this.scoreTexts.push(text);

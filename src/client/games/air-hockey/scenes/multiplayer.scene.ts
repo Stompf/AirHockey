@@ -58,7 +58,7 @@ export class MultiplayerScene extends Phaser.Scene {
             down: Phaser.Input.Keyboard.KeyCodes.S,
             left: Phaser.Input.Keyboard.KeyCodes.A,
             right: Phaser.Input.Keyboard.KeyCodes.D,
-        });
+        }) as Phaser.Types.Input.Keyboard.CursorKeys;
 
         this.connect();
     }

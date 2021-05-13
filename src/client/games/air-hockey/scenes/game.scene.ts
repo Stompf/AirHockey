@@ -43,7 +43,7 @@ export class GameScene extends Phaser.Scene {
             down: Phaser.Input.Keyboard.KeyCodes.S,
             left: Phaser.Input.Keyboard.KeyCodes.A,
             right: Phaser.Input.Keyboard.KeyCodes.D,
-        });
+        }) as Phaser.Types.Input.Keyboard.CursorKeys;
 
         const player = this.physics.add.image(400, 300, 'player');
         player.setDisplaySize(50, 50);

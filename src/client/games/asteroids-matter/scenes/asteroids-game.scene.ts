@@ -241,15 +241,15 @@ export class AsteroidGameScene extends Phaser.Scene {
 
     private addHUD() {
         const pointsText = this.add.text(0, 0, 'Points: ', {
-            fill: '#FFFFFF',
-            fontSize: 12,
+            color: '#FFFFFF',
+            fontSize: '12px',
         });
         pointsText.setDepth(10);
         pointsText.setOrigin(0, 0);
 
         const livesText = this.add.text(0, pointsText.height, 'Lives: ', {
-            fill: '#FFFFFF',
-            fontSize: 12,
+            color: '#FFFFFF',
+            fontSize: '12px',
         });
         livesText.setDepth(10);
         livesText.setOrigin(0, 0);

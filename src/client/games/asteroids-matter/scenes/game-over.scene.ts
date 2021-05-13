@@ -19,8 +19,8 @@ export class GameOverScene extends Phaser.Scene {
             this.sys.canvas.height - this.sys.canvas.height / 1.25 - 34,
             'Game Over',
             {
-                fill: '#000000',
-                fontSize: 34,
+                color: '#000000',
+                fontSize: '34px',
             }
         );
         gameOverText.setDepth(10);
@@ -31,8 +31,8 @@ export class GameOverScene extends Phaser.Scene {
             this.sys.canvas.height / 2,
             `Score: ${this.sys.registry.get('points')}`,
             {
-                fill: '#000000',
-                fontSize: 34,
+                color: '#000000',
+                fontSize: '34px',
             }
         );
         scoreText.setDepth(10);
@@ -43,8 +43,8 @@ export class GameOverScene extends Phaser.Scene {
             this.sys.canvas.height / 1.25,
             'Click to play again',
             {
-                fill: '#000000',
-                fontSize: 34,
+                color: '#000000',
+                fontSize: '34px',
             }
         );
         clickToResetText.setDepth(10);
